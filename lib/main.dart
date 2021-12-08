@@ -1,4 +1,6 @@
+import 'package:dhoro_mobile/utils/color.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -41,8 +43,13 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Text(
               'Welcome to Dhoro',
+              style: GoogleFonts.manrope(
+                color: Pallet.colorBlue,
+                fontSize: 48,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.italic,
+              ),
             ),
-
           ],
         ),
       ),
