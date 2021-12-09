@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'color.dart';
 
 class AppFontsStyle {
+  static double textFontSize40 = 40.0;
+  static double textFontSize48 = 48.0;
+  static double textFontSize32 = 32.0;
   static double textFontSize24 = 24.0;
   static double textFontSize22 = 22.0;
   static double textFontSize20 = 20.0;

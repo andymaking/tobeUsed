@@ -5,6 +5,7 @@ import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/route/routes.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/navigation_helper.dart';
 import 'package:dio/dio.dart';
@@ -41,6 +42,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
     return MaterialApp(
       title: 'Dhoro App',
       debugShowCheckedModeBanner: false,
