@@ -55,7 +55,7 @@ class _AppFormFieldState extends State<AppFormField> {
         border: widget.focus == true
             ? Border.all(width: 1.0, color: Pallet.colorBlue)
             : Border.all(width: 1.0, color: Pallet.colorBlue),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: BorderRadius.all(Radius.circular(2)),
       ),
       child: FocusScope(
           child: Focus(
