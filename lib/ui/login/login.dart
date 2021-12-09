@@ -1,4 +1,5 @@
 
+import 'package:dhoro_mobile/ui/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
@@ -18,7 +19,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _secretCodeController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final isValidLogin = true;
 
@@ -68,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 AppFormField(
                   label: AppString.password,
-                  controller: _emailController,
+                  controller: _passwordController,
                   onChanged: (value) {
 
                   },
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 AppButton(
                     onPressed: (){
-
+                      Navigator.of(context).pushNamed(AppRoutes.home);
                     },
                     title: AppString.login,
                     disabledColor: Pallet.colorYellow.withOpacity(0.2),
@@ -92,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     child: GestureDetector(
                       onTap: (){
-
+                        Navigator.of(context).pushNamed(AppRoutes.signUp);
                       },
                       child: Center(
                         child: Text.rich(
