@@ -1,5 +1,6 @@
 
 import 'package:dhoro_mobile/utils/color.dart';
+import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -11,6 +12,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _secretCodeController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +24,11 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              AppToolBar(
+                trailingIconClicked: (){
+
+                },
+              ),
               Text(
                 'Dhoro Login Page',
                 style: GoogleFonts.manrope(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dhoro_mobile/data/cache/user_cache_impl.dart';
 import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
+import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/route/routes.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/navigation_helper.dart';
@@ -47,45 +48,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: LoginPage(),
       onGenerateRoute: AppRouter.generateRoute,
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome to Dhoro',
-              style: GoogleFonts.manrope(
-                color: Pallet.colorBlue,
-                fontSize: 48,
-                fontWeight: FontWeight.w700,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
