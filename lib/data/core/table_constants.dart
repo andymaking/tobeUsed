@@ -6,5 +6,4 @@ class DbTable {
   static const String ONBOARDING_TABLE_NAME = 'onboarding';
   static const String LOGIN_TABLE_NAME = 'login';
 
-
 }
