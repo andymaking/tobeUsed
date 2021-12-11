@@ -6,12 +6,13 @@ import 'package:dhoro_mobile/ui/request/requests.dart';
 import 'package:dhoro_mobile/ui/route/route_error_page.dart';
 import 'package:dhoro_mobile/ui/settings/settings.dart';
 import 'package:dhoro_mobile/ui/transactions/transactions.dart';
+import 'package:dhoro_mobile/ui/verify_your_email/verify_your_email.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
   static const home = '/home';
   static const login = '/login';
-  static const verifyEmail = '/verifyEmail';
+  static const verifyYourEmail = '/verifyYourEmail';
   static const onBoarding = '/onboarding';
   static const signUp = '/sign-up';
   static const forgotPassword = '/forgot-password';
@@ -57,6 +58,12 @@ class AppRouter {
       case AppRoutes.signUp:
         return MaterialPageRoute<dynamic>(
           builder: (_) => SignUpPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.verifyYourEmail:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => VerifyYourEmailPage(),
           settings: settings,
           fullscreenDialog: true,
         );

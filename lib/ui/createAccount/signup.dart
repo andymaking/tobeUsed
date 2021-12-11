@@ -110,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 AppButton(
                     onPressed: (){
-                      Navigator.of(context).pushNamed(AppRoutes.login);
+                      Navigator.of(context).pushNamed(AppRoutes.verifyYourEmail);
                     },
                     title: AppString.createAccount,
                     disabledColor: Pallet.colorYellow.withOpacity(0.2),
