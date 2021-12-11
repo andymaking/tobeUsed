@@ -1,9 +1,11 @@
 import 'package:dhoro_mobile/ui/changePassword/change_password.dart';
 import 'package:dhoro_mobile/ui/createAccount/signup.dart';
+import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
+import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/ui/request/requests.dart';
-import 'package:dhoro_mobile/ui/route/route_error_page.dart';
+import 'package:dhoro_mobile/route/route_error_page.dart';
 import 'package:dhoro_mobile/ui/settings/settings.dart';
 import 'package:dhoro_mobile/ui/transactions/transactions.dart';
 import 'package:dhoro_mobile/ui/verify_your_email/verify_your_email.dart';
@@ -13,6 +15,7 @@ class AppRoutes {
   static const home = '/home';
   static const login = '/login';
   static const verifyYourEmail = '/verifyYourEmail';
+  static const emailVerification = '/emailVerification';
   static const onBoarding = '/onboarding';
   static const signUp = '/sign-up';
   static const forgotPassword = '/forgot-password';
@@ -22,6 +25,7 @@ class AppRoutes {
   static const editProfile = '/edit-profile';
   static const changePassword = '/change-password';
   static const overview = '/overview';
+  static const dashboard = '/dashboard';
   static const settings = '/settings';
   static const transactions = '/transactions';
   static const requests = '/requests';
@@ -31,6 +35,12 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // E.g Navigator.of(context).pushNamed(AppRoutes.home);
     switch (settings.name) {
+      case AppRoutes.dashboard:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => DashboardPage(selectedIndex: 0,),
+          settings: settings,
+          fullscreenDialog: true,
+        );
       case AppRoutes.overview:
         return MaterialPageRoute<dynamic>(
           builder: (_) => OverviewPage(),
@@ -64,6 +74,12 @@ class AppRouter {
       case AppRoutes.verifyYourEmail:
         return MaterialPageRoute<dynamic>(
           builder: (_) => VerifyYourEmailPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.emailVerification:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => EmailVerificationPage(),
           settings: settings,
           fullscreenDialog: true,
         );

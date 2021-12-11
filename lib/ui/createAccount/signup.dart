@@ -1,5 +1,5 @@
 
-import 'package:dhoro_mobile/ui/route/routes.dart';
+import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
