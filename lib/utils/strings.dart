@@ -22,7 +22,10 @@ class AppString{
   static const String emailVerification = "Email Verification";
   static const String verificationCode = "Verification Code";
   static const String registerInstead ="Register instead";
-
+  static const String transactions ="Transactions";
+  static const String overView ="Overview";
+  static const String requests ="Requests";
+  static const String settings ="Settings";
   static const String completeYourRegistration = "Complete your registration by providing the six-digit verification code sent to ";
   static const String getStartedTwoSteps = "Get started with Dhoro in two easy steps. Fill out the form below and verify your Email address.";
   static const String accessYourDhoro = "Access your Dhoro account by providing the Email address you signed up with and your password.";
@@ -38,4 +41,14 @@ class AppImages{
   static const String iconMenu = "assets/images/ic_menu.svg";
   static const String iconClose = "assets/images/ic_close.svg";
   static const String iconGreenArrowUp = "assets/images/ic_green_arrow.png";
+  static const String icNotifications = "assets/images/ic_notifications.svg";
+  static const String icOverView = "assets/images/ic_overview.svg";
+  static const String icTransactions = "assets/images/ic_transactions.svg";
+  static const String icRequest = "assets/images/ic_request.svg";
+  static const String icSettings = "assets/images/ic_settings.svg";
+  static const String icOverViewInActive = "assets/images/ic_overview_inactive.svg";
+  static const String icTransactionsInActive = "assets/images/ic_transactions_inactive.svg";
+  static const String icRequestInActive = "assets/images/ic_request_inactive.svg";
+  static const String icSettingsInActive = "assets/images/ic_settings_inactive.svg";
+
 }

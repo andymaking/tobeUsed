@@ -1,5 +1,5 @@
 
-import 'package:dhoro_mobile/ui/route/routes.dart';
+import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
@@ -7,7 +7,6 @@ import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
@@ -79,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 AppButton(
                     onPressed: (){
-                      Navigator.of(context).pushNamed(AppRoutes.home);
+                      Navigator.of(context).pushNamed(AppRoutes.dashboard);
                     },
                     title: AppString.login,
                     disabledColor: Pallet.colorYellow.withOpacity(0.2),
