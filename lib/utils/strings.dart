@@ -12,6 +12,13 @@ class AppString{
   static const String doNotHaveAccount = "Don’t have a Dhoro account? ";
   static const String alreadyHaveAccount = "Already have an account? ";
   static const String loginSecurely = "Log In securely";
+  static const String verifyYourEmail = "Verify your Email";
+  static const String confirmYourEmailAddress = "Confirm your Email Address to get started with Dhoro and become the latest member of our community";
+  static const String yourOneTimeVerificationCode = "Your one time verification code is:";
+  static const String verifyBtn = "VERIFY EMAIL ADDRESS";
+  static const String unsubscribe = "Unsubscribe";
+  static const String termsAndCondition = "Terms and Conditions";
+  static const String privacyPolicy = "Privacy Policy";
 
 
   static const String registerInstead ="Register instead";
@@ -22,6 +29,10 @@ class AppString{
 
 class AppImages{
   static const String appLogo = "assets/images/ic_dhoro.svg";
+  static const String icYouTube = "assets/images/ic_youtube.svg";
+  static const String icDhoroFinance = "assets/images/ic_dhoro_finance.svg";
+  static const String icFacebook = "assets/images/ic_facebook_white.svg";
+  static const String inInstagram = "assets/images/ic_instagram_white.svg";
   static const String iconMenu = "assets/images/ic_menu.svg";
   static const String iconClose = "assets/images/ic_close.svg";
   static const String iconGreenArrowUp = "assets/images/ic_green_arrow.png";
