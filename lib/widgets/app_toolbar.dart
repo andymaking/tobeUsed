@@ -11,7 +11,7 @@ class AppToolBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
-      Sized24Container(
+      Container(
       child: Row(
         children: [
           SvgPicture.asset(AppImages.appLogo),
