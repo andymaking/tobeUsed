@@ -1,5 +1,6 @@
 import 'package:dhoro_mobile/ui/changePassword/change_password.dart';
 import 'package:dhoro_mobile/ui/createAccount/signup.dart';
+import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/ui/request/requests.dart';
@@ -13,6 +14,7 @@ class AppRoutes {
   static const home = '/home';
   static const login = '/login';
   static const verifyYourEmail = '/verifyYourEmail';
+  static const emailVerification = '/emailVerification';
   static const onBoarding = '/onboarding';
   static const signUp = '/sign-up';
   static const forgotPassword = '/forgot-password';
@@ -64,6 +66,12 @@ class AppRouter {
       case AppRoutes.verifyYourEmail:
         return MaterialPageRoute<dynamic>(
           builder: (_) => VerifyYourEmailPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.emailVerification:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => EmailVerificationPage(),
           settings: settings,
           fullscreenDialog: true,
         );

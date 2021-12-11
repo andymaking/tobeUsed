@@ -19,9 +19,11 @@ class AppString{
   static const String unsubscribe = "Unsubscribe";
   static const String termsAndCondition = "Terms and Conditions";
   static const String privacyPolicy = "Privacy Policy";
-
-
+  static const String emailVerification = "Email Verification";
+  static const String verificationCode = "Verification Code";
   static const String registerInstead ="Register instead";
+
+  static const String completeYourRegistration = "Complete your registration by providing the six-digit verification code sent to ";
   static const String getStartedTwoSteps = "Get started with Dhoro in two easy steps. Fill out the form below and verify your Email address.";
   static const String accessYourDhoro = "Access your Dhoro account by providing the Email address you signed up with and your password.";
   static const String termsAndConditions ="By clicking the “Create a Dhoro account’ button, you are creating a Dhoro account and you agree to our Privacy Policy and Terms and Conditions";
