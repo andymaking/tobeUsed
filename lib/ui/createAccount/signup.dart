@@ -1,5 +1,5 @@
 
-import 'package:dhoro_mobile/ui/route/routes.dart';
+import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
@@ -110,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 AppButton(
                     onPressed: (){
-                      Navigator.of(context).pushNamed(AppRoutes.login);
+                      Navigator.of(context).pushNamed(AppRoutes.verifyYourEmail);
                     },
                     title: AppString.createAccount,
                     disabledColor: Pallet.colorYellow.withOpacity(0.2),
