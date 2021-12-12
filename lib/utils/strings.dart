@@ -44,7 +44,7 @@ class AppImages{
   static const String icDhoroFinance = "assets/images/ic_dhoro_finance.svg";
   static const String icFacebook = "assets/images/ic_facebook_white.svg";
   static const String inInstagram = "assets/images/ic_instagram_white.svg";
-  static const String iconMenu = "assets/images/ic_menu.svg";
+  static const String iconDrawer = "assets/images/ic_drawer.svg";
   static const String iconClose = "assets/images/ic_close.svg";
   static const String iconGreenArrowUp = "assets/images/ic_arrow_green.svg";
   static const String icNotifications = "assets/images/ic_notifications.svg";
@@ -61,5 +61,7 @@ class AppImages{
   static const String icLock = "assets/images/ic_lock.svg";
   static const String icUnlock = "assets/images/ic_lock_open.svg";
   static const String icEye = "assets/images/ic_eye.svg";
+  static const String iconMenu = "assets/images/ic_menu.svg";
+  static const String icFilter = "assets/images/ic_filter.svg";
 
 }

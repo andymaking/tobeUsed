@@ -1,4 +1,5 @@
 import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
@@ -19,7 +20,11 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
+
     return Scaffold(
+      backgroundColor: Pallet.colorBackground,
       body: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height,
@@ -220,33 +225,41 @@ class _OverviewPageState extends State<OverviewPage> {
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: List.generate(10, (index) {
-                      return GestureDetector(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 2.0),
-                          child: Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                TransactionList(),
-                                // SizedBox(
-                                //   height: 8,
-                                // ),
-                                Divider(
-                                  height: 1,
-                                  color: Pallet.colorBlue.withOpacity(0.3),
-                                )
-                              ],
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
+                        color: const Color(0xfffffffff)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: List.generate(10, (index) {
+                          return GestureDetector(
+                            onTap: () {},
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 2.0),
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    TransactionList(),
+                                    // SizedBox(
+                                    //   height: 8,
+                                    // ),
+                                    Divider(
+                                      height: 1,
+                                      color: Pallet.colorBlue.withOpacity(0.3),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    }),
+                          );
+                        }),
+                      ),
+                    ),
                   ),
                 ),
               ],
