@@ -63,5 +63,7 @@ class AppImages{
   static const String icEye = "assets/images/ic_eye.svg";
   static const String iconMenu = "assets/images/ic_menu.svg";
   static const String icFilter = "assets/images/ic_filter.svg";
+  static const String icBuyer = "assets/images/ic_buy_dhoro.svg";
+  static const String icWithdraw = "assets/images/ic_withdraw_dhoro.svg";
 
 }
