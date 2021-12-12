@@ -4,6 +4,7 @@ import 'package:dhoro_mobile/ui/settings/settings.dart';
 import 'package:dhoro_mobile/ui/transactions/transactions.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,9 +33,16 @@ class _DashboardPageState extends State<DashboardPage> {
     SettingsPage(),
   ];
 
+  List<String> _titles = <String>[
+    AppString.overView,
+    AppString.transactions,
+    AppString.requests,
+    AppString.settings,
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Pallet.colorBackground,
       body: SafeArea(
         child: IndexedStack(
           index: (widget.selectedIndex),
