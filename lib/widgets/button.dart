@@ -2,6 +2,7 @@ import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AppButton extends StatelessWidget {
   Function()? onPressed;
@@ -46,7 +47,7 @@ class AppButton extends StatelessWidget {
                 AppFontsStyle.getAppTextViewBold(title, size:AppFontsStyle.textFontSize12, color: titleColor),
                 Container(
                     padding: EdgeInsets.only(left: 6),
-                    child: Image.asset(AppImages.iconGreenArrowUp, width: 10, height: 10,),
+                    child: SvgPicture.asset(AppImages.iconGreenArrowUp, width: 10, height: 10,),
                 )
 
               ],

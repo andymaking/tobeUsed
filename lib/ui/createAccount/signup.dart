@@ -28,135 +28,139 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: 20.0,),
-                AppToolBar(
-                  trailingIconClicked: (){
+        child: ListView(
+          children: [
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 20.0,),
+                    AppToolBar(
+                      trailingIconClicked: (){
 
-                  },
-                ),
-                SizedBox(height: 70.0,),
-                AppFontsStyle.getAppTextViewBold(
-                  AppString.getStartedWithDhoro,
-                  weight: FontWeight.w700,
-                  size: AppFontsStyle.textFontSize32,
-                ),
-                SizedBox(height: 24.0,),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: AppFontsStyle.getAppTextView(
-                      AppString.getStartedTwoSteps,
-                      size: AppFontsStyle.textFontSize14,
-                      textAlign: TextAlign.center,
-                      color: Pallet.colorGrey
-                  ),
-                ),
-                SizedBox(height: 64.0,),
-                AppFormField(
-                  label: AppString.firstName,
-                  controller: _firstNameController,
-                  onChanged: (value) {
-
-                  },
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                AppFormField(
-                  label: AppString.lastName,
-                  controller: _lastNameController,
-                  onChanged: (value) {
-
-                  },
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                AppFormField(
-                  label: AppString.emailAddress,
-                  controller: _emailController,
-                  onChanged: (value) {
-
-                  },
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                AppFormField(
-                  label: AppString.choosePassword,
-                  controller: _passwordController,
-                  onChanged: (value) {
-
-                  },
-                ),
-                SizedBox(height: 16.0,),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: AppFontsStyle.getAppTextView(
-                      AppString.termsAndConditions,
-                      size: AppFontsStyle.textFontSize14,
-                      textAlign: TextAlign.center,
-                      color: Pallet.colorGrey
-                  ),
-                ),
-                SizedBox(
-                  height: 24,
-                ),
-                AppButton(
-                    onPressed: (){
-                      Navigator.of(context).pushNamed(AppRoutes.verifyYourEmail);
-                    },
-                    title: AppString.createAccount,
-                    disabledColor: Pallet.colorYellow.withOpacity(0.2),
-                    titleColor: Pallet.colorWhite,
-                    enabledColor: isValidLogin ? Pallet.colorBlue : Pallet.colorGrey,
-                    enabled: isValidLogin ? true : false),
-                SizedBox(
-                  height: 16,
-                ),
-                Container(
-                    width: double.infinity,
-                    child: GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).pushNamed(AppRoutes.login);
                       },
-                      child: Center(
-                        child: Text.rich(
-                          TextSpan(
-                              text: AppString.alreadyHaveAccount,
-                              style: GoogleFonts.manrope(
-                                fontSize: 14,
-                                height: 1.5,
-                                color: Pallet.colorGrey,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: AppString.loginSecurely,
+                    ),
+                    SizedBox(height: 70.0,),
+                    AppFontsStyle.getAppTextViewBold(
+                      AppString.getStartedWithDhoro,
+                      weight: FontWeight.w700,
+                      size: AppFontsStyle.textFontSize32,
+                    ),
+                    SizedBox(height: 24.0,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: AppFontsStyle.getAppTextView(
+                          AppString.getStartedTwoSteps,
+                          size: AppFontsStyle.textFontSize14,
+                          textAlign: TextAlign.center,
+                          color: Pallet.colorGrey
+                      ),
+                    ),
+                    SizedBox(height: 64.0,),
+                    AppFormField(
+                      label: AppString.firstName,
+                      controller: _firstNameController,
+                      onChanged: (value) {
+
+                      },
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    AppFormField(
+                      label: AppString.lastName,
+                      controller: _lastNameController,
+                      onChanged: (value) {
+
+                      },
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    AppFormField(
+                      label: AppString.emailAddress,
+                      controller: _emailController,
+                      onChanged: (value) {
+
+                      },
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    AppFormField(
+                      label: AppString.choosePassword,
+                      controller: _passwordController,
+                      onChanged: (value) {
+
+                      },
+                    ),
+                    SizedBox(height: 16.0,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: AppFontsStyle.getAppTextView(
+                          AppString.termsAndConditions,
+                          size: AppFontsStyle.textFontSize14,
+                          textAlign: TextAlign.center,
+                          color: Pallet.colorGrey
+                      ),
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    AppButton(
+                        onPressed: (){
+                          Navigator.of(context).pushNamed(AppRoutes.verifyYourEmail);
+                        },
+                        title: AppString.createAccount,
+                        disabledColor: Pallet.colorYellow.withOpacity(0.2),
+                        titleColor: Pallet.colorWhite,
+                        enabledColor: isValidLogin ? Pallet.colorBlue : Pallet.colorGrey,
+                        enabled: isValidLogin ? true : false),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                        width: double.infinity,
+                        child: GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).pushNamed(AppRoutes.login);
+                          },
+                          child: Center(
+                            child: Text.rich(
+                              TextSpan(
+                                  text: AppString.alreadyHaveAccount,
                                   style: GoogleFonts.manrope(
                                     fontSize: 14,
-                                    height: 1.2,
-                                    color: Pallet.colorBlue,
+                                    height: 1.5,
+                                    color: Pallet.colorGrey,
                                     fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w700,),
-                                ),
-                              ]
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: AppString.loginSecurely,
+                                      style: GoogleFonts.manrope(
+                                        fontSize: 14,
+                                        height: 1.2,
+                                        color: Pallet.colorBlue,
+                                        fontStyle: FontStyle.normal,
+                                        fontWeight: FontWeight.w700,),
+                                    ),
+                                  ]
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
+                        )
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
