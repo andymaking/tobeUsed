@@ -1,4 +1,5 @@
 import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/circle_images.dart';
 import 'package:flutter/material.dart';
@@ -40,12 +41,20 @@ class OverViewToolBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return
       Container(
+        height: 56,
+        decoration: BoxDecoration(
+            borderRadius:
+            BorderRadius.all(Radius.circular(1)),
+            color: const Color(0xfffffffff)),
         child: Row(
           children: [
-            AppFontsStyle.getAppTextViewBold(
-              AppString.verifyYourEmail,
-              weight: FontWeight.w700,
-              size: AppFontsStyle.textFontSize32,
+            Padding(
+              padding: const EdgeInsets.only(left: 24.0),
+              child: AppFontsStyle.getAppTextViewBold(
+                title,
+                weight: FontWeight.w700,
+                size: AppFontsStyle.textFontSize16,
+              ),
             ),
             Spacer(),
             GestureDetector(
@@ -55,18 +64,21 @@ class OverViewToolBar extends StatelessWidget {
                 child:
                 SvgPicture.asset(AppImages.icNotifications)),
             SizedBox(width: 24.0,),
-            GestureDetector(
-                onTap: () {
-                  trailingIconClicked ?? Navigator.of(context).pop();
-                },
-                child:
-                CircleImageFromNetwork(
-                  userImage,
-                  "assets/images/user_icon_checked.svg",
-                  "assets/images/user_icon_checked.svg",
-                  size: 80.0,
-                  text: initials,
-                ),
+            Padding(
+              padding: const EdgeInsets.only(right: 24.0),
+              child: GestureDetector(
+                  onTap: () {
+                    trailingIconClicked ?? Navigator.of(context).pop();
+                  },
+                  child:
+                  CircleImageFromNetwork(
+                    userImage,
+                    "assets/images/ic_avatar.svg",
+                    "assets/images/ic_avatar.svg",
+                    size: 32.0,
+                    text: initials,
+                  ),
+              ),
             ),
           ],
         ),
