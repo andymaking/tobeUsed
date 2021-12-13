@@ -77,7 +77,7 @@ class _VerifyYourEmailPageState extends State<VerifyYourEmailPage> {
                     SizedBox(height: 80.0,),
                     AppButton(
                         onPressed: (){
-                          Navigator.of(context).pushNamed(AppRoutes.emailVerification);
+                          Navigator.of(context).pushNamed(AppRoutes.login);
                         },
                         title: AppString.verifyBtn,
                         disabledColor: Pallet.colorYellow.withOpacity(0.2),
