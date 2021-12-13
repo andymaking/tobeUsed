@@ -4,6 +4,7 @@ import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
 import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
+import 'package:dhoro_mobile/ui/personal_info/personal_info.dart';
 import 'package:dhoro_mobile/ui/request/requests.dart';
 import 'package:dhoro_mobile/route/route_error_page.dart';
 import 'package:dhoro_mobile/ui/settings/settings.dart';
@@ -98,6 +99,12 @@ class AppRouter {
       case AppRoutes.settings:
         return MaterialPageRoute<dynamic>(
           builder: (_) => SettingsPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.personalInfo:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => PersonalInformationPage(),
           settings: settings,
           fullscreenDialog: true,
         );

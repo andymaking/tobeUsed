@@ -19,6 +19,7 @@ class _RequestsPageState extends State<RequestsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Pallet.colorBackground,
       body: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height,
@@ -121,7 +122,7 @@ class _RequestsPageState extends State<RequestsPage> {
                     height: 220,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
                         color: const Color(0xfffffffff)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,

@@ -28,14 +28,11 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return CupertinoButton(
         padding: EdgeInsets.zero,
         child: Container(
           height: 50,
-          padding: EdgeInsets.symmetric(
-              vertical: 2.5,
-              horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(2),
             color: enabled ? enabledColor : disabledColor,
@@ -44,12 +41,18 @@ class AppButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppFontsStyle.getAppTextViewBold(title, size:AppFontsStyle.textFontSize12, color: titleColor),
+                AppFontsStyle.getAppTextViewBold(title,
+                    size: AppFontsStyle.textFontSize12, color: titleColor),
                 Container(
-                    padding: EdgeInsets.only(left: 6),
-                    child: SvgPicture.asset(AppImages.iconGreenArrowUp, width: 10, height: 10,),
+                  padding: EdgeInsets.only(left: 6),
+                  child: icon != null
+                      ? SvgPicture.asset(
+                          AppImages.iconGreenArrowUp,
+                          width: 10,
+                          height: 10,
+                        )
+                      : icon,
                 )
-
               ],
             ),
           ),

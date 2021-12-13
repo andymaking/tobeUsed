@@ -65,5 +65,12 @@ class AppImages{
   static const String icFilter = "assets/images/ic_filter.svg";
   static const String icBuyer = "assets/images/ic_buy_dhoro.svg";
   static const String icWithdraw = "assets/images/ic_withdraw_dhoro.svg";
+  static const String icArrowForward = "assets/images/ic_arrow_forward.svg";
+  static const String icUser = "assets/images/ic_user.svg";
+  static const String icShield = "assets/images/ic_shield_check.svg";
+  static const String icPayment = "assets/images/ic_payment.svg";
+  static const String icSave = "assets/images/ic_save.svg";
+  static const String icDefaultImage = "assets/images/ic_default_image.png";
+  static const String icOpen = "assets/images/ic_open.svg";
 
 }
