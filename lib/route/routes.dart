@@ -6,6 +6,7 @@ import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/ui/password_and_security/password_and_security.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/ui/payment_processor/payment_processor_list.dart';
 import 'package:dhoro_mobile/ui/personal_info/personal_info.dart';
 import 'package:dhoro_mobile/ui/request/requests.dart';
 import 'package:dhoro_mobile/route/route_error_page.dart';
@@ -34,6 +35,7 @@ class AppRoutes {
   static const requests = '/requests';
   static const passwordAndSecurity = '/passwordAndSecurity';
   static const paymentProcessor = '/paymentProcessor';
+  static const paymentProcessorList = '/paymentProcessorList';
 }
 
 class AppRouter {
@@ -121,6 +123,12 @@ class AppRouter {
       case AppRoutes.paymentProcessor:
         return MaterialPageRoute<dynamic>(
           builder: (_) => PaymentProcessorPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.paymentProcessorList:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => PaymentProcessorListPage(),
           settings: settings,
           fullscreenDialog: true,
         );

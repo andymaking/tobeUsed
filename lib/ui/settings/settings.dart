@@ -112,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     isPasswordAndSecuritySelected = false;
                     isPaymentProcessorSelected = !isPaymentProcessorSelected;
                   });
-                  Navigator.of(context).pushNamed(AppRoutes.paymentProcessor);
+                  Navigator.of(context).pushNamed(AppRoutes.paymentProcessorList);
                 },
                 child: Sized24Container(
                   decoration: BoxDecoration(
