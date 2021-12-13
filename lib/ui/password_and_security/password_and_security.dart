@@ -116,59 +116,59 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
 
                                 },
                               ),
-                              SizedBox(height: 54.0,),
-                              AppFontsStyle.getAppTextViewBold(
-                                "Multi factor Authentication",
-                                weight: FontWeight.w500,
-                                size: AppFontsStyle.textFontSize12,
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-
-                              AppFontsStyle.getAppTextViewBold(
-                                  "Give your account extra layers of protection by one of the 2FA options",
-                                  size: AppFontsStyle.textFontSize12,
-                                  weight: FontWeight.w400,
-                                  color: Pallet.colorGrey
-                              ),
-                              SizedBox(height: 32.0,),
-                              Row(
-                                children: [
-                                  Checkbox(
-                                    value: smsValue,
-                                    activeColor: Pallet.colorBlue,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        smsValue = !smsValue;
-                                      });
-                                    },
-                                  ),
-                                  AppFontsStyle.getAppTextViewBold(
-                                    "SMS",
-                                    weight: FontWeight.w400,
-                                    size: AppFontsStyle.textFontSize12,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Checkbox(
-                                    value: smsValue,
-                                  activeColor: Pallet.colorBlue,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        smsValue = !smsValue;
-                                      });
-                                    },
-                                  ),
-                                  AppFontsStyle.getAppTextViewBold(
-                                    "Email",
-                                    weight: FontWeight.w400,
-                                    size: AppFontsStyle.textFontSize12,
-                                  ),
-                                ],
-                              ),
+                              //SizedBox(height: 54.0,),
+                              // AppFontsStyle.getAppTextViewBold(
+                              //   "Multi factor Authentication",
+                              //   weight: FontWeight.w500,
+                              //   size: AppFontsStyle.textFontSize12,
+                              // ),
+                              // SizedBox(
+                              //   height: 8,
+                              // ),
+                              //
+                              // AppFontsStyle.getAppTextViewBold(
+                              //     "Give your account extra layers of protection by one of the 2FA options",
+                              //     size: AppFontsStyle.textFontSize12,
+                              //     weight: FontWeight.w400,
+                              //     color: Pallet.colorGrey
+                              // ),
+                              // SizedBox(height: 32.0,),
+                              // Row(
+                              //   children: [
+                              //     Checkbox(
+                              //       value: smsValue,
+                              //       activeColor: Pallet.colorBlue,
+                              //       onChanged: (value) {
+                              //         setState(() {
+                              //           smsValue = !smsValue;
+                              //         });
+                              //       },
+                              //     ),
+                              //     AppFontsStyle.getAppTextViewBold(
+                              //       "SMS",
+                              //       weight: FontWeight.w400,
+                              //       size: AppFontsStyle.textFontSize12,
+                              //     ),
+                              //   ],
+                              // ),
+                              // Row(
+                              //   children: [
+                              //     Checkbox(
+                              //       value: smsValue,
+                              //     activeColor: Pallet.colorBlue,
+                              //       onChanged: (value) {
+                              //         setState(() {
+                              //           smsValue = !smsValue;
+                              //         });
+                              //       },
+                              //     ),
+                              //     AppFontsStyle.getAppTextViewBold(
+                              //       "Email",
+                              //       weight: FontWeight.w400,
+                              //       size: AppFontsStyle.textFontSize12,
+                              //     ),
+                              //   ],
+                              // ),
                               SizedBox(height: 32.0,),
                               AppButton(
                                   onPressed: (){

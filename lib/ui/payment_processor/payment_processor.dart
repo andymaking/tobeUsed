@@ -72,7 +72,7 @@ class _PaymentProcessorPageState extends State<PaymentProcessorPage> {
 
                               AppFormField(
                                 label: "Account Number",
-                                controller: _accountNameController,
+                                controller: _accountNumberController,
                                 onChanged: (value) {
 
                                 },
