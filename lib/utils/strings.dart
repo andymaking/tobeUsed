@@ -69,5 +69,10 @@ class AppImages{
   static const String icUser = "assets/images/ic_user.svg";
   static const String icShield = "assets/images/ic_shield_check.svg";
   static const String icPayment = "assets/images/ic_payment.svg";
+  static const String icSave = "assets/images/ic_save.svg";
+  static const String icDefaultImage = "assets/images/ic_default_image.png";
+  static const String icOpen = "assets/images/ic_open.svg";
+  static const String icLogout = "assets/images/ic_logout.svg";
+
 
 }
