@@ -1,4 +1,5 @@
 
+import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
@@ -41,6 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     isPasswordAndSecuritySelected = false;
                     isPaymentProcessorSelected = false;
                   });
+                  Navigator.of(context).pushNamed(AppRoutes.personalInfo);
                 },
                 child: Sized24Container(
                   decoration: BoxDecoration(
