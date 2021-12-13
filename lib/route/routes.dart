@@ -4,6 +4,7 @@ import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
 import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
+import 'package:dhoro_mobile/ui/password_and_security/password_and_security.dart';
 import 'package:dhoro_mobile/ui/personal_info/personal_info.dart';
 import 'package:dhoro_mobile/ui/request/requests.dart';
 import 'package:dhoro_mobile/route/route_error_page.dart';
@@ -30,6 +31,7 @@ class AppRoutes {
   static const settings = '/settings';
   static const transactions = '/transactions';
   static const requests = '/requests';
+  static const passwordAndSecurity = '/passwordAndSecurity';
 }
 
 class AppRouter {
@@ -105,6 +107,12 @@ class AppRouter {
       case AppRoutes.personalInfo:
         return MaterialPageRoute<dynamic>(
           builder: (_) => PersonalInformationPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.passwordAndSecurity:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => PasswordAndSecurityPage(),
           settings: settings,
           fullscreenDialog: true,
         );
