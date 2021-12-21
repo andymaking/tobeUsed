@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'color.dart';
 
 class AppFontsStyle {
+  static String fontFamily = 'Euclid Circular A';
   static double textFontSize40 = 40.0;
   static double textFontSize48 = 48.0;
   static double textFontSize32 = 32.0;
@@ -13,6 +14,7 @@ class AppFontsStyle {
   static double textFontSize16 = 16.0;
   static double textFontSize18 = 18.0;
   static double textFontSize14 = 14.0;
+  static double textFontSize13 = 13.0;
   static double textFontSize12 = 12.0;
   static double textFontSize10 = 10.0;
   static double textFontSize8 = 8.0;

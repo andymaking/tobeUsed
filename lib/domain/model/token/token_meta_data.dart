@@ -7,17 +7,15 @@ class TokenMetaData {
   @HiveField(0)
   String token;
   @HiveField(1)
-  String refreshToken;
-  @HiveField(2)
   double lastTimeStored;
-  @HiveField(3)
-  String userId;
+  // @HiveField(2)
+  // String userId;
 
   TokenMetaData(
-      this.token, this.refreshToken, this.lastTimeStored, this.userId);
+      this.token, this.lastTimeStored, /*this.userId*/);
 
   @override
   String toString() {
-    return 'TokenMetaData{token: $token, refreshToken: $refreshToken, lastTimeStored: $lastTimeStored, userId: $userId}';
+    return 'TokenMetaData{token: $token, lastTimeStored: $lastTimeStored}';
   }
 }
