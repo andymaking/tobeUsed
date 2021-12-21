@@ -1,10 +1,11 @@
 
 import 'dart:convert';
 
+import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dio/dio.dart';
 
 abstract class UserRemote {
-
+  Future<UserLoginResponse?> login(String email, String password);
 }
 
 void handleError(dynamic error) {
