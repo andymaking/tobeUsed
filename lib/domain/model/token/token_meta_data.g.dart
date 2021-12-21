@@ -18,24 +18,18 @@ class TokenMetaDataAdapter extends TypeAdapter<TokenMetaData> {
     };
     return TokenMetaData(
       fields[0] as String,
-      fields[1] as String,
-      fields[2] as double,
-      fields[3] as String,
+      fields[1] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, TokenMetaData obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(2)
       ..writeByte(0)
       ..write(obj.token)
       ..writeByte(1)
-      ..write(obj.refreshToken)
-      ..writeByte(2)
-      ..write(obj.lastTimeStored)
-      ..writeByte(3)
-      ..write(obj.userId);
+      ..write(obj.lastTimeStored);
   }
 
   @override
