@@ -13,6 +13,7 @@ import 'package:dhoro_mobile/route/route_error_page.dart';
 import 'package:dhoro_mobile/ui/settings/settings.dart';
 import 'package:dhoro_mobile/ui/transactions/transactions.dart';
 import 'package:dhoro_mobile/ui/verify_your_email/verify_your_email.dart';
+import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -36,6 +37,7 @@ class AppRoutes {
   static const passwordAndSecurity = '/passwordAndSecurity';
   static const paymentProcessor = '/paymentProcessor';
   static const paymentProcessorList = '/paymentProcessorList';
+  static const withdraw = '/stepper';
 }
 
 class AppRouter {
@@ -129,6 +131,12 @@ class AppRouter {
       case AppRoutes.paymentProcessorList:
         return MaterialPageRoute<dynamic>(
           builder: (_) => PaymentProcessorListPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.withdraw:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => SetupPagerContainer(),
           settings: settings,
           fullscreenDialog: true,
         );

@@ -1,4 +1,5 @@
 
+import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -161,19 +162,24 @@ class _RequestsPageState extends State<RequestsPage> {
                                   SizedBox(
                                     height: 18,
                                   ),
-                                  Container(
-                                      height: 50,
-                                      width: 137,
-                                      child: Center(
-                                        child: AppFontsStyle.getAppTextViewBold(
-                                            'WITHDRAW DHORO',
-                                            size: AppFontsStyle.textFontSize12,
-                                            color: Pallet.colorBlue,
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    decoration: BoxDecoration(
-                                      border:  Border.all(width: 1.0, color: Pallet.colorBlue),
-                                      borderRadius: BorderRadius.all(Radius.circular(2)),)
+                                  GestureDetector(
+                                    onTap: (){
+                                      Navigator.of(context).pushNamed(AppRoutes.withdraw);
+                                  },
+                                    child: Container(
+                                        height: 50,
+                                        width: 137,
+                                        child: Center(
+                                          child: AppFontsStyle.getAppTextViewBold(
+                                              'WITHDRAW DHORO',
+                                              size: AppFontsStyle.textFontSize12,
+                                              color: Pallet.colorBlue,
+                                              textAlign: TextAlign.center),
+                                        ),
+                                      decoration: BoxDecoration(
+                                        border:  Border.all(width: 1.0, color: Pallet.colorBlue),
+                                        borderRadius: BorderRadius.all(Radius.circular(2)),)
+                                    ),
                                   ),
                                 ],
                               ),

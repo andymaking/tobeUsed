@@ -7,6 +7,7 @@ class AppString{
   static const String lastName = "Last Name";
   static const String choosePassword = "Choose Password";
   static const String emailAddress = "Email Address";
+  static const String amount = "Amount";
   static const String welcomeBack = "Welcome back!";
   static const String getStartedWithDhoro = "Get started with Dhoro";
   static const String doNotHaveAccount = "Don’t have a Dhoro account? ";
@@ -73,6 +74,6 @@ class AppImages{
   static const String icDefaultImage = "assets/images/ic_default_image.png";
   static const String icOpen = "assets/images/ic_open.svg";
   static const String icLogout = "assets/images/ic_logout.svg";
-
+  static const String icArrowSwap = "assets/images/ic_arrow_swap.svg";
 
 }
