@@ -13,6 +13,7 @@ class AppFontsStyle {
   static double textFontSize16 = 16.0;
   static double textFontSize18 = 18.0;
   static double textFontSize14 = 14.0;
+  static double textFontSize13 = 13.0;
   static double textFontSize12 = 12.0;
   static double textFontSize10 = 10.0;
   static double textFontSize8 = 8.0;
