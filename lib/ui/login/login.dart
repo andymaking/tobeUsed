@@ -142,6 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
+                        keyboardType: TextInputType.visiblePassword,
                       ),
                       SizedBox(
                         height: 24,
@@ -218,7 +219,6 @@ class _LoginPageState extends State<LoginPage> {
     if (signInViewModel.viewState == ViewState.Success) {
       print('signin details $signIn');
       updateLoginStatus();
-      //Navigator.of(context).pushNamed(AppRoutes.dashboard);
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
     } else {
       await showTopModalSheet<String>(

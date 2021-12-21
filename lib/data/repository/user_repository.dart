@@ -12,13 +12,7 @@ abstract class UserRepository {
       String lastname,
       String email,
       String password,
-      String device_id,
-      String device_brand,
-      String device_model,
-      List<String> pictures,
-      int genderId,
-      String dob,
-      String phone);
+      );
   Future<String?> forgotPassword(String email);
   Future<String?> changePassword(
       String password, String confirmPassword, String email, String otp);

@@ -6,6 +6,12 @@ import 'package:dio/dio.dart';
 
 abstract class UserRemote {
   Future<UserLoginResponse?> login(String email, String password);
+  Future<String?> register(
+      String firstname,
+      String lastname,
+      String email,
+      String password,
+      );
 }
 
 void handleError(dynamic error) {

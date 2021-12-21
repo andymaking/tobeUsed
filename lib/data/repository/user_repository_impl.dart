@@ -50,10 +50,13 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<String?> register(String firstname, String lastname, String email, String password, String device_id, String device_brand, String device_model, List<String> pictures, int genderId, String dob, String phone
+  Future<String?> register(
+      String firstname,
+      String lastname,
+      String email,
+      String password,
       ) {
-    // TODO: implement register
-    throw UnimplementedError();
+    return userRemote.register(firstname, lastname, email, password);
   }
 
 }

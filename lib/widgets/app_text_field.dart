@@ -18,6 +18,7 @@ class AppFormField extends StatefulWidget {
   FormFieldValidator<String>? validator;
   Function(String)? onChanged;
   bool? enabled = true;
+  TextInputType? keyboardType;
 
   AppFormField(
       {this.controller,
@@ -28,7 +29,9 @@ class AppFormField extends StatefulWidget {
         this.onTap,
         this.enabled,
         this.validator,
-        this.onChanged});
+        this.onChanged,
+        this.keyboardType
+      });
 
   @override
   _AppFormFieldState createState() => _AppFormFieldState();
@@ -67,6 +70,7 @@ class _AppFormFieldState extends State<AppFormField> {
                         () {
                       _onFocusChange(true);
                     },
+                keyboardType: widget.keyboardType ?? TextInputType.text,
                 onChanged: widget.onChanged,
                 validator: widget.validator,
                 maxLines: null,

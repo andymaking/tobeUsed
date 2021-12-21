@@ -56,7 +56,7 @@ class LoginViewModel extends BaseViewModel {
   }
 
   bool isValidPassword() {
-    return password.isNotEmpty && password.length >= 6;
+    return password.isNotEmpty && password.length >= 7;
   }
 
   /// login user

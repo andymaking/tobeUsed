@@ -1,5 +1,6 @@
 
 import 'package:dhoro_mobile/data/core/network_config.dart';
+import 'package:dhoro_mobile/data/remote/model/success_message.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/user_remote/user_remote.dart';
 import 'package:dhoro_mobile/utils/constant.dart';
@@ -23,6 +24,29 @@ class UserRemoteImpl extends UserRemote {
       return responseData;
     } catch (error) {
       print("error: $error");
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<String?> register(
+      String firstname,
+      String lastname,
+      String email,
+      String password,
+      ) async {
+    try {
+      var _data = {
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
+        'password': password,
+      };
+      var response = await dioClient.post("${NetworkConfig.BASE_URL}user/register",
+          data: _data);
+      final message = SuccessMessage.fromJson(response.data).message;
+      return message;
+    } catch (error) {
       handleError(error);
     }
   }
