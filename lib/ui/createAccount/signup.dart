@@ -1,8 +1,8 @@
-
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/domain/viewmodel/signup_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
+import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
@@ -16,7 +16,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final signUpProvider =
-ChangeNotifierProvider.autoDispose((ref) => locator.get<SignUpViewModel>());
+    ChangeNotifierProvider.autoDispose((ref) => locator.get<SignUpViewModel>());
 
 final _validLoginProvider = Provider.autoDispose<bool>((ref) {
   return ref.watch(signUpProvider).isValidSignUp;
@@ -33,7 +33,6 @@ final _signUpStateProvider = Provider.autoDispose<ViewState>((ref) {
 final signUpStateProvider = Provider.autoDispose<ViewState>((ref) {
   return ref.watch(_signUpStateProvider);
 });
-
 
 class SignUpPage extends StatefulHookWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -68,29 +67,34 @@ class _SignUpPageState extends State<SignUpPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(height: 20.0,),
-                      AppToolBar(
-                        trailingIconClicked: (){
-
-                        },
+                      SizedBox(
+                        height: 20.0,
                       ),
-                      SizedBox(height: 70.0,),
+                      AppToolBar(
+                        trailingIconClicked: () {},
+                      ),
+                      SizedBox(
+                        height: 70.0,
+                      ),
                       AppFontsStyle.getAppTextViewBold(
                         AppString.getStartedWithDhoro,
                         weight: FontWeight.w700,
                         size: AppFontsStyle.textFontSize32,
                       ),
-                      SizedBox(height: 24.0,),
+                      SizedBox(
+                        height: 24.0,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: AppFontsStyle.getAppTextView(
                             AppString.getStartedTwoSteps,
                             size: AppFontsStyle.textFontSize14,
                             textAlign: TextAlign.center,
-                            color: Pallet.colorGrey
-                        ),
+                            color: Pallet.colorGrey),
                       ),
-                      SizedBox(height: 64.0,),
+                      SizedBox(
+                        height: 64.0,
+                      ),
                       AppFormField(
                         label: AppString.firstName,
                         controller: _firstNameController,
@@ -157,15 +161,16 @@ class _SignUpPageState extends State<SignUpPage> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16.0,),
+                      SizedBox(
+                        height: 16.0,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: AppFontsStyle.getAppTextView(
                             AppString.termsAndConditions,
                             size: AppFontsStyle.textFontSize14,
                             textAlign: TextAlign.center,
-                            color: Pallet.colorGrey
-                        ),
+                            color: Pallet.colorGrey),
                       ),
                       SizedBox(
                         height: 24,
@@ -173,27 +178,28 @@ class _SignUpPageState extends State<SignUpPage> {
                       signUpViewState == ViewState.Loading
                           ? Center(child: CircularProgressIndicator())
                           : AppButton(
-                          onPressed: (){
-                            isValidSignUp
-                                ? observeSignUpState(
-                              context,
-                            )
-                                : print(
-                                'Seems like theres a problem');
-                            //Navigator.of(context).pushNamed(AppRoutes.verifyYourEmail);
-                          },
-                          title: AppString.createAccount,
-                          disabledColor: Pallet.colorBlue.withOpacity(0.2),
-                          titleColor: Pallet.colorWhite,
-                          enabledColor: isValidSignUp ? Pallet.colorBlue : Pallet.colorGrey,
-                          enabled: isValidSignUp ? true : false),
+                              onPressed: () {
+                                isValidSignUp
+                                    ? observeSignUpState(
+                                        context,
+                                      )
+                                    : print('Seems like theres a problem');
+                                //Navigator.of(context).pushNamed(AppRoutes.verifyYourEmail);
+                              },
+                              title: AppString.createAccount,
+                              disabledColor: Pallet.colorBlue.withOpacity(0.2),
+                              titleColor: Pallet.colorWhite,
+                              enabledColor: isValidSignUp
+                                  ? Pallet.colorBlue
+                                  : Pallet.colorGrey,
+                              enabled: isValidSignUp ? true : false),
                       SizedBox(
                         height: 16,
                       ),
                       Container(
                           width: double.infinity,
                           child: GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               Navigator.of(context).pushNamed(AppRoutes.login);
                             },
                             child: Center(
@@ -215,15 +221,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                           height: 1.2,
                                           color: Pallet.colorBlue,
                                           fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w700,),
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
-                                    ]
-                                ),
+                                    ]),
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                          )
-                      ),
+                          )),
                     ],
                   ),
                 ),
@@ -238,23 +243,29 @@ class _SignUpPageState extends State<SignUpPage> {
   void observeSignUpState(BuildContext context) async {
     final signUpViewModel = context.read(signUpProvider);
     await signUpViewModel.register(
-        signUpViewModel.firstName,
-        signUpViewModel.lastName,
-        signUpViewModel.email,
-        signUpViewModel.password,
+      signUpViewModel.firstName,
+      signUpViewModel.lastName,
+      signUpViewModel.email,
+      signUpViewModel.password,
     );
     if (signUpViewModel.viewState == ViewState.Success) {
-      Navigator.of(context).pushNamed(AppRoutes.verifyYourEmail);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => EmailVerificationPage(
+             email: signUpViewModel.email,
+          ),
+        ),
+      );
+      //Navigator.of(context).pushNamed(AppRoutes.verifyYourEmail);
     } else {
       await showTopModalSheet<String>(
           context: context,
           child: ShowDialog(
-            title:
-            'Sign up failed. ${signUpViewModel.errorMessage}',
+            title: 'Sign up failed. ${signUpViewModel.errorMessage}',
             isError: true,
             onPressed: () {},
           ));
     }
   }
-
 }

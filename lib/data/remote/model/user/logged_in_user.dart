@@ -26,9 +26,32 @@ class LoggedInUser {
   LoggedInUser({
     this.email,
     this.token,
-    });
+  });
 
   LoggedInUser.fromJson(dynamic json) {
+    email = json['email'];
+    email = json['token'];
+  }
+  String? email;
+  String? token;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['email'] = email;
+    map['token'] = token;
+    return map;
+  }
+
+}
+
+
+class LoggedInUserData {
+  LoggedInUserData({
+    this.email,
+    this.token,
+    });
+
+  LoggedInUserData.fromJson(dynamic json) {
     email = json['email'];
     email = json['token'];
   }

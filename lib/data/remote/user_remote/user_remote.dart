@@ -1,7 +1,13 @@
 
 import 'dart:convert';
 
+import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
+import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
 import 'package:dio/dio.dart';
 
 abstract class UserRemote {
@@ -12,6 +18,15 @@ abstract class UserRemote {
       String email,
       String password,
       );
+  Future<String?> verifyAccount(String otp);
+  Future<WalletData?> getWalletBalance(TokenMetaData tokenMetaData);
+  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData,);
+  Future<GetUserData?> getUser(TokenMetaData tokenMetaData);
+  Future<String?> changePassword(String password, String confirmPassword,
+      String email, String otp);
+  Future<String?> forgotPassword(String email,);
+  Future<bool?> getWalletStatus(TokenMetaData tokenMetaData);
+
 }
 
 void handleError(dynamic error) {

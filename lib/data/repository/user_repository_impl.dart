@@ -1,6 +1,9 @@
 
 import 'package:dhoro_mobile/data/cache/user_cache.dart';
+import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/remote/user_remote/user_remote.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
@@ -25,15 +28,23 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<LoggedInUser?> getLoggedInUser() {
-    // TODO: implement getLoggedInUser
-    throw UnimplementedError();
+  Future<GetUserData?> getUser() async{
+    final tokenMeta = await getToken();
+    print("Showing token on getUser::: $tokenMeta");
+    return await userRemote.getUser(tokenMeta);
   }
 
   @override
-  Future<TokenMetaData> getToken() {
-    // TODO: implement getToken
-    throw UnimplementedError();
+  Future<TokenMetaData> getToken() async{
+    final tokenMeta = await userCache.getTokenMetaData();
+    final lastSavedTime =
+    DateTime.fromMillisecondsSinceEpoch(tokenMeta.lastTimeStored.toInt());
+    if ((DateTime.now().hour - lastSavedTime.hour) < 1) {
+      //token has not expired
+      return tokenMeta;
+    } else {
+      return tokenMeta;
+    }
   }
 
   @override
@@ -42,9 +53,10 @@ class UserRepositoryImpl extends UserRepository {
     await userCache.saveUserLogin(response!.data!);
     await userCache.updateUserFirstTime(true);
     final tokenMeta = TokenMetaData(
-        "Bearer " + response.data!.token!,
+        "Token " + response.data!.token!,
         DateTime.now().millisecondsSinceEpoch.toDouble(),
     );
+    print("Showing token details::: $tokenMeta");
     await userCache.saveTokenMetaData(tokenMeta);
     return response.data!;
   }
@@ -57,6 +69,29 @@ class UserRepositoryImpl extends UserRepository {
       String password,
       ) {
     return userRemote.register(firstname, lastname, email, password);
+  }
+
+  @override
+  Future<String?> verifyAccount(String otp) async{
+    return await userRemote.verifyAccount(otp);
+  }
+
+  @override
+  Future<WalletData?> walletBalance() async{
+    final tokenMeta = await getToken();
+    return await userRemote.getWalletBalance(tokenMeta);
+  }
+
+  @override
+  Future<List<TransferHistoryData>?> getTransferHistory() async{
+    final tokenMeta = await getToken();
+    return await userRemote.getTransferHistory(tokenMeta);
+  }
+
+  @override
+  Future<bool?> getWalletStatus() async{
+    final token = await getToken();
+    return await userRemote.getWalletStatus(token);
   }
 
 }

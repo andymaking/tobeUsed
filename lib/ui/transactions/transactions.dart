@@ -76,7 +76,13 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    TransactionList(),
+                                    TransactionList(
+                                            (){},
+                                        "",
+                                        "",
+                                        "",
+                                        ""
+                                    ),
                                     // SizedBox(
                                     //   height: 8,
                                     // ),

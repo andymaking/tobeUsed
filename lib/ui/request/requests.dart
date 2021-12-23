@@ -259,7 +259,13 @@ class _RequestsPageState extends State<RequestsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    TransactionList(),
+                                    TransactionList(
+                                        (){},
+                                      "",
+                                      "",
+                                      "",
+                                      ""
+                                    ),
                                     // SizedBox(
                                     //   height: 8,
                                     // ),
