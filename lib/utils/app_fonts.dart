@@ -19,10 +19,11 @@ class AppFontsStyle {
   static double textFontSize10 = 10.0;
   static double textFontSize8 = 8.0;
 
-  static Widget getAppTextView(text, {size, color, textAlign}) {
+  static Widget getAppTextView(text, {size, color, textAlign,maxLines}) {
     final displayText = text.toString().toLowerCase() == "null" ? "" : text;
     final textSize = size == null ? null : double.parse(size.toString());
     return Text(displayText,
+        maxLines: maxLines,
         textAlign: textAlign ?? TextAlign.left,
         style: GoogleFonts.manrope(
             color: color ?? Pallet.colorBlue,

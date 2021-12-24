@@ -86,12 +86,12 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-      case AppRoutes.emailVerification:
-        return MaterialPageRoute<dynamic>(
-          builder: (_) => EmailVerificationPage(),
-          settings: settings,
-          fullscreenDialog: true,
-        );
+      // case AppRoutes.emailVerification:
+      //   return MaterialPageRoute<dynamic>(
+      //     builder: (_) => EmailVerificationPage(email: ),
+      //     settings: settings,
+      //     fullscreenDialog: true,
+      //   );
       case AppRoutes.settings:
         return MaterialPageRoute<dynamic>(
           builder: (_) => SettingsPage(),

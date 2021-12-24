@@ -11,19 +11,15 @@ import 'package:hive/hive.dart';
 import '../../main.dart';
 import 'base/base_view_model.dart';
 
-class LoginViewModel extends BaseViewModel {
+class VerifyAccountViewModel extends BaseViewModel {
   final userRepository = locator<UserRepository>();
   //LoggedInUser? user;
   GetUserData? user;
-
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
   String? errorMessage;
-  String email = "";
-  String password = "";
-  bool isValidLogin = false;
-  bool isHidePassword = true;
-  bool isLoggedIn = false;
+  String otp = "";
+  bool isValidOTP = false;
 
   void setViewState(ViewState state) {
     _state = state;
@@ -35,43 +31,24 @@ class LoginViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  void validateLogin() {
-    isValidLogin = isValidEmail() && isValidPassword();
+  void validateVerify() {
+    isValidOTP = isValidOtp();
     notifyListeners();
   }
 
-  void isUserLoggedIn() {
-    isLoggedIn = !isLoggedIn;
-    notifyListeners();
+  bool isValidOtp() {
+    return otp.isNotEmpty && otp.length == 6;
   }
 
-  void togglePassword() {
-    isHidePassword = !isHidePassword;
-    notifyListeners();
-  }
-
-  bool isValidEmail() {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern.toString());
-    return regex.hasMatch(email);
-  }
-
-  bool isValidPassword() {
-    return password.isNotEmpty && password.length >= 7;
-  }
-
-  /// login user
-  Future<User?> login(String email, String password) async {
+  /// verify a user
+  Future<String?> verifyAccount(String otp) async {
     try {
       setViewState(ViewState.Loading);
-      var loginResponse = await userRepository.login(email, password);
+      await userRepository.verifyAccount(otp);
       setViewState(ViewState.Success);
-      //getUser();
-      print("Showing Login response::: $loginResponse");
-      return loginResponse;
     } catch (error) {
       setViewState(ViewState.Error);
+      print("Verification error::: $error");
       setError(error.toString());
     }
   }
@@ -82,7 +59,6 @@ class LoginViewModel extends BaseViewModel {
       var response = 
       await userRepository.getUser();
       user = response;
-      //print("User Info::: $user");
       setViewState(ViewState.Success);
     } catch (error) {
       setViewState(ViewState.Error);

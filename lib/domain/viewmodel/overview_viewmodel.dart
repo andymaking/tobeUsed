@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
 import 'package:hive/hive.dart';
@@ -11,11 +13,12 @@ import 'package:hive/hive.dart';
 import '../../main.dart';
 import 'base/base_view_model.dart';
 
-class LoginViewModel extends BaseViewModel {
+class OverviewViewModel extends BaseViewModel {
   final userRepository = locator<UserRepository>();
   //LoggedInUser? user;
   GetUserData? user;
-
+  List<TransferHistoryData> transferHistory = [];
+  WalletData? walletData;
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
   String? errorMessage;
@@ -62,19 +65,34 @@ class LoginViewModel extends BaseViewModel {
   }
 
   /// login user
-  Future<User?> login(String email, String password) async {
+  Future<WalletData?> walletBalance() async {
     try {
       setViewState(ViewState.Loading);
-      var loginResponse = await userRepository.login(email, password);
+      var walletBalanceResponse = await userRepository.walletBalance();
       setViewState(ViewState.Success);
-      //getUser();
-      print("Showing Login response::: $loginResponse");
-      return loginResponse;
+      print("Showing walletBalance response::: $walletBalanceResponse");
+      walletData = walletBalanceResponse;
+      return walletBalanceResponse;
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
   }
+
+  Future<TransferHistoryData?> getTransferHistory() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getTransferHistory();
+      transferHistory = response ?? [];
+      print("transferHistory $transferHistory");
+      setViewState(ViewState.Success);
+      print("Success transferHistory $transferHistory");
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
 
   Future<void> getUser() async {
     try {
@@ -82,7 +100,6 @@ class LoginViewModel extends BaseViewModel {
       var response = 
       await userRepository.getUser();
       user = response;
-      //print("User Info::: $user");
       setViewState(ViewState.Success);
     } catch (error) {
       setViewState(ViewState.Error);

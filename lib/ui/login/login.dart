@@ -1,6 +1,7 @@
 
 import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/domain/viewmodel/login_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
@@ -22,7 +23,7 @@ final signInProvider =
 ChangeNotifierProvider.autoDispose<LoginViewModel>((ref) {
   ref.onDispose(() {});
   final viewModel = locator.get<LoginViewModel>();
-  viewModel.getLoggedInUser();
+  viewModel.getUser();
   return viewModel;
 });
 
@@ -50,10 +51,10 @@ final togglePasswordProvider = Provider.autoDispose<bool>((ref) {
   return ref.watch(_togglePasswordProvider);
 });
 
-final _loggedInUserProvider = Provider.autoDispose<LoggedInUser?>((ref) {
+final _loggedInUserProvider = Provider.autoDispose<GetUserData?>((ref) {
   return ref.watch(signInProvider).user;
 });
-final loggedInUserProvider = Provider.autoDispose<LoggedInUser?>((ref) {
+final loggedInUserProvider = Provider.autoDispose<GetUserData?>((ref) {
   return ref.watch(_loggedInUserProvider);
 });
 
@@ -74,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final isValidSignIn = useProvider(validSignInProvider);
     final signInViewState = useProvider(signInStateProvider);
-    LoggedInUser? loggedInUser = useProvider(loggedInUserProvider);
+    GetUserData? loggedInUser = useProvider(loggedInUserProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -142,6 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
+                        keyboardType: TextInputType.visiblePassword,
                       ),
                       SizedBox(
                         height: 24,
@@ -218,7 +220,6 @@ class _LoginPageState extends State<LoginPage> {
     if (signInViewModel.viewState == ViewState.Success) {
       print('signin details $signIn');
       updateLoginStatus();
-      //Navigator.of(context).pushNamed(AppRoutes.dashboard);
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
     } else {
       await showTopModalSheet<String>(
