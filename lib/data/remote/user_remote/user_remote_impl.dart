@@ -1,5 +1,6 @@
 
 import 'package:dhoro_mobile/data/core/network_config.dart';
+import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/success_message.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
@@ -179,6 +180,21 @@ class UserRemoteImpl extends UserRemote {
       final responseData = WalletPercentage.fromJson(response.data);
       print("getWalletPercentage from Remote layer:: $responseData");
       return responseData.data.toString();
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<List<PaymentProcessorData>?> getPaymentProcessors(TokenMetaData tokenMetaData) async{
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/payment/fetch",
+      );
+      final responseData = PaymentProcessorResponse.fromJson(response.data);
+      print("getPaymentProcessors from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
     } catch (error) {
       handleError(error);
     }

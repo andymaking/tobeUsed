@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
@@ -30,6 +31,8 @@ abstract class UserRemote {
   Future<WalletStatusMessage?> getWalletStatus(TokenMetaData tokenMetaData);
   Future<MessageResponse?> lockOrUnlockWallet(bool status, TokenMetaData tokenMetaData);
   Future<String?> getWalletPercentage(TokenMetaData tokenMetaData);
+  Future<List<PaymentProcessorData>?> getPaymentProcessors(TokenMetaData tokenMetaData);
+
 
 }
 

@@ -303,7 +303,9 @@ class _OverviewPageState extends State<OverviewPage> {
                 ),
                 TransactionHeader(),
                 userTransactions.isNotEmpty == true
-                    ? Padding(
+                    ? viewState == ViewState.Loading
+                    ? Center(child: CircularProgressIndicator())
+                    : Padding(
                         padding: const EdgeInsets.only(
                             left: 24.0, right: 24, bottom: 24),
                         child: Container(
@@ -426,7 +428,7 @@ class _OverviewPageState extends State<OverviewPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: 150.0,
+            height: 100.0,
           ),
           Container(
             child: SvgPicture.asset("assets/images/ic_notifications.svg"),
