@@ -40,3 +40,26 @@ class Message {
   }
 
 }
+
+class MessageResponse {
+  bool? status;
+  String? message;
+
+  MessageResponse({
+    this.status,
+    this.message
+  });
+
+  MessageResponse.fromJson(dynamic json) {
+    status = json['status'];
+    message = json['message'];
+  }
+
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+    map['status'] = status;
+    map['message'] = message;
+    return map;
+  }
+
+}

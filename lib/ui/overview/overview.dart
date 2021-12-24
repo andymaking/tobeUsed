@@ -1,6 +1,7 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/domain/viewmodel/overview_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 
 final overviewProvider =
     ChangeNotifierProvider.autoDispose<OverviewViewModel>((ref) {
@@ -22,6 +24,8 @@ final overviewProvider =
   viewModel.getTransferHistory();
   viewModel.getUser();
   viewModel.walletBalance();
+  viewModel.getWalletStatus();
+  //viewModel.lockOrUnlockWallet();
   return viewModel;
 });
 
@@ -60,15 +64,20 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    //observeSignUpState(context);
+
     changeStatusAndNavBarColor(
         Pallet.colorWhite, Pallet.colorWhite, false, false);
     ViewState viewState = useProvider(profileStateProvider);
     WalletData? wallet = useProvider(overviewProvider).walletData;
+    bool? walletStatus = useProvider(overviewProvider).walletStatus;
+    MessageResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
+    //isLock = walletStatus!;
     List<TransferHistoryData>? userTransactions =
         useProvider(overviewProvider).transferHistory;
     print("Showing wallet:: $wallet");
     print("Showing TransferHistoryData:: $userTransactions");
+    print("Showing walletStatus:: $walletStatus");
+    var dhrBalance = wallet?.dhrBalance?.toStringAsFixed(2);
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -93,6 +102,7 @@ class _OverviewPageState extends State<OverviewPage> {
                         color: const Color(0xfffffffff)),
                     child: Column(
                       children: [
+                        //walletStatus == true
                         !isLock
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -147,7 +157,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                 // ?
                                 AppFontsStyle.getAppTextViewBold(
                                   "\$${wallet?.usdEquivalent}",
-                                  color: isLock
+                                  color: isLock //walletStatus != true
                                       ? Pallet.colorGrey
                                       : Pallet.colorBlue,
                                   weight: FontWeight.w600,
@@ -162,7 +172,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                 //   size: AppFontsStyle.textFontSize24,
                                 // ),
                                 Visibility(
-                                  visible: isLock == true,
+                                  visible: isLock == true,//walletStatus == true,
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 4.0),
                                     child: SvgPicture.asset(AppImages.icLock),
@@ -174,7 +184,7 @@ class _OverviewPageState extends State<OverviewPage> {
                               height: 8,
                             ),
                             AppFontsStyle.getAppTextViewBold(
-                              "\$${wallet?.dhrBalance} DHR",
+                              "$dhrBalance DHR",
                               color:
                                   isLock ? Pallet.colorGrey : Pallet.colorBlue,
                               weight: FontWeight.w700,
@@ -221,12 +231,12 @@ class _OverviewPageState extends State<OverviewPage> {
                               ),
                               GestureDetector(
                                   onTap: () {
-                                    observeSignUpState(context);
-                                    // setState(() {
-                                    //   isLock = !isLock;
-                                    // });
+                                    observeLockAndUnlockState(context);
+                                    setState(() {
+                                      isLock = !isLock;
+                                    });
                                   },
-                                  child: isLock
+                                  child: isLock //walletStatus == true
                                       ? Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -366,6 +376,11 @@ class _OverviewPageState extends State<OverviewPage> {
             onPressed: () {},
           ));
     }
+  }
+
+  void observeLockAndUnlockState(BuildContext context) async {
+    final lockUnlockViewModel = context.read(overviewProvider);
+    await lockUnlockViewModel.lockOrUnlockWallet(isLock, context);
   }
 
   Widget buildEmptyView() {

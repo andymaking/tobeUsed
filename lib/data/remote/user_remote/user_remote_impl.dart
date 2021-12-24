@@ -8,6 +8,7 @@ import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/user_remote/user_remote.dart';
 import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
 import 'package:dhoro_mobile/utils/constant.dart';
@@ -135,19 +136,34 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<bool?> getWalletStatus(TokenMetaData tokenMetaData) async{
+  Future<WalletStatusMessage?> getWalletStatus(TokenMetaData tokenMetaData) async{
     try {
       dioClient.options.headers['Authorization'] = tokenMetaData.token;
       var response = await dioClient.get(
         "${NetworkConfig.BASE_URL}user/wallet/status",
       );
-      final responseData = WalletStatus.fromJson(response.data);
+      final responseData = WalletStatusResponse.fromJson(response.data);
       print("TransferHistory from Remote layer:: $responseData");
-      return responseData.message?.status;
+      return responseData.message;
     } catch (error) {
       handleError(error);
     }
   }
 
- // user/wallet/status
-}
+  @override
+  Future<MessageResponse?> lockOrUnlockWallet(bool status, TokenMetaData tokenMetaData) async{
+    try {
+      var _data = {
+        'status': status,
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+        "${NetworkConfig.BASE_URL}user/wallet/lock", data: _data
+      );
+      final responseData = MessageResponse.fromJson(response.data);
+      print("lockOrUnlockWallet from Remote layer:: $responseData");
+      return responseData;
+    } catch (error) {
+      handleError(error);
+    }
+  }}
