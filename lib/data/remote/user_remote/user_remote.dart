@@ -6,6 +6,7 @@ import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
 import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
@@ -28,6 +29,7 @@ abstract class UserRemote {
   Future<String?> forgotPassword(String email,);
   Future<WalletStatusMessage?> getWalletStatus(TokenMetaData tokenMetaData);
   Future<MessageResponse?> lockOrUnlockWallet(bool status, TokenMetaData tokenMetaData);
+  Future<String?> getWalletPercentage(TokenMetaData tokenMetaData);
 
 }
 

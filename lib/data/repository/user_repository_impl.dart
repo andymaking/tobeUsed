@@ -4,6 +4,7 @@ import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/user_remote/user_remote.dart';
@@ -100,6 +101,12 @@ class UserRepositoryImpl extends UserRepository {
   Future<MessageResponse?> lockOrUnlockWallet(bool status) async{
     final token = await getToken();
     return await userRemote.lockOrUnlockWallet(status,token);
+  }
+
+  @override
+  Future<String?> getWalletPercentage() async{
+    final token = await getToken();
+    return await userRemote.getWalletPercentage(token);
   }
 
 }

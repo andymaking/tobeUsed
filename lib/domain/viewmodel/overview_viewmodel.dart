@@ -6,6 +6,7 @@ import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
@@ -24,6 +25,8 @@ class OverviewViewModel extends BaseViewModel {
   List<TransferHistoryData> transferHistory = [];
   WalletData? walletData;
   bool? walletStatus;
+  //WalletPercentage? walletPercentage;
+  String? walletPercentage;
   MessageResponse? lockUnlock;
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
@@ -118,6 +121,24 @@ class OverviewViewModel extends BaseViewModel {
       walletStatus = response?.status;
       return response;
     } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// user walletBalance
+  Future<String?> getWalletPercentage() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getWalletPercentage();
+      print("Showing getWalletPercentage response..::: $response");
+      setViewState(ViewState.Success);
+      print("Showing getWalletPercentage response::: $response");
+      walletPercentage = response;
+      print("Showing walletPercentage: $walletPercentage, response:$response");
+      return response;
+    } catch (error) {
+      print("Error $error");
       setViewState(ViewState.Error);
       setError(error.toString());
     }

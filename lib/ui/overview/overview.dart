@@ -1,6 +1,7 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/domain/viewmodel/overview_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
@@ -11,6 +12,7 @@ import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,7 +27,7 @@ final overviewProvider =
   viewModel.getUser();
   viewModel.walletBalance();
   viewModel.getWalletStatus();
-  //viewModel.lockOrUnlockWallet();
+  viewModel.getWalletPercentage();
   return viewModel;
 });
 
@@ -34,6 +36,13 @@ final _walletProvider = Provider.autoDispose<WalletData?>((ref) {
 });
 final walletProvider = Provider.autoDispose<WalletData?>((ref) {
   return ref.watch(_walletProvider);
+});
+
+final _percentageProvider = Provider.autoDispose<String?>((ref) {
+  return ref.watch(overviewProvider).walletPercentage;
+});
+final percentageProvider = Provider.autoDispose<String?>((ref) {
+  return ref.watch(_percentageProvider);
 });
 
 final _overviewStateProvider = Provider.autoDispose<ViewState>((ref) {
@@ -71,14 +80,17 @@ class _OverviewPageState extends State<OverviewPage> {
     WalletData? wallet = useProvider(overviewProvider).walletData;
     bool? walletStatus = useProvider(overviewProvider).walletStatus;
     MessageResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
+    /*WalletPercentage?*/ String? percentage = useProvider(overviewProvider).walletPercentage;
+    /*WalletPercentage?*/ String? percent = useProvider(percentageProvider);
     //isLock = walletStatus!;
     List<TransferHistoryData>? userTransactions =
         useProvider(overviewProvider).transferHistory;
-    print("Showing wallet:: $wallet");
+    print("Showing wallet percentage:: $percentage");
     print("Showing TransferHistoryData:: $userTransactions");
     print("Showing walletStatus:: $walletStatus");
+    print("Showing percent:: $percent");
     var dhrBalance = wallet?.dhrBalance?.toStringAsFixed(2);
-
+    //observePercentageState(context);
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(
@@ -119,7 +131,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     width: 5,
                                   ),
                                   AppFontsStyle.getAppTextViewBold(
-                                    "1.2%",
+                                    "$percentage%",
                                     color: Pallet.colorDeepGreen,
                                     weight: FontWeight.w600,
                                     size: AppFontsStyle.textFontSize12,
@@ -135,7 +147,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     width: 5,
                                   ),
                                   AppFontsStyle.getAppTextViewBold(
-                                    "1.2%",
+                                    "${context.read(overviewProvider).walletPercentage}%",
                                     color: Pallet.colorDeepGreen,
                                     weight: FontWeight.w600,
                                     size: AppFontsStyle.textFontSize12,
@@ -381,6 +393,28 @@ class _OverviewPageState extends State<OverviewPage> {
   void observeLockAndUnlockState(BuildContext context) async {
     final lockUnlockViewModel = context.read(overviewProvider);
     await lockUnlockViewModel.lockOrUnlockWallet(isLock, context);
+  }
+  void observePercentageState(BuildContext context) async {
+    final viewModel = context.read(overviewProvider);
+    await viewModel.getWalletPercentage();
+    if (viewModel.viewState == ViewState.Success) {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title:
+            'Percentage ${viewModel.walletPercentage}',
+            isError: false,
+            onPressed: () {},
+          ));
+    } else {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: 'Failed to get wallet percentage. ${viewModel.errorMessage}',
+            isError: true,
+            onPressed: () {},
+          ));
+    }
   }
 
   Widget buildEmptyView() {
