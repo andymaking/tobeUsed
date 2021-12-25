@@ -23,6 +23,10 @@ class PaymentProcessorViewModel extends BaseViewModel {
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
   String? errorMessage;
+  String bankName = "";
+  String userName = "";
+  String accountNumber = "";
+  bool isValidAddPayment = false;
 
   void setViewState(ViewState state) {
     _state = state;
@@ -34,6 +38,23 @@ class PaymentProcessorViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void validateAddPayment() {
+    isValidAddPayment = isValidBankName() && isValidUserName() && isValidAccountNumber();
+    notifyListeners();
+  }
+
+  bool isValidBankName() {
+    return bankName.isNotEmpty && bankName.length >= 3;
+  }
+
+  bool isValidUserName() {
+    return userName.isNotEmpty && userName.length >= 2;
+  }
+
+  bool isValidAccountNumber() {
+    return accountNumber.isNotEmpty && accountNumber.length >= 9;
+  }
+
   /// get user paymentProcessors
   Future<List<PaymentProcessorData>?> getPaymentProcessor() async {
     try {
@@ -42,6 +63,23 @@ class PaymentProcessorViewModel extends BaseViewModel {
       setViewState(ViewState.Success);
       print("Showing getPaymentProcessor response::: $response");
       paymentProcessor = response ?? [];
+      return response;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// get user paymentProcessors
+  Future<PaymentProcessorData?> addPaymentProcessor(BuildContext context, String bankName, String userName, String accountNumber) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.addPaymentProcessors(bankName, userName, accountNumber);
+      setViewState(ViewState.Success);
+      getPaymentProcessor();
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.paymentProcessorList, (route) => false);
+      print("Showing getPaymentProcessor response::: $response");
+      //paymentProcessor = response;
       return response;
     } catch (error) {
       setViewState(ViewState.Error);

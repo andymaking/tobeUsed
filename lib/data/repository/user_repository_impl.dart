@@ -135,4 +135,10 @@ class UserRepositoryImpl extends UserRepository {
     return await userRemote.updateUserProfile(token, firstName, lastName, phoneNumber);
   }
 
+  @override
+  Future<PaymentProcessorData?> addPaymentProcessors(String bankName, String userName, String accountNumber) async{
+    final token = await getToken();
+    return await userRemote.addPaymentProcessors(token, bankName, userName, accountNumber);
+  }
+
 }
