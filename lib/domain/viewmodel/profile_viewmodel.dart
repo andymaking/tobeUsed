@@ -6,6 +6,8 @@ import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
+import 'package:dhoro_mobile/route/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 import '../../main.dart';
@@ -19,11 +21,10 @@ class ProfileViewModel extends BaseViewModel {
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
   String? errorMessage;
-  String email = "";
-  String password = "";
-  bool isValidLogin = false;
-  bool isHidePassword = true;
-  bool isLoggedIn = false;
+  String firstName = "";
+  String lastName = "";
+  String phoneNumber = "";
+  bool isValidProfile = false;
 
   void setViewState(ViewState state) {
     _state = state;
@@ -35,48 +36,24 @@ class ProfileViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  void validateLogin() {
-    isValidLogin = isValidEmail() && isValidPassword();
+  void validateProfile() {
+    isValidProfile = isValidFirstName() && isValidLastName() && isValidPhoneNumber();
     notifyListeners();
   }
 
-  void isUserLoggedIn() {
-    isLoggedIn = !isLoggedIn;
-    notifyListeners();
+  bool isValidFirstName() {
+    return firstName.isNotEmpty && firstName.length >= 2;
   }
 
-  void togglePassword() {
-    isHidePassword = !isHidePassword;
-    notifyListeners();
+  bool isValidLastName() {
+    return lastName.isNotEmpty && lastName.length >= 2;
   }
 
-  bool isValidEmail() {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern.toString());
-    return regex.hasMatch(email);
+  bool isValidPhoneNumber() {
+    return phoneNumber.isNotEmpty && phoneNumber.length >= 9;
   }
 
-  bool isValidPassword() {
-    return password.isNotEmpty && password.length >= 7;
-  }
-
-  /// login user
-  Future<User?> login(String email, String password) async {
-    try {
-      setViewState(ViewState.Loading);
-      var loginResponse = await userRepository.login(email, password);
-      setViewState(ViewState.Success);
-      //getUser();
-      print("Showing Login response::: $loginResponse");
-      return loginResponse;
-    } catch (error) {
-      setViewState(ViewState.Error);
-      setError(error.toString());
-    }
-  }
-
-  Future<void> getUser() async {
+  Future<GetUserData?> getUser() async {
     try {
       setViewState(ViewState.Loading);
       var response = 
@@ -84,6 +61,22 @@ class ProfileViewModel extends BaseViewModel {
       user = response;
       //print("User Info::: $user");
       setViewState(ViewState.Success);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  Future<GetUserData?> updateUserProfile(BuildContext context, String firstName, String lastName,String phoneNumber) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.updateUserProfile(firstName, lastName, phoneNumber);
+      user = response;
+      //print("User Info::: $user");
+      setViewState(ViewState.Success);
+      getUser();
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());

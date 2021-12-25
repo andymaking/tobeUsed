@@ -13,6 +13,7 @@ import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -26,6 +27,14 @@ ChangeNotifierProvider.autoDispose<ProfileViewModel>((ref) {
   return viewModel;
 });
 
+final _validProfileProvider = Provider.autoDispose<bool>((ref) {
+  return ref.watch(profileProvider).isValidProfile;
+});
+
+final validProfileProvider = Provider.autoDispose<bool>((ref) {
+  return ref.watch(_validProfileProvider);
+});
+
 final _profileStateProvider = Provider.autoDispose<ViewState>((ref) {
   return ref.watch(profileProvider).viewState;
 });
@@ -33,7 +42,7 @@ final profileStateProvider = Provider.autoDispose<ViewState>((ref) {
   return ref.watch(_profileStateProvider);
 });
 
-class PersonalInformationPage extends StatefulWidget {
+class PersonalInformationPage extends StatefulHookWidget {
   const PersonalInformationPage({Key? key}) : super(key: key);
 
   @override
@@ -45,10 +54,16 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _imageController = TextEditingController();
-  final isValidLogin = true;
 
   @override
+  void initState() {
+    context.read(profileProvider).getUser();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+    final viewState = useProvider(profileStateProvider);
+    final isValidLogin = useProvider(validProfileProvider);
     GetUserData? userData = useProvider(profileProvider).user;
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
@@ -65,7 +80,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 children: <Widget>[
                   OverViewToolBar(
                     AppString.overView,
-                    userData!.avatar.toString(),
+                    userData?.avatar ?? "",
                     trailingIconClicked: () => null,
                     initials: initials,
                   ),
@@ -107,7 +122,14 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               label: AppString.firstName,
                               controller: _firstNameController,
                               onChanged: (value) {
-
+                                context.read(profileProvider).firstName = value.trim();
+                                context.read(profileProvider).validateProfile();
+                              },
+                              validator: (value) {
+                                if (context.read(profileProvider).isValidFirstName()) {
+                                  return "Enter a valid first name.";
+                                }
+                                return null;
                               },
                             ),
                             SizedBox(
@@ -117,7 +139,14 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               label: AppString.lastName,
                               controller: _lastNameController,
                               onChanged: (value) {
-
+                                context.read(profileProvider).lastName = value.trim();
+                                context.read(profileProvider).validateProfile();
+                              },
+                              validator: (value) {
+                                if (context.read(profileProvider).isValidLastName()) {
+                                  return "Enter a valid last name.";
+                                }
+                                return null;
                               },
                             ),
                             SizedBox(height: 32.0,),
@@ -187,16 +216,31 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               label: "Enter phone number",
                               controller: _phoneController,
                               onChanged: (value) {
-
+                                context.read(profileProvider).phoneNumber = value.trim();
+                                context.read(profileProvider).validateProfile();
+                              },
+                              validator: (value) {
+                                if (context.read(profileProvider).isValidPhoneNumber()) {
+                                  return "Enter a valid phone bumber.";
+                                }
+                                return null;
                               },
                             ),
                             SizedBox(height: 32.0,),
-                            AppButton(
+                            viewState == ViewState.Loading
+                                ? Center(child: CircularProgressIndicator())
+                                : AppButton(
                                 onPressed: (){
-                                  Navigator.of(context).pushNamed(AppRoutes.dashboard);
+                                  final viewModel = context.read(profileProvider);
+                                  context.read(profileProvider).updateUserProfile(
+                                    context,
+                                      viewModel.firstName,
+                                      viewModel.lastName,
+                                      viewModel.phoneNumber
+                                  );
                                 },
                                 title: "SAVE CHANGES",
-                                disabledColor: Pallet.colorYellow.withOpacity(0.2),
+                                disabledColor: Pallet.colorBlue.withOpacity(0.2),
                                 titleColor: Pallet.colorWhite,
                                 icon: SvgPicture.asset(
                                   AppImages.icSave,
