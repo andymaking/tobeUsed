@@ -34,7 +34,8 @@ abstract class UserRemote {
   Future<List<PaymentProcessorData>?> getPaymentProcessors(TokenMetaData tokenMetaData);
   Future<MessageResponse?> deletePaymentProcessor(String pk,TokenMetaData tokenMetaData);
   Future<List<RequestData>?> getRequests(TokenMetaData tokenMetaData);
-  Future<GetUserData?> updateUserProfile(TokenMetaData tokenMetaData,String firstName, String lastName, String phoneNumber );
+  Future<GetUserData?> updateUserProfile(TokenMetaData tokenMetaData,String firstName, String lastName, String phoneNumber);
+  Future<PaymentProcessorData?> addPaymentProcessors(TokenMetaData tokenMetaData,String bankName, String userName, String accountNumber);
 
 }
 

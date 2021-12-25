@@ -265,6 +265,26 @@ class UserRemoteImpl extends UserRemote {
     }
   }
 
+  @override
+  Future<PaymentProcessorData?> addPaymentProcessors(TokenMetaData tokenMetaData, String bankName, String userName, String accountNumber) async{
+    try {
+      var _data = {
+        'processor': bankName,
+        'label': userName,
+        'value': accountNumber
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/payment/create", data: _data
+      );
+      final responseData = AddPaymentProcessorResponse.fromJson(response.data);
+      print("addPaymentProcessors from Remote layer:: $responseData");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
 
 
 

@@ -31,6 +31,34 @@ class PaymentProcessorResponse {
 
 }
 
+class AddPaymentProcessorResponse {
+  int? status;
+  String? message;
+  PaymentProcessorData? data;
+  AddPaymentProcessorResponse({
+    this.status,
+    this.message,
+    this.data,
+  });
+
+  AddPaymentProcessorResponse.fromJson(dynamic json) {
+    status = json['status'];
+    message = json['message'];
+    data = json['data'] != null ? PaymentProcessorData.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+    map['status'] = status;
+    map['message'] = message;
+    if (data != null) {
+      map['data'] = data?.toJson();
+    }
+    return map;
+  }
+
+}
+
 class PaymentProcessorData {
   String? pk;
   String? processor;
