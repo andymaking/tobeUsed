@@ -1,6 +1,6 @@
-
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/domain/viewmodel/overview_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
@@ -15,11 +15,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final transactionsProvider =
-ChangeNotifierProvider.autoDispose<OverviewViewModel>((ref) {
+    ChangeNotifierProvider.autoDispose<OverviewViewModel>((ref) {
   ref.onDispose(() {});
   final viewModel = locator.get<OverviewViewModel>();
   viewModel.getTransferHistory();
-  //viewModel.getUser();
+  viewModel.getUser();
   // viewModel.walletBalance();
   // viewModel.getWalletStatus();
   // viewModel.getWalletPercentage();
@@ -41,15 +41,15 @@ final profileStateProvider = Provider.autoDispose<ViewState>((ref) {
 });
 
 final _userTransfersProvider =
-Provider.autoDispose<List<TransferHistoryData>>((ref) {
+    Provider.autoDispose<List<TransferHistoryData>>((ref) {
   return ref.watch(overviewProvider).transferHistory;
 });
 final userTransferProvider =
-Provider.autoDispose<List<TransferHistoryData>>((ref) {
+    Provider.autoDispose<List<TransferHistoryData>>((ref) {
   return ref.watch(_userTransfersProvider);
 });
 
-  class TransactionsPage extends StatefulHookWidget {
+class TransactionsPage extends StatefulHookWidget {
   const TransactionsPage({Key? key}) : super(key: key);
 
   @override
@@ -61,6 +61,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
   Widget build(BuildContext context) {
     List<TransferHistoryData>? userTransactions =
         useProvider(transactionsProvider).transferHistory;
+    GetUserData? userData = useProvider(transactionsProvider).user;
+    final initials =
+        "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -72,87 +75,96 @@ class _TransactionsPageState extends State<TransactionsPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                OverViewToolBar(AppString.transactions, ""),
+                OverViewToolBar(
+                  AppString.transactions,
+                  userData?.avatar.toString() ?? "",
+                  trailingIconClicked: () => null,
+                  initials: initials,
+                ),
                 SizedBox(
                   height: 24,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(AppImages.icFilter),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      AppFontsStyle.getAppTextViewBold(
-                        "Latest 12 from a total of ${userTransactions.length} transactions",
-                        weight: FontWeight.w500,
-                        size: AppFontsStyle.textFontSize10,
-                      ),
-                      Spacer(),
-                      SvgPicture.asset(AppImages.iconMenu),
-                    ],
-                  )
-                ),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(AppImages.icFilter),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        AppFontsStyle.getAppTextViewBold(
+                          "Latest 12 from a total of ${userTransactions.length} transactions",
+                          weight: FontWeight.w500,
+                          size: AppFontsStyle.textFontSize10,
+                        ),
+                        Spacer(),
+                        SvgPicture.asset(AppImages.iconMenu),
+                      ],
+                    )),
                 SizedBox(
                   height: 16,
                 ),
                 TransactionHeader(),
                 userTransactions.isNotEmpty == true
-                ? Padding(
-                  padding:
-                  const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                        color: const Color(0xfffffffff)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: List.generate(userTransactions.length, (index) {
-                          return GestureDetector(
-                            onTap: () {},
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 2.0),
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    TransactionList(
-                                            (){},
-                                  userTransactions[index]
-                                      .pk
-                                      .toString(),
-                                  userTransactions[index]
-                                      .status
-                                      .toString(),
-                                  userTransactions[index]
-                                      .amount
-                                      .toString(),
-                                  userTransactions[index]
-                                      .send
-                                      .toString()
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                            left: 24.0, right: 24, bottom: 24),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2)),
+                              color: const Color(0xfffffffff)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: List.generate(userTransactions.length,
+                                  (index) {
+                                return GestureDetector(
+                                  onTap: () {},
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 2.0),
+                                    child: Container(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          TransactionList(
+                                              () {},
+                                              userTransactions[index]
+                                                  .pk
+                                                  .toString(),
+                                              userTransactions[index]
+                                                  .status
+                                                  .toString(),
+                                              userTransactions[index]
+                                                  .amount
+                                                  .toString(),
+                                              userTransactions[index]
+                                                  .send
+                                                  .toString()),
+                                          // SizedBox(
+                                          //   height: 8,
+                                          // ),
+                                          Divider(
+                                            height: 1,
+                                            color: Pallet.colorBlue
+                                                .withOpacity(0.3),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                    // SizedBox(
-                                    //   height: 8,
-                                    // ),
-                                    Divider(
-                                      height: 1,
-                                      color: Pallet.colorBlue.withOpacity(0.3),
-                                    )
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                );
+                              }),
                             ),
-                          );
-                        }),
-                      ),
-                    ),
-                  ),
-                ) : buildEmptyView(),
+                          ),
+                        ),
+                      )
+                    : buildEmptyView(),
               ],
             ),
           ]),

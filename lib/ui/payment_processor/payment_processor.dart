@@ -1,3 +1,7 @@
+import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/domain/viewmodel/payment_processor_viewmodel.dart';
+import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -6,9 +10,27 @@ import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PaymentProcessorPage extends StatefulWidget {
+final processorProvider =
+ChangeNotifierProvider.autoDispose<PaymentProcessorViewModel>((ref) {
+  ref.onDispose(() {});
+  final viewModel = locator.get<PaymentProcessorViewModel>();
+  viewModel.getPaymentProcessor();
+  viewModel.getUser();
+  return viewModel;
+});
+
+final _overviewStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(processorProvider).viewState;
+});
+final processorStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(_overviewStateProvider);
+});
+
+class PaymentProcessorPage extends StatefulHookWidget {
   const PaymentProcessorPage({Key? key}) : super(key: key);
 
   @override
@@ -24,6 +46,10 @@ class _PaymentProcessorPageState extends State<PaymentProcessorPage> {
 
   @override
   Widget build(BuildContext context) {
+    GetUserData? userData = useProvider(processorProvider).user;
+    final initials =
+        "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(
@@ -34,7 +60,12 @@ class _PaymentProcessorPageState extends State<PaymentProcessorPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  OverViewToolBar(AppString.settings, ""),
+                  OverViewToolBar(
+                    AppString.overView,
+                    userData!.avatar.toString(),
+                    trailingIconClicked: () => null,
+                    initials: initials,
+                  ),
                   SizedBox(
                     height: 24,
                   ),

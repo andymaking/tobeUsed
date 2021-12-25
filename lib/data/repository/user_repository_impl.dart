@@ -21,9 +21,9 @@ class UserRepositoryImpl extends UserRepository {
   UserRepositoryImpl(this.userRemote, this.userCache);
 
   @override
-  Future<String?> changePassword(String password, String confirmPassword, String email, String otp) {
-    // TODO: implement changePassword
-    throw UnimplementedError();
+  Future<String?> changePassword(String oldPassword, String newPassword) async{
+    final tokenMeta = await getToken();
+    return await userRemote.changePassword(tokenMeta, oldPassword, newPassword);
   }
 
   @override

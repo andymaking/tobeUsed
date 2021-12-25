@@ -1,5 +1,6 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
@@ -73,15 +74,19 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-
     changeStatusAndNavBarColor(
         Pallet.colorWhite, Pallet.colorWhite, false, false);
     ViewState viewState = useProvider(profileStateProvider);
     WalletData? walletBalance = useProvider(overviewProvider).walletData;
     bool? walletStatus = useProvider(overviewProvider).walletStatus;
     MessageResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
-    /*WalletPercentage?*/ String? percentage = useProvider(overviewProvider).walletPercentage;
-    /*WalletPercentage?*/ String? percent = useProvider(percentageProvider);
+    GetUserData? userData = useProvider(overviewProvider).user;
+    final initials =
+        "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+    /*WalletPercentage?*/
+    String? percentage = useProvider(overviewProvider).walletPercentage;
+    /*WalletPercentage?*/
+    String? percent = useProvider(percentageProvider);
     //isLock = walletStatus!;
     List<TransferHistoryData>? userTransactions =
         useProvider(overviewProvider).transferHistory;
@@ -101,7 +106,12 @@ class _OverviewPageState extends State<OverviewPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                OverViewToolBar(AppString.overView, ""),
+                OverViewToolBar(
+                  AppString.overView,
+                  userData?.avatar.toString() ?? "",
+                  trailingIconClicked: () => null,
+                  initials: initials,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Container(
@@ -168,23 +178,16 @@ class _OverviewPageState extends State<OverviewPage> {
                                 // wallet!.usdEquivalent != null
                                 // ?
                                 AppFontsStyle.getAppTextViewBold(
-                                  "\$${walletBalance?.usdEquivalent  ?? 0}",
+                                  "\$${walletBalance?.usdEquivalent ?? 0}",
                                   color: isLock //walletStatus != true
                                       ? Pallet.colorGrey
                                       : Pallet.colorBlue,
                                   weight: FontWeight.w600,
                                   size: AppFontsStyle.textFontSize24,
                                 ),
-                                // : AppFontsStyle.getAppTextViewBold(
-                                //   "\$0",
-                                //   color: isLock
-                                //       ? Pallet.colorGrey
-                                //       : Pallet.colorBlue,
-                                //   weight: FontWeight.w600,
-                                //   size: AppFontsStyle.textFontSize24,
-                                // ),
                                 Visibility(
-                                  visible: isLock == true,//walletStatus == true,
+                                  visible: isLock == true,
+                                  //walletStatus == true,
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 4.0),
                                     child: SvgPicture.asset(AppImages.icLock),
@@ -304,62 +307,63 @@ class _OverviewPageState extends State<OverviewPage> {
                 TransactionHeader(),
                 userTransactions.isNotEmpty == true
                     ? viewState == ViewState.Loading
-                    ? Center(child: CircularProgressIndicator())
-                    : Padding(
-                        padding: const EdgeInsets.only(
-                            left: 24.0, right: 24, bottom: 24),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(2)),
-                              color: const Color(0xfffffffff)),
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: List.generate(userTransactions.length,
-                                  (index) {
-                                return GestureDetector(
-                                  onTap: () {},
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 2.0),
-                                    child: Container(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          TransactionList(
-                                              () => null,
-                                              userTransactions[index]
-                                                  .pk
-                                                  .toString(),
-                                              userTransactions[index]
-                                                  .status
-                                                  .toString(),
-                                              userTransactions[index]
-                                                  .amount
-                                                  .toString(),
-                                              userTransactions[index]
-                                                  .send
-                                                  .toString()),
-                                          Divider(
-                                            height: 1,
-                                            color: Pallet.colorBlue
-                                                .withOpacity(0.3),
-                                          )
-                                        ],
+                        ? Center(child: CircularProgressIndicator())
+                        : Padding(
+                            padding: const EdgeInsets.only(
+                                left: 24.0, right: 24, bottom: 24),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(2)),
+                                  color: const Color(0xfffffffff)),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: List.generate(
+                                      userTransactions.length, (index) {
+                                    return GestureDetector(
+                                      onTap: () {},
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 2.0),
+                                        child: Container(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              TransactionList(
+                                                  () => null,
+                                                  userTransactions[index]
+                                                      .pk
+                                                      .toString(),
+                                                  userTransactions[index]
+                                                      .status
+                                                      .toString(),
+                                                  userTransactions[index]
+                                                      .amount
+                                                      .toString(),
+                                                  userTransactions[index]
+                                                      .send
+                                                      .toString()),
+                                              Divider(
+                                                height: 1,
+                                                color: Pallet.colorBlue
+                                                    .withOpacity(0.3),
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                );
-                              }),
+                                    );
+                                  }),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      )
+                          )
                     : buildEmptyView(),
               ],
             ),
@@ -396,6 +400,7 @@ class _OverviewPageState extends State<OverviewPage> {
     final lockUnlockViewModel = context.read(overviewProvider);
     await lockUnlockViewModel.lockOrUnlockWallet(isLock, context);
   }
+
   void observePercentageState(BuildContext context) async {
     final viewModel = context.read(overviewProvider);
     await viewModel.getWalletPercentage();
@@ -403,8 +408,7 @@ class _OverviewPageState extends State<OverviewPage> {
       await showTopModalSheet<String>(
           context: context,
           child: ShowDialog(
-            title:
-            'Percentage ${viewModel.walletPercentage}',
+            title: 'Percentage ${viewModel.walletPercentage}',
             isError: false,
             onPressed: () {},
           ));
