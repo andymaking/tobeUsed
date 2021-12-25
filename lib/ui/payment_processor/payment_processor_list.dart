@@ -119,7 +119,9 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
                                                 PaymentDetailsView(
-                                                    (){ },
+                                                    (){
+                                                      context.read(processorProvider).deletePaymentProcessor(userTransactions[index].pk!, context);
+                                                    },
                                                     userTransactions[index].label!.toTitleCase()!,
                                                     userTransactions[index].processor!,
                                                     userTransactions[index].value!
@@ -155,13 +157,13 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                                     Navigator.of(context).pushNamed(AppRoutes.paymentProcessor);
                                   },
                                   title: "Add Payment Processor",
-                                  disabledColor: Pallet.colorYellow.withOpacity(0.2),
+                                  disabledColor: Pallet.colorBlue.withOpacity(0.2),
                                   titleColor: Pallet.colorWhite,
                                   icon: SvgPicture.asset(
                                     AppImages.icSave,
                                   ),
-                                  enabledColor: isValidLogin ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
-                                  enabled: isValidLogin ? true : false),
+                                  enabledColor: userTransactions.length == 2 ? Pallet.colorBlue.withOpacity(0.2) : Pallet.colorBlue,
+                                  enabled: userTransactions.length == 2 ? false : true),
                               SizedBox(
                                 height: 16,
                               ),
@@ -178,6 +180,29 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
       ),
     );
   }
+
+  // void observeDeleteProcessor(BuildContext context) async {
+  //   final viewModel = context.read(processorProvider);
+  //   await viewModel.deletePaymentProcessor(pk);
+  //   if (viewModel.viewState == ViewState.Success) {
+  //     await showTopModalSheet<String>(
+  //         context: context,
+  //         child: ShowDialog(
+  //           title:
+  //           'Percentage ${viewModel.walletPercentage}',
+  //           isError: false,
+  //           onPressed: () {},
+  //         ));
+  //   } else {
+  //     await showTopModalSheet<String>(
+  //         context: context,
+  //         child: ShowDialog(
+  //           title: 'Failed to get wallet percentage. ${viewModel.errorMessage}',
+  //           isError: true,
+  //           onPressed: () {},
+  //         ));
+  //   }
+  // }
 }
 
 

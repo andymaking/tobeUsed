@@ -1,6 +1,7 @@
 
 import 'package:dhoro_mobile/data/cache/user_cache.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
@@ -114,6 +115,18 @@ class UserRepositoryImpl extends UserRepository {
   Future<List<PaymentProcessorData>?> getPaymentProcessors() async{
     final token = await getToken();
     return await userRemote.getPaymentProcessors(token);
+  }
+
+  @override
+  Future<MessageResponse?> deletePaymentProcessor(String pk) async{
+    final token = await getToken();
+    return await userRemote.deletePaymentProcessor(pk,token);
+  }
+
+  @override
+  Future<List<RequestData>?> getRequests() async{
+    final token = await getToken();
+    return await userRemote.getRequests(token);
   }
 
 }

@@ -1,6 +1,8 @@
 
 import 'package:dhoro_mobile/data/core/network_config.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
+import 'package:dhoro_mobile/data/remote/model/request/request_response.dart';
 import 'package:dhoro_mobile/data/remote/model/success_message.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
@@ -195,6 +197,36 @@ class UserRemoteImpl extends UserRemote {
       final responseData = PaymentProcessorResponse.fromJson(response.data);
       print("getPaymentProcessors from Remote layer:: ${responseData.data} response:$response");
       return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<MessageResponse?> deletePaymentProcessor(String pk, TokenMetaData tokenMetaData) async{
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.delete(
+        "${NetworkConfig.BASE_URL}user/payment/delete/$pk",
+      );
+      final responseData = MessageResponse.fromJson(response.data);
+      print("getPaymentProcessors from Remote layer:: ${responseData.message}");
+      return responseData;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<List<RequestData>?> getRequests(TokenMetaData tokenMetaData) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/request",
+      );
+      final responseData = RequestResponse.fromJson(response.data);
+      print("getRequests from Remote layer:: ${responseData.results?.data} response:$response");
+      return responseData.results?.data;
     } catch (error) {
       handleError(error);
     }

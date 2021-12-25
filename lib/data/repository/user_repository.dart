@@ -1,5 +1,6 @@
 
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
@@ -31,5 +32,6 @@ abstract class UserRepository {
   Future<MessageResponse?> lockOrUnlockWallet(bool status);
   Future<String?> getWalletPercentage();
   Future<List<PaymentProcessorData>?> getPaymentProcessors();
-
+  Future<MessageResponse?> deletePaymentProcessor(String pk);
+  Future<List<RequestData>?> getRequests();
 }

@@ -77,7 +77,7 @@ class _OverviewPageState extends State<OverviewPage> {
     changeStatusAndNavBarColor(
         Pallet.colorWhite, Pallet.colorWhite, false, false);
     ViewState viewState = useProvider(profileStateProvider);
-    WalletData? wallet = useProvider(overviewProvider).walletData;
+    WalletData? walletBalance = useProvider(overviewProvider).walletData;
     bool? walletStatus = useProvider(overviewProvider).walletStatus;
     MessageResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
     /*WalletPercentage?*/ String? percentage = useProvider(overviewProvider).walletPercentage;
@@ -89,7 +89,7 @@ class _OverviewPageState extends State<OverviewPage> {
     print("Showing TransferHistoryData:: $userTransactions");
     print("Showing walletStatus:: $walletStatus");
     print("Showing percent:: $percent");
-    var dhrBalance = wallet?.dhrBalance?.toStringAsFixed(2);
+    var dhrBalance = walletBalance?.dhrBalance?.toStringAsFixed(2);
     //observePercentageState(context);
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -168,7 +168,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                 // wallet!.usdEquivalent != null
                                 // ?
                                 AppFontsStyle.getAppTextViewBold(
-                                  "\$${wallet?.usdEquivalent}",
+                                  "\$${walletBalance?.usdEquivalent  ?? 0}",
                                   color: isLock //walletStatus != true
                                       ? Pallet.colorGrey
                                       : Pallet.colorBlue,
@@ -196,7 +196,7 @@ class _OverviewPageState extends State<OverviewPage> {
                               height: 8,
                             ),
                             AppFontsStyle.getAppTextViewBold(
-                              "$dhrBalance DHR",
+                              "${dhrBalance ?? 0} DHR",
                               color:
                                   isLock ? Pallet.colorGrey : Pallet.colorBlue,
                               weight: FontWeight.w700,
@@ -428,7 +428,7 @@ class _OverviewPageState extends State<OverviewPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: 100.0,
+            height: 60.0,
           ),
           Container(
             child: SvgPicture.asset("assets/images/ic_notifications.svg"),
@@ -557,7 +557,7 @@ class _TransactionListState extends State<TransactionList> {
               width: 12,
             ),
             Container(
-              width: 55,
+              width: 58,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(3)),
                   color: Pallet.colorGreen.withOpacity(0.4)),

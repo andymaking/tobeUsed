@@ -85,7 +85,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                         width: 8,
                       ),
                       AppFontsStyle.getAppTextViewBold(
-                        "Latest 12 from a total of 12 transactions",
+                        "Latest 12 from a total of ${userTransactions.length} transactions",
                         weight: FontWeight.w500,
                         size: AppFontsStyle.textFontSize10,
                       ),
