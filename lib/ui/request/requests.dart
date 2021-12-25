@@ -1,4 +1,8 @@
 
+import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
+import 'package:dhoro_mobile/domain/viewmodel/request_viewmodel.dart';
+import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
@@ -6,10 +10,27 @@ import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class RequestsPage extends StatefulWidget {
+final requestProvider =
+ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
+  ref.onDispose(() {});
+  final viewModel = locator.get<RequestViewModel>();
+  viewModel.getRequest();
+  return viewModel;
+});
+
+final _requestStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(overviewProvider).viewState;
+});
+final requestStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(_requestStateProvider);
+});
+
+class RequestsPage extends StatefulHookWidget {
   const RequestsPage({Key? key}) : super(key: key);
 
   @override
@@ -17,8 +38,13 @@ class RequestsPage extends StatefulWidget {
 }
 
 class _RequestsPageState extends State<RequestsPage> {
+
   @override
   Widget build(BuildContext context) {
+    ViewState viewState = useProvider(requestStateProvider);
+    List<RequestData>? requestList =
+        useProvider(requestProvider).requestList;
+
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(
@@ -224,7 +250,7 @@ class _RequestsPageState extends State<RequestsPage> {
                           width: 8,
                         ),
                         AppFontsStyle.getAppTextViewBold(
-                          "Latest 5 from a total of 5 transactions",
+                          "Latest 5 from a total of ${requestList.length} transactions",
                           weight: FontWeight.w500,
                           size: AppFontsStyle.textFontSize10,
                         ),
@@ -237,7 +263,10 @@ class _RequestsPageState extends State<RequestsPage> {
                   height: 16,
                 ),
                 TransactionHeader(),
-                Padding(
+                requestList.isNotEmpty == true
+                    ? viewState == ViewState.Loading
+                    ? Center(child: CircularProgressIndicator())
+                    : Padding(
                   padding:
                   const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
                   child: Container(
@@ -249,7 +278,7 @@ class _RequestsPageState extends State<RequestsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: List.generate(5, (index) {
+                        children: List.generate(requestList.length, (index) {
                           return GestureDetector(
                             onTap: () {},
                             child: Padding(
@@ -261,10 +290,18 @@ class _RequestsPageState extends State<RequestsPage> {
                                   children: [
                                     TransactionList(
                                         (){},
-                                      "",
-                                      "",
-                                      "",
-                                      ""
+                                        requestList[index]
+                                            .pk
+                                            .toString(),
+                                        requestList[index]
+                                            .status
+                                            .toString(),
+                                        requestList[index]
+                                            .amount
+                                            .toString(),
+                                        requestList[index]
+                                            .payment!.user
+                                            .toString()
                                     ),
                                     // SizedBox(
                                     //   height: 8,
@@ -282,11 +319,47 @@ class _RequestsPageState extends State<RequestsPage> {
                       ),
                     ),
                   ),
-                ),
+                )
+                    : buildEmptyView(),
               ],
             ),
           ]),
         ),
+      ),
+    );
+  }
+
+  Widget buildEmptyView() {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 60.0,
+          ),
+          Container(
+            child: SvgPicture.asset("assets/images/ic_notifications.svg"),
+          ),
+          SizedBox(
+            height: 24.0,
+          ),
+          AppFontsStyle.getAppTextViewBold("No request yet",
+              size: 14, textAlign: TextAlign.center, color: Pallet.colorBlue),
+          SizedBox(
+            height: 8.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50.0),
+            child: AppFontsStyle.getAppTextView(
+                "You might need to interact more.",
+                size: 14,
+                textAlign: TextAlign.center,
+                color: Pallet.colorBlue),
+          ),
+        ],
       ),
     );
   }

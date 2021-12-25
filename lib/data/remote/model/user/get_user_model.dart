@@ -225,25 +225,3 @@ class QRCode {
   }
 
 }
-
-// class GetUserData {
-//   GetUserData({
-//     this.email,
-//     this.token,
-//   });
-//
-//   GetUserData.fromJson(dynamic json) {
-//     email = json['email'];
-//     email = json['token'];
-//   }
-//   String? email;
-//   String? token;
-//
-//   Map<String, dynamic> toJson() {
-//     final map = <String, dynamic>{};
-//     map['email'] = email;
-//     map['token'] = token;
-//     return map;
-//   }
-//
-// }

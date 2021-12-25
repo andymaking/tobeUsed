@@ -1,6 +1,8 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/domain/viewmodel/overview_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
@@ -10,10 +12,12 @@ import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 
 final overviewProvider =
     ChangeNotifierProvider.autoDispose<OverviewViewModel>((ref) {
@@ -22,6 +26,8 @@ final overviewProvider =
   viewModel.getTransferHistory();
   viewModel.getUser();
   viewModel.walletBalance();
+  viewModel.getWalletStatus();
+  viewModel.getWalletPercentage();
   return viewModel;
 });
 
@@ -30,6 +36,13 @@ final _walletProvider = Provider.autoDispose<WalletData?>((ref) {
 });
 final walletProvider = Provider.autoDispose<WalletData?>((ref) {
   return ref.watch(_walletProvider);
+});
+
+final _percentageProvider = Provider.autoDispose<String?>((ref) {
+  return ref.watch(overviewProvider).walletPercentage;
+});
+final percentageProvider = Provider.autoDispose<String?>((ref) {
+  return ref.watch(_percentageProvider);
 });
 
 final _overviewStateProvider = Provider.autoDispose<ViewState>((ref) {
@@ -60,16 +73,24 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    //observeSignUpState(context);
+
     changeStatusAndNavBarColor(
         Pallet.colorWhite, Pallet.colorWhite, false, false);
     ViewState viewState = useProvider(profileStateProvider);
-    WalletData? wallet = useProvider(overviewProvider).walletData;
+    WalletData? walletBalance = useProvider(overviewProvider).walletData;
+    bool? walletStatus = useProvider(overviewProvider).walletStatus;
+    MessageResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
+    /*WalletPercentage?*/ String? percentage = useProvider(overviewProvider).walletPercentage;
+    /*WalletPercentage?*/ String? percent = useProvider(percentageProvider);
+    //isLock = walletStatus!;
     List<TransferHistoryData>? userTransactions =
         useProvider(overviewProvider).transferHistory;
-    print("Showing wallet:: $wallet");
+    print("Showing wallet percentage:: $percentage");
     print("Showing TransferHistoryData:: $userTransactions");
-
+    print("Showing walletStatus:: $walletStatus");
+    print("Showing percent:: $percent");
+    var dhrBalance = walletBalance?.dhrBalance?.toStringAsFixed(2);
+    //observePercentageState(context);
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(
@@ -93,6 +114,7 @@ class _OverviewPageState extends State<OverviewPage> {
                         color: const Color(0xfffffffff)),
                     child: Column(
                       children: [
+                        //walletStatus == true
                         !isLock
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -109,7 +131,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     width: 5,
                                   ),
                                   AppFontsStyle.getAppTextViewBold(
-                                    "1.2%",
+                                    "$percentage%",
                                     color: Pallet.colorDeepGreen,
                                     weight: FontWeight.w600,
                                     size: AppFontsStyle.textFontSize12,
@@ -125,7 +147,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     width: 5,
                                   ),
                                   AppFontsStyle.getAppTextViewBold(
-                                    "1.2%",
+                                    "${context.read(overviewProvider).walletPercentage}%",
                                     color: Pallet.colorDeepGreen,
                                     weight: FontWeight.w600,
                                     size: AppFontsStyle.textFontSize12,
@@ -146,8 +168,8 @@ class _OverviewPageState extends State<OverviewPage> {
                                 // wallet!.usdEquivalent != null
                                 // ?
                                 AppFontsStyle.getAppTextViewBold(
-                                  "\$${wallet?.usdEquivalent}",
-                                  color: isLock
+                                  "\$${walletBalance?.usdEquivalent  ?? 0}",
+                                  color: isLock //walletStatus != true
                                       ? Pallet.colorGrey
                                       : Pallet.colorBlue,
                                   weight: FontWeight.w600,
@@ -162,7 +184,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                 //   size: AppFontsStyle.textFontSize24,
                                 // ),
                                 Visibility(
-                                  visible: isLock == true,
+                                  visible: isLock == true,//walletStatus == true,
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 4.0),
                                     child: SvgPicture.asset(AppImages.icLock),
@@ -174,7 +196,7 @@ class _OverviewPageState extends State<OverviewPage> {
                               height: 8,
                             ),
                             AppFontsStyle.getAppTextViewBold(
-                              "\$${wallet?.dhrBalance} DHR",
+                              "${dhrBalance ?? 0} DHR",
                               color:
                                   isLock ? Pallet.colorGrey : Pallet.colorBlue,
                               weight: FontWeight.w700,
@@ -221,12 +243,12 @@ class _OverviewPageState extends State<OverviewPage> {
                               ),
                               GestureDetector(
                                   onTap: () {
-                                    observeSignUpState(context);
-                                    // setState(() {
-                                    //   isLock = !isLock;
-                                    // });
+                                    observeLockAndUnlockState(context);
+                                    setState(() {
+                                      isLock = !isLock;
+                                    });
                                   },
-                                  child: isLock
+                                  child: isLock //walletStatus == true
                                       ? Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -281,7 +303,9 @@ class _OverviewPageState extends State<OverviewPage> {
                 ),
                 TransactionHeader(),
                 userTransactions.isNotEmpty == true
-                    ? Padding(
+                    ? viewState == ViewState.Loading
+                    ? Center(child: CircularProgressIndicator())
+                    : Padding(
                         padding: const EdgeInsets.only(
                             left: 24.0, right: 24, bottom: 24),
                         child: Container(
@@ -368,6 +392,33 @@ class _OverviewPageState extends State<OverviewPage> {
     }
   }
 
+  void observeLockAndUnlockState(BuildContext context) async {
+    final lockUnlockViewModel = context.read(overviewProvider);
+    await lockUnlockViewModel.lockOrUnlockWallet(isLock, context);
+  }
+  void observePercentageState(BuildContext context) async {
+    final viewModel = context.read(overviewProvider);
+    await viewModel.getWalletPercentage();
+    if (viewModel.viewState == ViewState.Success) {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title:
+            'Percentage ${viewModel.walletPercentage}',
+            isError: false,
+            onPressed: () {},
+          ));
+    } else {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: 'Failed to get wallet percentage. ${viewModel.errorMessage}',
+            isError: true,
+            onPressed: () {},
+          ));
+    }
+  }
+
   Widget buildEmptyView() {
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -377,7 +428,7 @@ class _OverviewPageState extends State<OverviewPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: 150.0,
+            height: 60.0,
           ),
           Container(
             child: SvgPicture.asset("assets/images/ic_notifications.svg"),
@@ -506,7 +557,7 @@ class _TransactionListState extends State<TransactionList> {
               width: 12,
             ),
             Container(
-              width: 55,
+              width: 58,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(3)),
                   color: Pallet.colorGreen.withOpacity(0.4)),

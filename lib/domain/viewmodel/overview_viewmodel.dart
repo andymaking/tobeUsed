@@ -6,8 +6,13 @@ import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
+import 'package:dhoro_mobile/widgets/custom_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 import '../../main.dart';
@@ -19,6 +24,10 @@ class OverviewViewModel extends BaseViewModel {
   GetUserData? user;
   List<TransferHistoryData> transferHistory = [];
   WalletData? walletData;
+  bool? walletStatus;
+  //WalletPercentage? walletPercentage;
+  String? walletPercentage;
+  MessageResponse? lockUnlock;
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
   String? errorMessage;
@@ -64,7 +73,7 @@ class OverviewViewModel extends BaseViewModel {
     return password.isNotEmpty && password.length >= 7;
   }
 
-  /// login user
+  /// user walletBalance
   Future<WalletData?> walletBalance() async {
     try {
       setViewState(ViewState.Loading);
@@ -74,6 +83,62 @@ class OverviewViewModel extends BaseViewModel {
       walletData = walletBalanceResponse;
       return walletBalanceResponse;
     } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// user walletBalance
+  Future<MessageResponse?> lockOrUnlockWallet(status, BuildContext context) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.lockOrUnlockWallet(status);
+      setViewState(ViewState.Success);
+      getWalletStatus();
+      print("Showing lockOrUnlockWallet response::: $response");
+      lockUnlock = response;
+      return response;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+      // await showTopModalSheet<String>(
+      //     context: context,
+      //     child: ShowDialog(
+      //       title: '$error',
+      //       isError: true,
+      //       onPressed: () {},
+      //     ));
+    }
+  }
+
+  /// user walletBalance
+  Future<WalletStatusMessage?> getWalletStatus() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getWalletStatus();
+      setViewState(ViewState.Success);
+      print("Showing getWalletStatus response::: $response");
+      walletStatus = response?.status;
+      return response;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// user walletBalance
+  Future<String?> getWalletPercentage() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getWalletPercentage();
+      print("Showing getWalletPercentage response..::: $response");
+      setViewState(ViewState.Success);
+      print("Showing getWalletPercentage response::: $response");
+      walletPercentage = response;
+      print("Showing walletPercentage: $walletPercentage, response:$response");
+      return response;
+    } catch (error) {
+      print("Error $error");
       setViewState(ViewState.Error);
       setError(error.toString());
     }

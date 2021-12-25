@@ -1,4 +1,5 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/viewmodel/base/base_view_model.dart';
 import 'package:dhoro_mobile/main.dart';
@@ -15,6 +16,7 @@ class RequestViewModel extends BaseViewModel {
   );
 
   //LoggedInUser? loggedInUser;
+  List<RequestData> requestList = [];
   ViewState _state = ViewState.Idle;
 
   ViewState get viewState => _state;
@@ -120,19 +122,19 @@ class RequestViewModel extends BaseViewModel {
     return amount.isNotEmpty && amount.length >= 1;
   }
 
-  Future<void> getRequest() async {
+  Future<RequestData?> getRequest() async {
     try {
       setViewState(ViewState.Loading);
-      //var response = await userRepository.getCategories();
-
-      // if (loginResponse?.interests != null)
-      //   setupUserInterest(loginResponse!.interests!);
-      // userInterests = response ?? [];
+      var response = await userRepository.getRequests();
+      requestList = response ?? [];
+      print("getRequest $requestList");
       setViewState(ViewState.Success);
+      print("Success getRequest $requestList");
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
   }
+
 
 }

@@ -1,12 +1,16 @@
 
 import 'dart:convert';
 
+import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
+import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
 import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
 import 'package:dio/dio.dart';
 
@@ -25,7 +29,12 @@ abstract class UserRemote {
   Future<String?> changePassword(String password, String confirmPassword,
       String email, String otp);
   Future<String?> forgotPassword(String email,);
-  Future<bool?> getWalletStatus(TokenMetaData tokenMetaData);
+  Future<WalletStatusMessage?> getWalletStatus(TokenMetaData tokenMetaData);
+  Future<MessageResponse?> lockOrUnlockWallet(bool status, TokenMetaData tokenMetaData);
+  Future<String?> getWalletPercentage(TokenMetaData tokenMetaData);
+  Future<List<PaymentProcessorData>?> getPaymentProcessors(TokenMetaData tokenMetaData);
+  Future<MessageResponse?> deletePaymentProcessor(String pk,TokenMetaData tokenMetaData);
+  Future<List<RequestData>?> getRequests(TokenMetaData tokenMetaData);
 
 }
 
