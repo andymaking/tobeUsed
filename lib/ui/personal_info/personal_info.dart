@@ -1,6 +1,10 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/domain/viewmodel/profile_viewmodel.dart';
+import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -11,6 +15,23 @@ import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+final profileProvider =
+ChangeNotifierProvider.autoDispose<ProfileViewModel>((ref) {
+  ref.onDispose(() {});
+  final viewModel = locator.get<ProfileViewModel>();
+  //viewModel.getTransferHistory();
+  viewModel.getUser();
+  return viewModel;
+});
+
+final _profileStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(profileProvider).viewState;
+});
+final profileStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(_profileStateProvider);
+});
 
 class PersonalInformationPage extends StatefulWidget {
   const PersonalInformationPage({Key? key}) : super(key: key);
@@ -28,6 +49,10 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
 
   @override
   Widget build(BuildContext context) {
+    GetUserData? userData = useProvider(profileProvider).user;
+    final initials =
+        "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(
@@ -38,7 +63,12 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  OverViewToolBar(AppString.settings, ""),
+                  OverViewToolBar(
+                    AppString.overView,
+                    userData!.avatar.toString(),
+                    trailingIconClicked: () => null,
+                    initials: initials,
+                  ),
                   SizedBox(
                     height: 24,
                   ),

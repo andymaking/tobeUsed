@@ -110,9 +110,22 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<String?> changePassword(String password, String confirmPassword, String email, String otp) {
-    // TODO: implement changePassword
-    throw UnimplementedError();
+  Future<String?> changePassword(TokenMetaData tokenMetaData, String oldPassword, String newPassword) async{
+    try {
+      var _data = {
+        'old_password': oldPassword,
+        'new_password': newPassword
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/password/reset", data: _data
+      );
+      final responseData = MessageResponse.fromJson(response.data);
+      print("changePassword from Remote layer:: $responseData");
+      return responseData.message;
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   @override

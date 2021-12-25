@@ -1,6 +1,11 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/domain/viewmodel/change_password_viewmodel.dart';
+import 'package:dhoro_mobile/domain/viewmodel/profile_viewmodel.dart';
+import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -8,11 +13,37 @@ import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
+import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PasswordAndSecurityPage extends StatefulWidget {
+final profileProvider =
+ChangeNotifierProvider.autoDispose<ChangePasswordViewModel>((ref) {
+  ref.onDispose(() {});
+  final viewModel = locator.get<ChangePasswordViewModel>();
+  viewModel.getUser();
+  return viewModel;
+});
+
+final _validLoginProvider = Provider.autoDispose<bool>((ref) {
+  return ref.watch(profileProvider).isValidChangePassword;
+});
+
+final validChangeProvider = Provider.autoDispose<bool>((ref) {
+  return ref.watch(_validLoginProvider);
+});
+
+final _profileStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(profileProvider).viewState;
+});
+final profileStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(_profileStateProvider);
+});
+
+class PasswordAndSecurityPage extends StatefulHookWidget {
   const PasswordAndSecurityPage({Key? key}) : super(key: key);
 
   @override
@@ -30,6 +61,13 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
 
   @override
   Widget build(BuildContext context) {
+    GetUserData? userData = useProvider(profileProvider).user;
+    final initials =
+        "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+    final viewState = useProvider(profileStateProvider);
+    final isValidChange = useProvider(validChangeProvider);
+
+    print("Showing initials $initials");
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(
@@ -40,7 +78,12 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  OverViewToolBar(AppString.settings, ""),
+                  OverViewToolBar(
+                    AppString.settings,
+                    userData?.avatar ?? "",
+                    trailingIconClicked: () => null,
+                    initials: initials,
+                  ),
                   SizedBox(
                     height: 24,
                   ),
@@ -93,7 +136,14 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                                 label: "Old Password",
                                 controller: _oldPasswordController,
                                 onChanged: (value) {
-
+                                  context.read(profileProvider).oldPassword = value.trim();
+                                  context.read(profileProvider).validateChange();
+                                },
+                                validator: (value) {
+                                  if (context.read(profileProvider).isValidPassword()) {
+                                    return "Enter a valid password.";
+                                  }
+                                  return null;
                                 },
                               ),
                               SizedBox(
@@ -103,19 +153,26 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                                 label: "New Password",
                                 controller: _newPasswordController,
                                 onChanged: (value) {
-
+                                  context.read(profileProvider).newPassword = value.trim();
+                                  context.read(profileProvider).validateChange();
+                                },
+                                validator: (value) {
+                                  if (context.read(profileProvider).isValidNewPassword()) {
+                                    return "Enter a valid password.";
+                                  }
+                                  return null;
                                 },
                               ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              AppFormField(
-                                label: "Repeat New Password",
-                                controller: _repeatPasswordController,
-                                onChanged: (value) {
-
-                                },
-                              ),
+                              // SizedBox(
+                              //   height: 16,
+                              // ),
+                              // AppFormField(
+                              //   label: "Repeat New Password",
+                              //   controller: _repeatPasswordController,
+                              //   onChanged: (value) {
+                              //
+                              //   },
+                              // ),
                               //SizedBox(height: 54.0,),
                               // AppFontsStyle.getAppTextViewBold(
                               //   "Multi factor Authentication",
@@ -170,18 +227,20 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                               //   ],
                               // ),
                               SizedBox(height: 32.0,),
-                              AppButton(
+                              viewState == ViewState.Loading
+                                  ? Center(child: CircularProgressIndicator())
+                                  : AppButton(
                                   onPressed: (){
-                                    Navigator.of(context).pushNamed(AppRoutes.dashboard);
+                                    observeChangePasswordState(context);
                                   },
                                   title: "SAVE CHANGES",
-                                  disabledColor: Pallet.colorYellow.withOpacity(0.2),
+                                  disabledColor: Pallet.colorBlue.withOpacity(0.2),
                                   titleColor: Pallet.colorWhite,
                                   icon: SvgPicture.asset(
                                     AppImages.icSave,
                                   ),
-                                  enabledColor: isValidLogin ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
-                                  enabled: isValidLogin ? true : false),
+                                  enabledColor: isValidChange ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
+                                  enabled: isValidChange ? true : false),
                               SizedBox(
                                 height: 16,
                               ),
@@ -197,6 +256,29 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
         ),
       ),
     );
+  }
+
+  void observeChangePasswordState(BuildContext context) async {
+    final viewModel = context.read(profileProvider);
+    print('oldPassword ${viewModel.oldPassword} newPassword ${viewModel.newPassword}');
+    var signIn = await viewModel.changePassword(
+        context,
+        viewModel.oldPassword,
+        viewModel.newPassword);
+    if (viewModel.viewState == ViewState.Success) {
+      print('changePassword details $signIn');
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
+    } else {
+      print('changePassword details ${viewModel.errorMessage}');
+      // await showTopModalSheet<String>(
+      //     context: context,
+      //     child: ShowDialog(
+      //       title:
+      //       '${viewModel.errorMessage}',
+      //       isError: true,
+      //       onPressed: () {},
+      //     ));
+    }
   }
 }
 

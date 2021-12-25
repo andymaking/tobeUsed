@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/domain/viewmodel/payment_processor_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
@@ -50,6 +51,9 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
     ViewState viewState = useProvider(processorStateProvider);
     List<PaymentProcessorData>? userTransactions =
         useProvider(processorProvider).paymentProcessor;
+    GetUserData? userData = useProvider(processorProvider).user;
+    final initials =
+        "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -61,7 +65,12 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  OverViewToolBar(AppString.settings, ""),
+                  OverViewToolBar(
+                    AppString.overView,
+                    userData!.avatar.toString(),
+                    trailingIconClicked: () => null,
+                    initials: initials,
+                  ),
                   SizedBox(
                     height: 24,
                   ),
