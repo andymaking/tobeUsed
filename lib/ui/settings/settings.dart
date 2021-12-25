@@ -60,7 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               OverViewToolBar(
                 AppString.settings,
-                userData!.avatar.toString(),
+                userData?.avatar ?? "",
                 trailingIconClicked: () => null,
                 initials: initials,
               ),

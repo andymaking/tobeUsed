@@ -245,6 +245,26 @@ class UserRemoteImpl extends UserRemote {
     }
   }
 
+  @override
+  Future<GetUserData?> updateUserProfile(TokenMetaData tokenMetaData, String firstName, String lastName, String phoneNumber) async{
+    try {
+      var _data = {
+        'first_name': firstName,
+        'last_name': lastName,
+        'phone_number': phoneNumber
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.put(
+          "${NetworkConfig.BASE_URL}user/profile/update", data: _data
+      );
+      final responseData = GetUserResponse.fromJson(response.data);
+      print("updateUserProfile from Remote layer:: $responseData");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
 
 
 

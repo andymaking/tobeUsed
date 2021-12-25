@@ -67,7 +67,7 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                 children: <Widget>[
                   OverViewToolBar(
                     AppString.overView,
-                    userData!.avatar.toString(),
+                    userData?.avatar ?? "",
                     trailingIconClicked: () => null,
                     initials: initials,
                   ),

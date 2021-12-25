@@ -76,7 +76,7 @@ class LoginViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> getUser() async {
+  Future<GetUserData?> getUser() async {
     try {
       setViewState(ViewState.Loading);
       var response = 

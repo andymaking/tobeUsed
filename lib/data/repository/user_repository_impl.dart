@@ -129,4 +129,10 @@ class UserRepositoryImpl extends UserRepository {
     return await userRemote.getRequests(token);
   }
 
+  @override
+  Future<GetUserData?> updateUserProfile(String firstName, String lastName, String phoneNumber) async{
+    final token = await getToken();
+    return await userRemote.updateUserProfile(token, firstName, lastName, phoneNumber);
+  }
+
 }
