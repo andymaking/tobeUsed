@@ -7,6 +7,7 @@ import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/ui/password_and_security/password_and_security.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor_list.dart';
+import 'package:dhoro_mobile/ui/personal_info/edit_profile_image_options.dart';
 import 'package:dhoro_mobile/ui/personal_info/personal_info.dart';
 import 'package:dhoro_mobile/ui/request/requests.dart';
 import 'package:dhoro_mobile/route/route_error_page.dart';
@@ -38,6 +39,7 @@ class AppRoutes {
   static const paymentProcessor = '/paymentProcessor';
   static const paymentProcessorList = '/paymentProcessorList';
   static const withdraw = '/stepper';
+  static const uploadPhotosOptions = '/uploadPhotosOptions';
 }
 
 class AppRouter {
@@ -83,6 +85,12 @@ class AppRouter {
       case AppRoutes.verifyYourEmail:
         return MaterialPageRoute<dynamic>(
           builder: (_) => VerifyYourEmailPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.uploadPhotosOptions:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => EditProfileImageOptionsPage(),
           settings: settings,
           fullscreenDialog: true,
         );

@@ -36,6 +36,8 @@ abstract class UserRemote {
   Future<List<RequestData>?> getRequests(TokenMetaData tokenMetaData);
   Future<GetUserData?> updateUserProfile(TokenMetaData tokenMetaData,String firstName, String lastName, String phoneNumber);
   Future<PaymentProcessorData?> addPaymentProcessors(TokenMetaData tokenMetaData,String bankName, String userName, String accountNumber);
+  Future<GetUserData?> addAvatar(TokenMetaData tokenMetaData,String avatar);
+
 
 }
 

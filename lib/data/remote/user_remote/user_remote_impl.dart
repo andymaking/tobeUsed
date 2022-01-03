@@ -285,6 +285,24 @@ class UserRemoteImpl extends UserRemote {
     }
   }
 
+  @override
+  Future<GetUserData?> addAvatar(TokenMetaData tokenMetaData, String avatar) async{
+    try {
+      var _data = {
+        'avatar': avatar,
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/profile/avatar/update", data: _data
+      );
+      final responseData = GetUserResponse.fromJson(response.data);
+      print("addAvatar from Remote layer:: $responseData");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
 
 
 

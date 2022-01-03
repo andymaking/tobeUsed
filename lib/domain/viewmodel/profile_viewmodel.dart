@@ -7,6 +7,7 @@ import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
 import 'package:dhoro_mobile/route/routes.dart';
+import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -73,15 +74,39 @@ class ProfileViewModel extends BaseViewModel {
       var response =
       await userRepository.updateUserProfile(firstName, lastName, phoneNumber);
       user = response;
-      //print("User Info::: $user");
       setViewState(ViewState.Success);
-      getUser();
+      await getUser();
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
   }
+
+  Future<GetUserData?> addAvatar(BuildContext context, String avatar) async {
+    try {
+      setViewState(ViewState.Loading);
+      //await Future.delayed(Duration(milliseconds: 200));
+      var response =
+      await userRepository.addAvatar(avatar);
+      user = response;
+      //print("User Info::: $user");
+      setViewState(ViewState.Success);
+      await getUser();
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: 'Photo uploaded successfully',
+            isError: false,
+            onPressed: () {},
+          ));
+      //Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
 
   void updateLoginStatus(bool status) async {
     final box = await Hive.openBox<bool>(DbTable.LOGIN_TABLE_NAME);

@@ -141,4 +141,10 @@ class UserRepositoryImpl extends UserRepository {
     return await userRemote.addPaymentProcessors(token, bankName, userName, accountNumber);
   }
 
+  @override
+  Future<GetUserData?> addAvatar(String avatar) async{
+    final token = await getToken();
+    return await userRemote.addAvatar(token, avatar);
+  }
+
 }

@@ -94,7 +94,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Loading);
       var response = await userRepository.lockOrUnlockWallet(status);
       setViewState(ViewState.Success);
-      getWalletStatus();
+      await getWalletStatus();
       print("Showing lockOrUnlockWallet response::: $response");
       lockUnlock = response;
       return response;

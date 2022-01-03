@@ -291,17 +291,14 @@ class _RequestsPageState extends State<RequestsPage> {
                                     TransactionList(
                                         (){},
                                         requestList[index]
-                                            .pk
-                                            .toString(),
+                                            .pk ?? "",
                                         requestList[index]
-                                            .status
-                                            .toString(),
+                                            .status ?? "",
                                         requestList[index]
                                             .amount
                                             .toString(),
                                         requestList[index]
-                                            .payment!.user
-                                            .toString()
+                                            .payment?.user ?? ""
                                     ),
                                     // SizedBox(
                                     //   height: 8,

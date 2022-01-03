@@ -35,4 +35,6 @@ abstract class UserRepository {
   Future<List<RequestData>?> getRequests();
   Future<GetUserData?> updateUserProfile(String firstName, String lastName, String phoneNumber );
   Future<PaymentProcessorData?> addPaymentProcessors(String bankName, String userName, String accountNumber);
+  Future<GetUserData?> addAvatar(String avatar);
+
 }
