@@ -44,10 +44,12 @@ class UserRepositoryImpl extends UserRepository {
     final tokenMeta = await userCache.getTokenMetaData();
     final lastSavedTime =
     DateTime.fromMillisecondsSinceEpoch(tokenMeta.lastTimeStored.toInt());
-    if ((DateTime.now().hour - lastSavedTime.hour) < 1) {
+    if ((DateTime.now().hour - lastSavedTime.hour) < 22) {
       //token has not expired
       return tokenMeta;
     } else {
+      //logout
+      /*TODO*/
       return tokenMeta;
     }
   }

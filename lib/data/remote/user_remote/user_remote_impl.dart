@@ -32,7 +32,10 @@ class UserRemoteImpl extends UserRemote {
       var response =
       await dioClient.post("${NetworkConfig.BASE_URL}user/login", data: _data);
       final responseData = UserLoginResponse.fromJson(response.data);
-      sharedPreference.saveToken(responseData.data!.token!);
+      sharedPreference.clear().whenComplete(() => {
+        sharedPreference.saveToken(responseData.data!.token!),
+      print("Finished clearing sharedPreference: ${responseData.data!.token!}")
+      });
       return responseData;
     } catch (error) {
       print("error: $error");

@@ -25,19 +25,28 @@ class LoggedInUserNetworkResponse {
 class LoggedInUser {
   LoggedInUser({
     this.email,
+    this.isAgent,
+    this.tokenExpired,
     this.token,
   });
 
   LoggedInUser.fromJson(dynamic json) {
     email = json['email'];
+    isAgent = json['is_agent'];
+    tokenExpired = json['token_expired'];
     email = json['token'];
   }
+
   String? email;
+  bool? isAgent;
+  int? tokenExpired;
   String? token;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['email'] = email;
+    map['is_agent'] = isAgent;
+    map['token_expired'] = tokenExpired;
     map['token'] = token;
     return map;
   }

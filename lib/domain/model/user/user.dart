@@ -9,6 +9,8 @@ class User {
   @HiveField(1)
   bool? isAgent;
   @HiveField(2)
+  int? tokenExpired;
+  @HiveField(3)
   String? token;
 
   User({
@@ -20,6 +22,7 @@ class User {
   User.fromJson(dynamic json) {
     email = json['email'];
     isAgent = json['is_agent'];
+    tokenExpired = json['token_expired'];
     token = json['token'];
   }
 
@@ -27,6 +30,7 @@ class User {
     var map = <String, dynamic>{};
     map['email'] = email;
     map['is_agent'] = isAgent;
+    map['token_expired'] = tokenExpired;
     map['token'] = token;
     return map;
   }

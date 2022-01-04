@@ -19,19 +19,21 @@ class UserAdapter extends TypeAdapter<User> {
     return User(
       email: fields[0] as String?,
       isAgent: fields[1] as bool?,
-      token: fields[2] as String?,
-    );
+      token: fields[3] as String?,
+    )..tokenExpired = fields[2] as int?;
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.email)
       ..writeByte(1)
       ..write(obj.isAgent)
       ..writeByte(2)
+      ..write(obj.tokenExpired)
+      ..writeByte(3)
       ..write(obj.token);
   }
 
