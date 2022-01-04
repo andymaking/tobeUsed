@@ -1,6 +1,7 @@
 
 import 'package:dhoro_mobile/data/cache/user_cache.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
@@ -44,10 +45,12 @@ class UserRepositoryImpl extends UserRepository {
     final tokenMeta = await userCache.getTokenMetaData();
     final lastSavedTime =
     DateTime.fromMillisecondsSinceEpoch(tokenMeta.lastTimeStored.toInt());
-    if ((DateTime.now().hour - lastSavedTime.hour) < 1) {
+    if ((DateTime.now().hour - lastSavedTime.hour) < 22) {
       //token has not expired
       return tokenMeta;
     } else {
+      //logout
+      /*TODO*/
       return tokenMeta;
     }
   }
@@ -139,6 +142,17 @@ class UserRepositoryImpl extends UserRepository {
   Future<PaymentProcessorData?> addPaymentProcessors(String bankName, String userName, String accountNumber) async{
     final token = await getToken();
     return await userRemote.addPaymentProcessors(token, bankName, userName, accountNumber);
+  }
+
+  @override
+  Future<GetUserData?> addAvatar(String avatar) async{
+    final token = await getToken();
+    return await userRemote.addAvatar(token, avatar);
+  }
+
+  @override
+  Future<RateData?> getRate() async {
+    return await userRemote.getRate();
   }
 
 }

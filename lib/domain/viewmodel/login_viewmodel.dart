@@ -71,6 +71,7 @@ class LoginViewModel extends BaseViewModel {
       print("Showing Login response::: $loginResponse");
       return loginResponse;
     } catch (error) {
+      print("Showing error response::: $error");
       setViewState(ViewState.Error);
       setError(error.toString());
     }

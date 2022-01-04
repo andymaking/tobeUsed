@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
@@ -36,6 +37,8 @@ abstract class UserRemote {
   Future<List<RequestData>?> getRequests(TokenMetaData tokenMetaData);
   Future<GetUserData?> updateUserProfile(TokenMetaData tokenMetaData,String firstName, String lastName, String phoneNumber);
   Future<PaymentProcessorData?> addPaymentProcessors(TokenMetaData tokenMetaData,String bankName, String userName, String accountNumber);
+  Future<GetUserData?> addAvatar(TokenMetaData tokenMetaData,String avatar);
+  Future<RateData?> getRate();
 
 }
 

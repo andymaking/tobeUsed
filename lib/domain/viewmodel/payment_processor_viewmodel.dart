@@ -76,7 +76,7 @@ class PaymentProcessorViewModel extends BaseViewModel {
       setViewState(ViewState.Loading);
       var response = await userRepository.addPaymentProcessors(bankName, userName, accountNumber);
       setViewState(ViewState.Success);
-      getPaymentProcessor();
+      await getPaymentProcessor();
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.paymentProcessorList, (route) => false);
       print("Showing getPaymentProcessor response::: $response");
       //paymentProcessor = response;
@@ -93,7 +93,7 @@ class PaymentProcessorViewModel extends BaseViewModel {
       setViewState(ViewState.Loading);
       var response = await userRepository.deletePaymentProcessor(pk);
       setViewState(ViewState.Success);
-      getPaymentProcessor();
+      await getPaymentProcessor();
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.settings, (route) => false);
       print("Showing deletePaymentProcessor: $response");
       return response;

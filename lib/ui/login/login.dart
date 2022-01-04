@@ -23,7 +23,7 @@ final signInProvider =
 ChangeNotifierProvider.autoDispose<LoginViewModel>((ref) {
   ref.onDispose(() {});
   final viewModel = locator.get<LoginViewModel>();
-  viewModel.getUser();
+  //viewModel.getUser();
   return viewModel;
 });
 

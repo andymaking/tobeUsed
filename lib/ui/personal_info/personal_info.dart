@@ -189,7 +189,11 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                                         MediaQuery.of(context).size.width,
                                         //MediaQuery.of(context).size.width,
                                         onClick: () async {
-
+                                          final result = await Navigator.of(context)
+                                              .pushNamed(AppRoutes.uploadPhotosOptions);
+                                          final path = result.toString();
+                                          if(path == "null") return;
+                                          context.read(profileProvider).addAvatar(context,path);
                                         },
                                       )
                                   ),

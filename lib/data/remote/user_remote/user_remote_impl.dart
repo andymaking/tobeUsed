@@ -1,6 +1,7 @@
 
 import 'package:dhoro_mobile/data/core/network_config.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_response.dart';
 import 'package:dhoro_mobile/data/remote/model/success_message.dart';
@@ -32,7 +33,10 @@ class UserRemoteImpl extends UserRemote {
       var response =
       await dioClient.post("${NetworkConfig.BASE_URL}user/login", data: _data);
       final responseData = UserLoginResponse.fromJson(response.data);
-      sharedPreference.saveToken(responseData.data!.token!);
+      sharedPreference.clear().whenComplete(() => {
+        sharedPreference.saveToken(responseData.data!.token!),
+      print("Finished clearing sharedPreference: ${responseData.data!.token!}")
+      });
       return responseData;
     } catch (error) {
       print("error: $error");
@@ -279,6 +283,38 @@ class UserRemoteImpl extends UserRemote {
       );
       final responseData = AddPaymentProcessorResponse.fromJson(response.data);
       print("addPaymentProcessors from Remote layer:: $responseData");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<GetUserData?> addAvatar(TokenMetaData tokenMetaData, String avatar) async{
+    try {
+      var _data = {
+        'avatar': avatar,
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/profile/avatar/update", data: _data
+      );
+      final responseData = GetUserResponse.fromJson(response.data);
+      print("addAvatar from Remote layer:: $responseData");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<RateData?> getRate() async {
+    try {
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}common/dhoro/rate",
+      );
+      final responseData = RateResponse.fromJson(response.data);
+      print("getRate from Remote layer:: ${responseData.data} response:$response");
       return responseData.data;
     } catch (error) {
       handleError(error);
