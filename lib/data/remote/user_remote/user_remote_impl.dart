@@ -1,6 +1,7 @@
 
 import 'package:dhoro_mobile/data/core/network_config.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_response.dart';
 import 'package:dhoro_mobile/data/remote/model/success_message.dart';
@@ -300,6 +301,20 @@ class UserRemoteImpl extends UserRemote {
       );
       final responseData = GetUserResponse.fromJson(response.data);
       print("addAvatar from Remote layer:: $responseData");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<RateData?> getRate() async {
+    try {
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}common/dhoro/rate",
+      );
+      final responseData = RateResponse.fromJson(response.data);
+      print("getRate from Remote layer:: ${responseData.data} response:$response");
       return responseData.data;
     } catch (error) {
       handleError(error);

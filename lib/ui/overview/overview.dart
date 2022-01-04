@@ -1,4 +1,5 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
@@ -26,6 +27,7 @@ final overviewProvider =
   final viewModel = locator.get<OverviewViewModel>();
   viewModel.getTransferHistory();
   viewModel.getUser();
+  viewModel.getRate();
   viewModel.walletBalance();
   viewModel.getWalletStatus();
   viewModel.getWalletPercentage();
@@ -81,6 +83,7 @@ class _OverviewPageState extends State<OverviewPage> {
     bool? walletStatus = useProvider(overviewProvider).walletStatus;
     MessageResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
     GetUserData? userData = useProvider(overviewProvider).user;
+    RateData? rateData = useProvider(overviewProvider).rateData;
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
     /*WalletPercentage?*/
@@ -131,7 +134,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   AppFontsStyle.getAppTextViewBold(
-                                    "1 DHR = \$1.14",
+                                    "1 DHR = \$${rateData?.equivalentInDhoro ?? 0.0}",
                                     weight: FontWeight.w600,
                                     size: AppFontsStyle.textFontSize12,
                                   ),

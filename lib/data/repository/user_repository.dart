@@ -1,5 +1,6 @@
 
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
@@ -36,5 +37,6 @@ abstract class UserRepository {
   Future<GetUserData?> updateUserProfile(String firstName, String lastName, String phoneNumber );
   Future<PaymentProcessorData?> addPaymentProcessors(String bankName, String userName, String accountNumber);
   Future<GetUserData?> addAvatar(String avatar);
+  Future<RateData?> getRate();
 
 }
