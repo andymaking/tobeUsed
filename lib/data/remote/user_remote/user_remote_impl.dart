@@ -1,5 +1,6 @@
 
 import 'package:dhoro_mobile/data/core/network_config.dart';
+import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
@@ -315,6 +316,19 @@ class UserRemoteImpl extends UserRemote {
       );
       final responseData = RateResponse.fromJson(response.data);
       print("getRate from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<ConvertData?> convertCurrency(String queryParams) async {
+    try {
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/convert/withdraw?$queryParams");
+      final responseData = ConvertResponse.fromJson(response.data);
+      print("convertCurrency from Remote layer:: ${responseData.data} response:$response");
       return responseData.data;
     } catch (error) {
       handleError(error);

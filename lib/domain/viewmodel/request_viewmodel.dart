@@ -1,5 +1,8 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
+import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/viewmodel/base/base_view_model.dart';
 import 'package:dhoro_mobile/main.dart';
@@ -18,6 +21,9 @@ class RequestViewModel extends BaseViewModel {
   //LoggedInUser? loggedInUser;
   List<RequestData> requestList = [];
   ViewState _state = ViewState.Idle;
+  ConvertData? convertData;
+  List<PaymentProcessorData> paymentProcessor = [];
+  GetUserData? user;
 
   ViewState get viewState => _state;
   //List<RequestData> userInterests = [];
@@ -130,6 +136,50 @@ class RequestViewModel extends BaseViewModel {
       print("getRequest $requestList");
       setViewState(ViewState.Success);
       print("Success getRequest $requestList");
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// Convert currency
+  Future<ConvertData?> convertCurrency(String query) async {
+    try {
+      setViewState(ViewState.Loading);
+      var loginResponse = await userRepository.convertCurrency(query);
+      convertData = loginResponse;
+      setViewState(ViewState.Success);
+      print("Showing convertCurrency response::: $loginResponse");
+      return loginResponse;
+    } catch (error) {
+      print("Showing error response::: $error");
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// get user paymentProcessors
+  Future<List<PaymentProcessorData>?> getPaymentProcessor() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getPaymentProcessors();
+      setViewState(ViewState.Success);
+      print("Showing getPaymentProcessor response::: $response");
+      paymentProcessor = response ?? [];
+      return response;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  Future<GetUserData?> getUser() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.getUser();
+      user = response;
+      setViewState(ViewState.Success);
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());

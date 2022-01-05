@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CircleImageFromFile extends StatelessWidget {
   final fileName;
@@ -71,14 +72,14 @@ class CircleImageFromNetwork extends StatelessWidget {
           height: _clipSize,
           width: _clipSize,
           fit: fit ?? BoxFit.contain,
-          imageUrl: url,
-          placeholder: (context, url) => Image.asset(
+          imageUrl: "https://api.dhoro.io$url",
+          placeholder: (context, url) => SvgPicture.asset(
             placeholder,
             height: _clipSize,
             width: _clipSize,
             fit: fit ?? BoxFit.contain,
           ),
-          errorWidget: (context, url, error) => Image.asset(
+          errorWidget: (context, url, error) => SvgPicture.asset(
             errorHolder,
             height: _clipSize,
             width: _clipSize,

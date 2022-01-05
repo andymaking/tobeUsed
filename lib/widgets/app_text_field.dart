@@ -120,6 +120,7 @@ class AmountFormField extends StatefulWidget {
   FormFieldValidator<String>? validator;
   Function(String)? onChanged;
   bool? enabled = true;
+  Widget? dropdown;
 
   AmountFormField(
       {this.controller,
@@ -130,7 +131,8 @@ class AmountFormField extends StatefulWidget {
         this.onTap,
         this.enabled,
         this.validator,
-        this.onChanged});
+        this.onChanged,
+        this.dropdown});
 
   @override
   _AmountFormFieldState createState() => _AmountFormFieldState();
@@ -201,24 +203,27 @@ class _AmountFormFieldState extends State<AmountFormField> {
                           ),
                     ))),
           ),
-          AppFontsStyle.getAppTextViewBold("DHR",
-              weight: FontWeight.w500,
-              size: AppFontsStyle.textFontSize12),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Pallet.colorBackground,
-                borderRadius: BorderRadius.all(Radius.circular(2)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                child: AppFontsStyle.getAppTextViewBold("Max",
-                    weight: FontWeight.w400,
-                    size: AppFontsStyle.textFontSize10),
-              ),
-            ),
-          )
+          Container(
+            //height: 60,
+            width: 40,
+            child: widget.dropdown,
+          ),
+          SizedBox(width: 16,)
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 8.0, right: 16.0),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       color: Pallet.colorBackground,
+          //       borderRadius: BorderRadius.all(Radius.circular(2)),
+          //     ),
+          //     child: Padding(
+          //       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+          //       child: AppFontsStyle.getAppTextViewBold("Max",
+          //           weight: FontWeight.w400,
+          //           size: AppFontsStyle.textFontSize10),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

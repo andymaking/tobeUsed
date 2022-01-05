@@ -1,12 +1,16 @@
+import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
+import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/src/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class WithdrawAccountDetailsPage extends StatefulWidget {
+class WithdrawAccountDetailsPage extends StatefulHookWidget {
   const WithdrawAccountDetailsPage({Key? key}) : super(key: key);
 
   @override
@@ -17,6 +21,8 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
   @override
   Widget build(BuildContext context) {
     final isValidLogin = true;
+    List<PaymentProcessorData>? userTransactions =
+        useProvider(sharedProvider.userRequestProvider).paymentProcessor;
 
     return Scaffold(
       body: SafeArea(
@@ -45,15 +51,18 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                AppFontsStyle.getAppTextViewBold("Jason Smith",
+                                // userTransactions[index].label!.toTitleCase()!,
+                                // userTransactions[index].processor!,
+                                // userTransactions[index].value!
+                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12),
                                 SizedBox(height: 12.0,),
-                                AppFontsStyle.getAppTextViewBold("4682 3674 3676",
+                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!}",
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12),
                                 SizedBox(height: 12.0,),
-                                AppFontsStyle.getAppTextViewBold("First Bank of Nigeria",
+                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12),
                               ],
@@ -93,6 +102,10 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                         GestureDetector(
                           onTap:(){
                             context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
+                            context.read(sharedProvider.userRequestProvider).userName = "${userTransactions.first.label!.toTitleCase()!}";
+                            context.read(sharedProvider.userRequestProvider).bankName = "${userTransactions.first.processor}";
+                            context.read(sharedProvider.userRequestProvider).accountNumber = "${userTransactions.first.value}";
+
               },
                           child: Container(
                             height: 50,
