@@ -1,3 +1,4 @@
+import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart';
 import 'package:dhoro_mobile/ui/changePassword/change_password.dart';
 import 'package:dhoro_mobile/ui/createAccount/signup.dart';
 import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
@@ -39,6 +40,7 @@ class AppRoutes {
   static const paymentProcessor = '/paymentProcessor';
   static const paymentProcessorList = '/paymentProcessorList';
   static const withdraw = '/stepper';
+  static const buy = '/buyStepper';
   static const uploadPhotosOptions = '/uploadPhotosOptions';
 }
 
@@ -145,6 +147,12 @@ class AppRouter {
       case AppRoutes.withdraw:
         return MaterialPageRoute<dynamic>(
           builder: (_) => SetupPagerContainer(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.buy:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => BuySetupPagerContainer(),
           settings: settings,
           fullscreenDialog: true,
         );

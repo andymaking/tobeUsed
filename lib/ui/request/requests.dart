@@ -118,20 +118,25 @@ class _RequestsPageState extends State<RequestsPage> {
                                   SizedBox(
                                     height: 18,
                                   ),
-                                  Container(
-                                      height: 50,
-                                      width: 137,
-                                      child: Center(
-                                        child: AppFontsStyle.getAppTextViewBold(
-                                            'BUY DHORO',
-                                            size: AppFontsStyle.textFontSize12,
-                                            color: Pallet.colorWhite,
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                                        color: Pallet.colorBlue,
-                                      )
+                                  GestureDetector(
+                                    onTap: (){
+                                      Navigator.of(context).pushNamed(AppRoutes.buy);
+                                    },
+                                    child: Container(
+                                        height: 50,
+                                        width: 137,
+                                        child: Center(
+                                          child: AppFontsStyle.getAppTextViewBold(
+                                              'BUY DHORO',
+                                              size: AppFontsStyle.textFontSize12,
+                                              color: Pallet.colorWhite,
+                                              textAlign: TextAlign.center),
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(2)),
+                                          color: Pallet.colorBlue,
+                                        )
+                                    ),
                                   ),
                                 ],
                               ),
