@@ -1,12 +1,17 @@
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/src/provider.dart';
+import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class WithdrawSummaryPage extends StatefulWidget {
+
+class WithdrawSummaryPage extends StatefulHookWidget {
   const WithdrawSummaryPage({Key? key}) : super(key: key);
 
   @override
@@ -24,6 +29,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
   @override
   Widget build(BuildContext context) {
     final isValidLogin = true;
+    GetUserData? userData = useProvider(sharedProvider.userRequestProvider).user;
 
     return Scaffold(
       body: SafeArea(
@@ -44,7 +50,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                         AppFontsStyle.getAppTextViewBold("You are withdrawing ",
                             weight: FontWeight.w400,
                             size: AppFontsStyle.textFontSize14),
-                        AppFontsStyle.getAppTextViewBold("45 DHR",
+                        AppFontsStyle.getAppTextViewBold("${context.read(sharedProvider.userRequestProvider).amount}",
                             weight: FontWeight.w600,
                             size: AppFontsStyle.textFontSize14),
                       ],
@@ -57,7 +63,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                             weight: FontWeight.w500,
                             size: AppFontsStyle.textFontSize12),
                         Spacer(),
-                        AppFontsStyle.getAppTextViewBold("D1jskidhijeihirHnJrqdkbQQRS9",
+                        AppFontsStyle.getAppTextViewBold("${userData?.wid ?? ""}",
                             weight: FontWeight.w500,
                             size: AppFontsStyle.textFontSize12),
                         SizedBox(height: 12.0,),
@@ -73,7 +79,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                             weight: FontWeight.w500,
                             size: AppFontsStyle.textFontSize12),
                         Spacer(),
-                        AppFontsStyle.getAppTextViewBold("\$5436",
+                        AppFontsStyle.getAppTextViewBold("${context.read(sharedProvider.userRequestProvider).amount}",
                             weight: FontWeight.w500,
                             size: AppFontsStyle.textFontSize12),
                         SizedBox(height: 12.0,),
@@ -82,19 +88,19 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                     SizedBox(
                       height: 12,
                     ),
-                    Row(
-                      children: [
-                        AppFontsStyle.getAppTextViewBold("Transaction Fee:",
-                            color: Pallet.colorGrey,
-                            weight: FontWeight.w500,
-                            size: AppFontsStyle.textFontSize12),
-                        Spacer(),
-                        AppFontsStyle.getAppTextViewBold("\$34",
-                            weight: FontWeight.w500,
-                            size: AppFontsStyle.textFontSize12),
-                        SizedBox(height: 12.0,),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     AppFontsStyle.getAppTextViewBold("Transaction Fee:",
+                    //         color: Pallet.colorGrey,
+                    //         weight: FontWeight.w500,
+                    //         size: AppFontsStyle.textFontSize12),
+                    //     Spacer(),
+                    //     AppFontsStyle.getAppTextViewBold("\$34",
+                    //         weight: FontWeight.w500,
+                    //         size: AppFontsStyle.textFontSize12),
+                    //     SizedBox(height: 12.0,),
+                    //   ],
+                    // ),
                     SizedBox(
                       height: 100,
                     ),

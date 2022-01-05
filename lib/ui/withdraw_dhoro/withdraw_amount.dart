@@ -12,21 +12,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
 
-// final userProfileProvider =
-// ChangeNotifierProvider.autoDispose<ProfileViewModel>((ref) {
-//   ref.onDispose(() {});
-//   final viewmodel = locator.get<ProfileViewModel>();
-//   //Load all setup questions here
-//   viewmodel.getInterestData();
-//   return viewmodel;
-// });
-//
-// final _eventStateProvider = Provider.autoDispose<ViewState>((ref) {
-//   return ref.watch(userProfileProvider).viewState;
-// });
-// final eventStateProvider = Provider.autoDispose<ViewState>((ref) {
-//   return ref.watch(_eventStateProvider);
-// });
+
+final _validWithdrawAmount = Provider.autoDispose<bool>((ref) {
+  return ref.watch(sharedProvider.userRequestProvider).isWithdrawAmount;
+});
+
+final validAmountProvider = Provider.autoDispose<bool>((ref) {
+  return ref.watch(_validWithdrawAmount);
+});
 
 class WithdrawAmountPage extends StatefulHookWidget {
   //PageController controller;
@@ -37,19 +30,39 @@ class WithdrawAmountPage extends StatefulHookWidget {
 }
 
 class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
+  List<String> options = [
+    "DHR",
+    "USD",
+    "NGN",
+  ];
+  String selectedOption = "DHR";
   TextEditingController _amountController = TextEditingController();
-  final isValidLogin = true;
   PageController controller = PageController();
+
+  Future<void> initialiseAnswer() async {
+    await Future.delayed(Duration(milliseconds: 300));
+    setState(() {
+      _amountController.text = context.read(sharedProvider.userRequestProvider).getCurrentPageAnswer() ?? "";
+    });
+  }
+
+  @override
+  void initState() {
+    initialiseAnswer();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
     final currentPage = useProvider(sharedProvider.userRequestProvider).currentPage;
 
     final isPageValidated = useProvider(sharedProvider.userRequestProvider).pages[currentPage];
     final totalPages = context.read(sharedProvider.userRequestProvider).pages.length - 1;
     final progress =
     (currentPage / totalPages == 0) ? 0.05 : currentPage / totalPages;
-
+    final isValidAmount = useProvider(validAmountProvider);
+    final convert = context.read(sharedProvider.userRequestProvider).convertData;
 
     return Scaffold(
       body: SafeArea(
@@ -68,33 +81,101 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                       label: AppString.amount,
                       controller: _amountController,
                       onChanged: (value) {
-
+                        currentFocus.unfocus();
+                        context.read(sharedProvider.userRequestProvider)
+                            .convertCurrency("$selectedOption=${_amountController.text.trim()}");
+                        context.read(sharedProvider.userRequestProvider).amount = value.trim();
+                        context.read(sharedProvider.userRequestProvider).validateWithdrawAmount();
+                        context
+                            .read(sharedProvider.userRequestProvider)
+                            .pageValidated(true);
+                        context
+                            .read(sharedProvider.userRequestProvider)
+                            .updatePageAnswers(value);
                       },
+                      validator: (value) {
+                        if (context.read(sharedProvider.userRequestProvider).isValidAmount()) {
+                          return "Enter a valid amount";
+                        }
+                        return null;
+                      },
+                      dropdown: DropdownButton<String>(
+                        focusColor: Pallet.colorBlue,
+                        underline: Container(),
+                        value: selectedOption,
+                        isExpanded: true,
+                        //elevation: 5,
+                        icon: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: Pallet.colorBlack,
+                          size: 14,
+                        ),
+                        style: GoogleFonts.manrope(
+                            color: Pallet.colorBlue,
+                            fontSize: AppFontsStyle.textFontSize12,
+                            fontWeight: FontWeight.w500,
+                            fontStyle: FontStyle.normal,
+                            height: 1.5),
+                        iconEnabledColor: Pallet.colorBlue,
+                        onChanged: (String? value) {
+                          setState(() {
+                            selectedOption = value!;
+                              currentFocus.unfocus();
+                            context.read(sharedProvider.userRequestProvider)
+                                .convertCurrency("$selectedOption=${_amountController.text.trim()}");
+                            print("Showing selected and amount $selectedOption=$_amountController");
+                          });
+                        },
+                        items: <String>[
+                          'DHR',
+                          'USD',
+                          'NGN',
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: AppFontsStyle.getAppTextView(value),
+                          );
+                        }).toList(),
+                      ),
                     ),
                     SizedBox(
                       height: 16,
                     ),
                     Row(
                       children: [
-                        AppFontsStyle.getAppTextViewBold("0 USD",
-                            weight: FontWeight.w500,
-                            size: AppFontsStyle.textFontSize12),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4.0),
-                          child: SvgPicture.asset(
-                            AppImages.icArrowSwap,
-                            width: 10,
-                            height: 10,
-                          ),
+                        convert == null ? Container()
+                        : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            selectedOption == "USD" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.usd ?? 0.0}",
+                                weight: FontWeight.w500,
+                                size: AppFontsStyle.textFontSize12),
+                            SizedBox(height: 4,),
+                            selectedOption == "DHR" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.dhr ?? 0.0}",
+                                weight: FontWeight.w500,
+                                size: AppFontsStyle.textFontSize12),
+                            SizedBox(height: 4,),
+                            selectedOption == "NGN" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.ngn ?? 0.0}",
+                                weight: FontWeight.w500,
+                                size: AppFontsStyle.textFontSize12),
+                          ],
                         ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 4.0),
+                        //   child: SvgPicture.asset(
+                        //     AppImages.icArrowSwap,
+                        //     width: 10,
+                        //     height: 10,
+                        //   ),
+                        // ),
                         Spacer(),
-                        AppFontsStyle.getAppTextViewBold("Transaction Fee: ",
-                            weight: FontWeight.w500,
-                            color: Pallet.colorGrey,
-                            size: AppFontsStyle.textFontSize12),
-                        AppFontsStyle.getAppTextViewBold("3 DHR",
-                            weight: FontWeight.w500,
-                            size: AppFontsStyle.textFontSize12),
+                        // AppFontsStyle.getAppTextViewBold("Transaction Fee: ",
+                        //     weight: FontWeight.w500,
+                        //     color: Pallet.colorGrey,
+                        //     size: AppFontsStyle.textFontSize12),
+                        // AppFontsStyle.getAppTextViewBold("3 DHR",
+                        //     weight: FontWeight.w500,
+                        //     size: AppFontsStyle.textFontSize12),
                       ],
                     ),
                     SizedBox(
@@ -109,10 +190,10 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                           //controller.jumpToPage(currentPage - 1);
                         },
                         title: "PROCEED",
-                        disabledColor: Pallet.colorYellow.withOpacity(0.2),
+                        disabledColor: Pallet.colorBlue.withOpacity(0.2),
                         titleColor: Pallet.colorWhite,
-                        enabledColor: isValidLogin ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
-                        enabled: isValidLogin ? true : false),
+                        enabledColor: isValidAmount ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
+                        enabled: isValidAmount ? true : false),
                     SizedBox(
                       height: 16,
                     ),

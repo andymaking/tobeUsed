@@ -1,6 +1,7 @@
 
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/domain/viewmodel/request_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
@@ -20,6 +21,8 @@ ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
   ref.onDispose(() {});
   final viewModel = locator.get<RequestViewModel>();
   viewModel.getRequest();
+  viewModel.getPaymentProcessor();
+  viewModel.getUser();
   return viewModel;
 });
 
@@ -44,6 +47,10 @@ class _RequestsPageState extends State<RequestsPage> {
     ViewState viewState = useProvider(requestStateProvider);
     List<RequestData>? requestList =
         useProvider(requestProvider).requestList;
+    GetUserData? userData = useProvider(overviewProvider).user;
+    final initials =
+        "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -55,7 +62,12 @@ class _RequestsPageState extends State<RequestsPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                OverViewToolBar(AppString.requests, ""),
+                OverViewToolBar(
+                  AppString.requests,
+                  userData?.avatar.toString() ?? "",
+                  trailingIconClicked: () => null,
+                  initials: initials,
+                ),
                 SizedBox(
                   height: 24,
                 ),

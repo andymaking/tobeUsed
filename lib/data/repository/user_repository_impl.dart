@@ -1,5 +1,6 @@
 
 import 'package:dhoro_mobile/data/cache/user_cache.dart';
+import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
@@ -153,6 +154,11 @@ class UserRepositoryImpl extends UserRepository {
   @override
   Future<RateData?> getRate() async {
     return await userRemote.getRate();
+  }
+
+  @override
+  Future<ConvertData?> convertCurrency(String queryParams) async {
+    return userRemote.convertCurrency(queryParams);
   }
 
 }

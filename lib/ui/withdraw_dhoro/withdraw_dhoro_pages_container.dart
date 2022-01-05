@@ -22,6 +22,7 @@ ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
   final viewmodel = locator.get<RequestViewModel>();
   //Load all setup questions here
   viewmodel.getRequest();
+  viewmodel.getPaymentProcessor();
   return viewmodel;
 });
 
