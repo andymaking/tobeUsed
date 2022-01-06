@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:dhoro_mobile/data/core/network_config.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
@@ -296,9 +298,13 @@ class UserRemoteImpl extends UserRemote {
       var _data = {
         'avatar': avatar,
       };
+      var formData = FormData.fromMap({
+        'avatar': await MultipartFile.fromFile(avatar,filename: 'image/png')
+      });
       dioClient.options.headers['Authorization'] = tokenMetaData.token;
       var response = await dioClient.post(
-          "${NetworkConfig.BASE_URL}user/profile/avatar/update", data: _data
+          "${NetworkConfig.BASE_URL}user/profile/avatar/update", data: formData,
+        options: Options(contentType: Headers.formUrlEncodedContentType),
       );
       final responseData = GetUserResponse.fromJson(response.data);
       print("addAvatar from Remote layer:: $responseData");

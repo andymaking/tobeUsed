@@ -98,10 +98,20 @@ class ProfileViewModel extends BaseViewModel {
           child: ShowDialog(
             title: 'Photo uploaded successfully',
             isError: false,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ));
-      //Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
     } catch (error) {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: error.toString(),
+            isError: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ));
       setViewState(ViewState.Error);
       setError(error.toString());
     }
