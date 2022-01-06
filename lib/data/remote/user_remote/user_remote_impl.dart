@@ -295,9 +295,6 @@ class UserRemoteImpl extends UserRemote {
   @override
   Future<GetUserData?> addAvatar(TokenMetaData tokenMetaData, String avatar) async{
     try {
-      var _data = {
-        'avatar': avatar,
-      };
       var formData = FormData.fromMap({
         'avatar': await MultipartFile.fromFile(avatar,filename: 'image/png')
       });
