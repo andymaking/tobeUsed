@@ -1,4 +1,5 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
@@ -26,7 +27,10 @@ class BuyViewModel extends BaseViewModel {
   ViewState _state = ViewState.Idle;
   ConvertData? convertData;
   List<PaymentProcessorData> paymentProcessor = [];
+  List<AgentsData> agents = [];
+  AgentsData? anAgents;
   GetUserData? user;
+  String? pK;
 
   ViewState get viewState => _state;
   //List<RequestData> userInterests = [];
@@ -170,6 +174,36 @@ class BuyViewModel extends BaseViewModel {
       setViewState(ViewState.Success);
       print("Showing getPaymentProcessor response::: $response");
       paymentProcessor = response ?? [];
+      return response;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// get user getAgents
+  Future<List<AgentsData>?> getAgents() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getAgents();
+      setViewState(ViewState.Success);
+      print("Showing getAgents response::: $response");
+      agents = response ?? [];
+      return response;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// get user getAgents
+  Future<AgentsData?> getSingleAgents(String pk) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getSingleAgent(pk);
+      setViewState(ViewState.Success);
+      print("Showing getSingleAgents response::: $response");
+      anAgents = response;
       return response;
     } catch (error) {
       setViewState(ViewState.Error);
