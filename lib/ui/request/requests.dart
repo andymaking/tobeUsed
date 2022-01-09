@@ -27,7 +27,7 @@ ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
 });
 
 final _requestStateProvider = Provider.autoDispose<ViewState>((ref) {
-  return ref.watch(overviewProvider).viewState;
+  return ref.watch(requestProvider).viewState;
 });
 final requestStateProvider = Provider.autoDispose<ViewState>((ref) {
   return ref.watch(_requestStateProvider);
@@ -47,7 +47,7 @@ class _RequestsPageState extends State<RequestsPage> {
     ViewState viewState = useProvider(requestStateProvider);
     List<RequestData>? requestList =
         useProvider(requestProvider).requestList;
-    GetUserData? userData = useProvider(overviewProvider).user;
+    GetUserData? userData = useProvider(requestProvider).user;
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
 
@@ -374,6 +374,118 @@ class _RequestsPageState extends State<RequestsPage> {
                 color: Pallet.colorBlue),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TransactionList extends StatefulWidget {
+  Function()? onItemClicked;
+  String transId;
+  String status;
+  String value;
+  String senderId;
+
+  TransactionList(
+      this.onItemClicked, this.transId, this.status, this.value, this.senderId,
+      {Key? key})
+      : super(key: key);
+
+  @override
+  _TransactionListState createState() => _TransactionListState();
+}
+
+class _TransactionListState extends State<TransactionList> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 56,
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 9.0, right: 5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(AppImages.icEye),
+            SizedBox(
+              width: 12,
+            ),
+            Container(
+              width: 90,
+              child: Text(widget.transId,
+                  textAlign: TextAlign.left,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: GoogleFonts.manrope(
+                      color: Pallet.colorBlue,
+                      fontSize: AppFontsStyle.textFontSize12,
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.normal,
+                      height: 1.5)),
+            ),
+            SizedBox(
+              width: 12,
+            ),
+            Container(
+              width: 58,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(3)),
+                  color: widget.status.contains("PENDING") ? Pallet.colorYellow : Pallet.colorGreen.withOpacity(0.4)),
+              child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
+                child: AppFontsStyle.getAppTextView(
+                  widget.status,
+                  color: Pallet.colorBlue,
+                  textAlign: TextAlign.center,
+                  size: AppFontsStyle.textFontSize8,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 12,
+            ),
+            Container(
+              width: 35,
+              child: Text(widget.value,
+                  textAlign: TextAlign.left,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: GoogleFonts.manrope(
+                      color: Pallet.colorBlue,
+                      fontSize: AppFontsStyle.textFontSize12,
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.normal,
+                      height: 1.5)),
+            ),
+            // AppFontsStyle.getAppTextView(
+            //   widget.value,
+            //   color: Pallet.colorBlue,
+            //   size: AppFontsStyle.textFontSize12,
+            // ),
+            SizedBox(
+              width: 12,
+            ),
+            Flexible(
+              child: Container(
+                child: Text(widget.senderId,
+                    textAlign: TextAlign.left,
+                    //maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: GoogleFonts.manrope(
+                        color: Pallet.colorBlue,
+                        fontSize: AppFontsStyle.textFontSize12,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.normal,
+                        height: 1.5)),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

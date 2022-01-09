@@ -44,8 +44,8 @@ class BuyViewModel extends BaseViewModel {
   String agentId = "";
   String paymentId = "";
   String currencyType = "";
-
   String accountNumber = "";
+
   bool isBuyAmount = true;
   bool isBankDetails = true;
 

@@ -61,15 +61,27 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
+                          context.read(sharedProvider.userBuyProvider).userName.isEmpty
+                              ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
+                              weight: FontWeight.w500,
+                              size: AppFontsStyle.textFontSize12)
+                              : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userBuyProvider).userName,
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           SizedBox(height: 12.0,),
-                          AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!.toTitleCase()!}",
+                          context.read(sharedProvider.userBuyProvider).bankName.isEmpty
+                          ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!.toTitleCase()!}",
+                              weight: FontWeight.w500,
+                              size: AppFontsStyle.textFontSize12)
+                          : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userBuyProvider).bankName,
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           SizedBox(height: 12.0,),
-                          AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
+                          context.read(sharedProvider.userBuyProvider).accountNumber.isEmpty
+                          ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
+                              weight: FontWeight.w500,
+                              size: AppFontsStyle.textFontSize12)
+                          : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userBuyProvider).accountNumber,
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                         ],
@@ -82,16 +94,21 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Pallet.colorBackground,
-                              borderRadius: BorderRadius.all(Radius.circular(2)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                              child: AppFontsStyle.getAppTextViewBold("Change",
-                                  weight: FontWeight.w400,
-                                  size: AppFontsStyle.textFontSize10),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.pushNamed(context, AppRoutes.selectBuyPaymentProcessor);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Pallet.colorBackground,
+                                borderRadius: BorderRadius.all(Radius.circular(2)),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                                child: AppFontsStyle.getAppTextViewBold("Change",
+                                    weight: FontWeight.w400,
+                                    size: AppFontsStyle.textFontSize10),
+                              ),
                             ),
                           ),
                         ],

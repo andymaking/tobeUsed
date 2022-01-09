@@ -55,15 +55,27 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                                 // userTransactions[index].label!.toTitleCase()!,
                                 // userTransactions[index].processor!,
                                 // userTransactions[index].value!
-                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
+                                context.read(sharedProvider.userRequestProvider).userName.isEmpty
+                                    ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
+                                    weight: FontWeight.w500,
+                                    size: AppFontsStyle.textFontSize12)
+                                : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userRequestProvider).userName,
+                                weight: FontWeight.w500,
+                                size: AppFontsStyle.textFontSize12),
+                                SizedBox(height: 12.0,),
+                                context.read(sharedProvider.userRequestProvider).bankName.isEmpty
+                                    ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!}",
+                                    weight: FontWeight.w500,
+                                    size: AppFontsStyle.textFontSize12)
+                                    : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userRequestProvider).bankName,
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12),
                                 SizedBox(height: 12.0,),
-                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!}",
+                                context.read(sharedProvider.userRequestProvider).accountNumber.isEmpty
+                                    ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
                                     weight: FontWeight.w500,
-                                    size: AppFontsStyle.textFontSize12),
-                                SizedBox(height: 12.0,),
-                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
+                                    size: AppFontsStyle.textFontSize12)
+                                    : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userRequestProvider).accountNumber,
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12),
                               ],
@@ -76,16 +88,21 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Pallet.colorBackground,
-                                    borderRadius: BorderRadius.all(Radius.circular(2)),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                                    child: AppFontsStyle.getAppTextViewBold("Change",
-                                        weight: FontWeight.w400,
-                                        size: AppFontsStyle.textFontSize10),
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.pushNamed(context, AppRoutes.selectWithdrawPaymentProcessor);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Pallet.colorBackground,
+                                      borderRadius: BorderRadius.all(Radius.circular(2)),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                                      child: AppFontsStyle.getAppTextViewBold("Change",
+                                          weight: FontWeight.w400,
+                                          size: AppFontsStyle.textFontSize10),
+                                    ),
                                   ),
                                 ),
                               ],

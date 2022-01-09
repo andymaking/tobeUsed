@@ -1,4 +1,5 @@
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart';
+import 'package:dhoro_mobile/ui/buy_dhoro/select_payment_processor.dart';
 import 'package:dhoro_mobile/ui/changePassword/change_password.dart';
 import 'package:dhoro_mobile/ui/createAccount/signup.dart';
 import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
@@ -15,6 +16,7 @@ import 'package:dhoro_mobile/route/route_error_page.dart';
 import 'package:dhoro_mobile/ui/settings/settings.dart';
 import 'package:dhoro_mobile/ui/transactions/transactions.dart';
 import 'package:dhoro_mobile/ui/verify_your_email/verify_your_email.dart';
+import 'package:dhoro_mobile/ui/withdraw_dhoro/select_withdraw_payment_processor.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +44,10 @@ class AppRoutes {
   static const withdraw = '/stepper';
   static const buy = '/buyStepper';
   static const uploadPhotosOptions = '/uploadPhotosOptions';
+  static const selectBuyPaymentProcessor = '/selectBuyPaymentProcessor';
+  static const selectWithdrawPaymentProcessor = '/selectWithdrawPaymentProcessor';
+
+
 }
 
 class AppRouter {
@@ -96,12 +102,12 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-      // case AppRoutes.emailVerification:
-      //   return MaterialPageRoute<dynamic>(
-      //     builder: (_) => EmailVerificationPage(email: ),
-      //     settings: settings,
-      //     fullscreenDialog: true,
-      //   );
+      case AppRoutes.selectWithdrawPaymentProcessor:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => SelectWithdrawPaymentProcessorPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
       case AppRoutes.settings:
         return MaterialPageRoute<dynamic>(
           builder: (_) => SettingsPage(),
@@ -114,12 +120,12 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-      // case AppRoutes.settings:
-      //   return MaterialPageRoute<dynamic>(
-      //     builder: (_) => SettingsPage(),
-      //     settings: settings,
-      //     fullscreenDialog: true,
-      //   );
+      case AppRoutes.selectBuyPaymentProcessor:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => SelectPaymentProcessorPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
       case AppRoutes.personalInfo:
         return MaterialPageRoute<dynamic>(
           builder: (_) => PersonalInformationPage(),
