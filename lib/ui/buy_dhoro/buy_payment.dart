@@ -1,3 +1,5 @@
+import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
+import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
@@ -28,12 +30,93 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
   @override
   Widget build(BuildContext context) {
     final isValidLogin = true;
+    List<PaymentProcessorData>? userTransactions =
+        useProvider(sharedProvider.userRequestProvider).paymentProcessor;
     GetUserData? userData = useProvider(sharedProvider.userRequestProvider).user;
+    AgentsData? agent = useProvider(sharedProvider.userRequestProvider).anAgents;
 
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
+            Container(
+              height: 113,
+              decoration: BoxDecoration(
+                border: Border.all(width: 1.0, color: Pallet.colorBlue),
+                borderRadius: BorderRadius.all(Radius.circular(2)),
+              ),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // userTransactions[index].label!.toTitleCase()!,
+                        // userTransactions[index].processor!,
+                        // userTransactions[index].value!
+                        AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!}",
+                            weight: FontWeight.w500,
+                            size: AppFontsStyle.textFontSize12),
+                        SizedBox(height: 12.0,),
+                        AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!}",
+                            weight: FontWeight.w500,
+                            size: AppFontsStyle.textFontSize12),
+                        SizedBox(height: 12.0,),
+                        AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
+                            weight: FontWeight.w500,
+                            size: AppFontsStyle.textFontSize12),
+                      ],
+                    ),
+                  ),
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Pallet.colorBackground,
+                            borderRadius: BorderRadius.all(Radius.circular(2)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                            child: AppFontsStyle.getAppTextViewBold("Change",
+                                weight: FontWeight.w400,
+                                size: AppFontsStyle.textFontSize10),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  AppFontsStyle.getAppTextViewBold("Kindly make a transfer to the administrator account below:",
+                      color: Pallet.colorGrey,
+                      weight: FontWeight.w500,
+                      size: AppFontsStyle.textFontSize12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      AppFontsStyle.getAppTextViewBold("You are withdrawing ",
+                          weight: FontWeight.w400,
+                          size: AppFontsStyle.textFontSize14),
+                      AppFontsStyle.getAppTextViewBold("${context.read(sharedProvider.userRequestProvider).amount}",
+                          weight: FontWeight.w600,
+                          size: AppFontsStyle.textFontSize14),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             Container(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),

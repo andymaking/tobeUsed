@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:dhoro_mobile/data/core/network_config.dart';
+import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
@@ -332,6 +333,36 @@ class UserRemoteImpl extends UserRemote {
         "${NetworkConfig.BASE_URL}user/convert/withdraw?$queryParams");
       final responseData = ConvertResponse.fromJson(response.data);
       print("convertCurrency from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<List<AgentsData>?> getAgents(TokenMetaData tokenMetaData) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}admin/agents",
+      );
+      final responseData = AgentsResponse.fromJson(response.data);
+      print("getAgents from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<AgentsData?> getSingleAgent(TokenMetaData tokenMetaData, String pk) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}admin/agent/view/$pk",
+      );
+      final responseData = GetSingleAgentsResponse.fromJson(response.data);
+      print("getAgents from Remote layer:: ${responseData.data} response:$response");
       return responseData.data;
     } catch (error) {
       handleError(error);

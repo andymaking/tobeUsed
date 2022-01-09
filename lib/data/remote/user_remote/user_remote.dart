@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
@@ -41,6 +42,8 @@ abstract class UserRemote {
   Future<GetUserData?> addAvatar(TokenMetaData tokenMetaData,String avatar);
   Future<RateData?> getRate();
   Future<ConvertData?> convertCurrency(String queryParams);
+  Future<List<AgentsData>?> getAgents(TokenMetaData tokenMetaData);
+  Future<AgentsData?> getSingleAgent(TokenMetaData tokenMetaData, String pk);
 
 }
 

@@ -1,3 +1,4 @@
+import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
@@ -21,8 +22,21 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
   @override
   Widget build(BuildContext context) {
     final isValidLogin = true;
-    List<PaymentProcessorData>? userTransactions =
-        useProvider(sharedProvider.userRequestProvider).paymentProcessor;
+    List<AgentsData>? agents =
+        useProvider(sharedProvider.userRequestProvider).agents;
+    bool isChecked = false;
+
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Pallet.colorBlue;
+      }
+      return Pallet.colorBlue;
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -50,22 +64,41 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // userTransactions[index].label!.toTitleCase()!,
-                                // userTransactions[index].processor!,
-                                // userTransactions[index].value!
-                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
-                                    weight: FontWeight.w500,
-                                    size: AppFontsStyle.textFontSize12),
-                                SizedBox(height: 12.0,),
-                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!}",
-                                    weight: FontWeight.w500,
-                                    size: AppFontsStyle.textFontSize12),
-                                SizedBox(height: 12.0,),
-                                AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
-                                    weight: FontWeight.w500,
-                                    size: AppFontsStyle.textFontSize12),
-                              ],
+                              children: List.generate(agents.length, (index) {
+                                return GestureDetector(
+                                  onTap: (){
+                                    context.read(sharedProvider.userRequestProvider).getSingleAgents(agents[index].pk.toString());
+                                    context.read(sharedProvider.userRequestProvider).pK = agents[index].pk;
+                                  },
+                                  child: Container(
+                                    child: Row(
+                                      children: [
+                                        Checkbox(
+                                        checkColor: Colors.white,
+                                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                                        value: isChecked,
+                                        onChanged: (bool? value) {
+                                        setState(() {
+                                        isChecked = value!;
+                                        });
+                                        }
+                                        ),
+                                        AppFontsStyle.getAppTextViewBold("${agents[index].accountName!.toTitleCase()!}",
+                                            weight: FontWeight.w500,
+                                            size: AppFontsStyle.textFontSize12),
+                                        SizedBox(height: 12.0,),
+                                        AppFontsStyle.getAppTextViewBold("${agents[index].bankName!}",
+                                            weight: FontWeight.w500,
+                                            size: AppFontsStyle.textFontSize12),
+                                        SizedBox(height: 12.0,),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                            })
+
+
+                              // ],
                             ),
                           ),
                           Spacer(),
@@ -101,10 +134,10 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                       children: [
                         GestureDetector(
                           onTap:(){
-                            context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
-                            context.read(sharedProvider.userRequestProvider).userName = "${userTransactions.first.label!.toTitleCase()!}";
-                            context.read(sharedProvider.userRequestProvider).bankName = "${userTransactions.first.processor}";
-                            context.read(sharedProvider.userRequestProvider).accountNumber = "${userTransactions.first.value}";
+                            // context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
+                            // context.read(sharedProvider.userRequestProvider).userName = "${userTransactions.first.label!.toTitleCase()!}";
+                            // context.read(sharedProvider.userRequestProvider).bankName = "${userTransactions.first.processor}";
+                            // context.read(sharedProvider.userRequestProvider).accountNumber = "${userTransactions.first.value}";
 
               },
                           child: Container(

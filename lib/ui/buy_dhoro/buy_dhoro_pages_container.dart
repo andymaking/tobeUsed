@@ -16,6 +16,7 @@ ChangeNotifierProvider.autoDispose<BuyViewModel>((ref) {
   //Load all setup questions here
   viewmodel.getRequest();
   viewmodel.getPaymentProcessor();
+  viewmodel.getAgents();
   return viewmodel;
 });
 
