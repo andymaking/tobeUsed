@@ -36,7 +36,7 @@ class ConvertData {
   }
   String? ngn;
   String? dhr;
-  double? usd;
+  String? usd;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

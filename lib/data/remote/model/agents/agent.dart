@@ -78,7 +78,7 @@ class AgentsData {
   String? pk;
   String? user;
   String? accountName;
-  double? accountNumber;
+  String? accountNumber;
   String? bankName;
   String? phoneNumber;
   String? email;

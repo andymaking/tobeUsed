@@ -14,6 +14,7 @@ import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.da
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
+import 'package:dhoro_mobile/data/remote/model/withdraw/withdraw.dart';
 import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
 import 'package:dio/dio.dart';
 
@@ -42,8 +43,11 @@ abstract class UserRemote {
   Future<GetUserData?> addAvatar(TokenMetaData tokenMetaData,String avatar);
   Future<RateData?> getRate();
   Future<ConvertData?> convertCurrency(String queryParams);
+  Future<ConvertData?> convertBuyCurrency(String queryParams);
   Future<List<AgentsData>?> getAgents(TokenMetaData tokenMetaData);
   Future<AgentsData?> getSingleAgent(TokenMetaData tokenMetaData, String pk);
+  Future<WithdrawData?> buyDhoro(TokenMetaData tokenMetaData,String value, String agent, String proofOfPayment, String currencyType);
+
 
 }
 
