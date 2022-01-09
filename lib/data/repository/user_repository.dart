@@ -46,6 +46,6 @@ abstract class UserRepository {
   Future<List<AgentsData>?> getAgents();
   Future<AgentsData?> getSingleAgent(String pk);
   Future<WithdrawData?> buyDhoro(String value, String agent, String proofOfPayment, String currencyType);
-
+  Future<WithdrawData?> withdrawDhoro(String amount, String agent, String paymentMethod, String currencyType);
 
 }

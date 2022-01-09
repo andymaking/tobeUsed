@@ -47,7 +47,7 @@ abstract class UserRemote {
   Future<List<AgentsData>?> getAgents(TokenMetaData tokenMetaData);
   Future<AgentsData?> getSingleAgent(TokenMetaData tokenMetaData, String pk);
   Future<WithdrawData?> buyDhoro(TokenMetaData tokenMetaData,String value, String agent, String proofOfPayment, String currencyType);
-
+  Future<WithdrawData?> withdrawDhoro(TokenMetaData tokenMetaData,String amount, String agent, String paymentMethod, String currencyType);
 
 }
 

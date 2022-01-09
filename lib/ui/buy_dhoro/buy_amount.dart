@@ -103,7 +103,6 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                         underline: Container(),
                         value: selectedOption,
                         isExpanded: true,
-                        //elevation: 5,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
                           color: Pallet.colorBlack,

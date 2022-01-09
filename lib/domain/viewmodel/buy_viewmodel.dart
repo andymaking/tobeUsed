@@ -229,8 +229,7 @@ class BuyViewModel extends BaseViewModel {
       var response = await userRepository.buyDhoro(value, agent, proofOfPayment, currency);
       setViewState(ViewState.Success);
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
-      //Navigator.of(context).pushNamed(AppRoutes.dashboard);
-      print("Showing getSingleAgents response::: $response");
+      print("Showing buyDhoro response::: $response");
       purchase = response;
       return response;
     } catch (error) {

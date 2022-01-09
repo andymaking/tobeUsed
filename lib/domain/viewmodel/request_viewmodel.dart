@@ -1,14 +1,18 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/data/remote/model/withdraw/withdraw.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/viewmodel/base/base_view_model.dart';
 import 'package:dhoro_mobile/main.dart';
+import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_account_details.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_amount.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_summary.dart';
+import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
 
 
@@ -18,31 +22,32 @@ class RequestViewModel extends BaseViewModel {
     initialPage: 0,
   );
 
-  //LoggedInUser? loggedInUser;
   List<RequestData> requestList = [];
   ViewState _state = ViewState.Idle;
   ConvertData? convertData;
   List<PaymentProcessorData> paymentProcessor = [];
+  List<AgentsData> agents = [];
+  WithdrawData? purchase;
+  AgentsData? anAgents;
   GetUserData? user;
 
   ViewState get viewState => _state;
-  //List<RequestData> userInterests = [];
   Set<String> currentUserGender = Set();
   Set<String> currentUserInterest = Set();
   Set<String> selectedPhoto = Set();
   String photoId = "";
 
-  List<String> rightThreeImages = ["", "", ""];
-  List<String> bottomFirstTwoImages = ["", ""];
-  String primaryImage = "";
-  List<String> images = [];
   String errorMessage = "";
-  String amount = "";
   String bankName = "";
   String userName = "";
   String accountNumber = "";
   bool isWithdrawAmount = true;
   bool isBankDetails = true;
+
+  String amount = "";
+  String agentId = "";
+  String paymentId = "";
+  String currencyType = "";
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
@@ -178,9 +183,42 @@ class RequestViewModel extends BaseViewModel {
       setViewState(ViewState.Loading);
       var response =
       await userRepository.getUser();
-      user = response;
       setViewState(ViewState.Success);
+      user = response;
+      print("Showing withdraw user data::: $user");
+      print("Showing withdraw getUser response::: $response");
+      return response;
     } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// purchase/buy dhoro
+  Future<WithdrawData?> withdrawDhoro(BuildContext context) async {
+    try {
+      var value = amount;
+      var agent = agentId;
+      var currency = currencyType;
+      var proofOfPayment = paymentId;
+
+      setViewState(ViewState.Loading);
+      var response = await userRepository.withdrawDhoro(value, agent, proofOfPayment, currency);
+      setViewState(ViewState.Success);
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
+      print("Showing withdrawDhoro response::: $response");
+      purchase = response;
+      return response;
+    } catch (error) {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: error.toString(),
+            isError: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ));
       setViewState(ViewState.Error);
       setError(error.toString());
     }
