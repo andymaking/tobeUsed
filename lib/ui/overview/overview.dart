@@ -567,13 +567,14 @@ class _TransactionListState extends State<TransactionList> {
               width: 58,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(3)),
-                  color: Pallet.colorGreen.withOpacity(0.4)),
+                  color: widget.status.contains("DESTROY") ? Pallet.colorYellow : Pallet.colorGreen.withOpacity(0.4)),
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
                 child: AppFontsStyle.getAppTextView(
                   widget.status,
                   color: Pallet.colorBlue,
+                  textAlign: TextAlign.center,
                   size: AppFontsStyle.textFontSize8,
                 ),
               ),
