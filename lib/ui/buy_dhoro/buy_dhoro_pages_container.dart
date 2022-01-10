@@ -9,7 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../main.dart';
 
-final userRequestProvider =
+final userBuyProvider =
 ChangeNotifierProvider.autoDispose<BuyViewModel>((ref) {
   ref.onDispose(() {});
   final viewmodel = locator.get<BuyViewModel>();
@@ -21,7 +21,7 @@ ChangeNotifierProvider.autoDispose<BuyViewModel>((ref) {
 });
 
 final _requestStateProvider = Provider.autoDispose<ViewState>((ref) {
-  return ref.watch(userRequestProvider).viewState;
+  return ref.watch(userBuyProvider).viewState;
 });
 final requestStateProvider = Provider.autoDispose<ViewState>((ref) {
   return ref.watch(_requestStateProvider);
@@ -45,7 +45,7 @@ class _BuySetupPagerContainerState extends State<BuySetupPagerContainer> {
   }
 
   void navigate() {
-    final currentPage = useProvider(userRequestProvider).currentPage;
+    final currentPage = useProvider(userBuyProvider).currentPage;
     if(currentPage > 0) {
       _controller.jumpToPage(currentPage - 1);
     } else {
@@ -55,18 +55,18 @@ class _BuySetupPagerContainerState extends State<BuySetupPagerContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final currentPage = useProvider(userRequestProvider).currentPage;
-    final totalPages = context.read(userRequestProvider).pages.length - 1;
+    final currentPage = useProvider(userBuyProvider).currentPage;
+    final totalPages = context.read(userBuyProvider).pages.length - 1;
     final progress =
     (currentPage / totalPages == 0) ? 0.05 : currentPage / totalPages;
 
     final pageview = PageView(
-        controller: context.read(userRequestProvider).controller,
+        controller: context.read(userBuyProvider).controller,
         onPageChanged: (position) {
-          context.read(userRequestProvider).pageChanged(position);
+          context.read(userBuyProvider).pageChanged(position);
         },
         physics: new NeverScrollableScrollPhysics(),
-        children: context.read(userRequestProvider).widgetPages);
+        children: context.read(userBuyProvider).widgetPages);
 
     return Scaffold(
       body: SafeArea(
@@ -108,7 +108,7 @@ class _BuySetupPagerContainerState extends State<BuySetupPagerContainer> {
 
   @override
   void dispose() {
-    context.read(userRequestProvider).controller.dispose();
+    context.read(userBuyProvider).controller.dispose();
     super.dispose();
   }
 

@@ -1,3 +1,5 @@
+import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
+
 class WithdrawResponse {
   int? status;
   String? message;
@@ -38,7 +40,7 @@ class WithdrawData {
   double? totalNgn;
   String? wid;
   String? proof;
-  String? agentDetail;
+  AgentsData? agentDetail;
   String? type;
   String? status;
   String? created;
@@ -72,7 +74,7 @@ class WithdrawData {
     totalNgn = json['total_ngn'];
     wid = json['wid'];
     proof = json['proof'];
-    agentDetail = json['agent_detail'];
+    agentDetail = json['agent_detail'] != null ? AgentsData.fromJson(json['agent_detail']) : null;
     type = json['type'];
     status = json['status'];
     created = json['created'];
@@ -91,7 +93,9 @@ class WithdrawData {
     map['total_ngn'] = totalNgn;
     map['wid'] = wid;
     map['proof'] = proof;
-    map['agent_detail'] = agentDetail;
+    if (agentDetail != null) {
+      map['agent_detail'] = agentDetail?.toJson();
+    }
     map['type'] = type;
     map['status'] = status;
     map['created'] = created;

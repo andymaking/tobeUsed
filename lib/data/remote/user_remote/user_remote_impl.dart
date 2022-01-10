@@ -18,6 +18,7 @@ import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.da
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
+import 'package:dhoro_mobile/data/remote/model/withdraw/withdraw.dart';
 import 'package:dhoro_mobile/data/remote/user_remote/user_remote.dart';
 import 'package:dhoro_mobile/domain/model/token/token_meta_data.dart';
 import 'package:dhoro_mobile/utils/constant.dart';
@@ -346,7 +347,7 @@ class UserRemoteImpl extends UserRemote {
       var response = await dioClient.get(
         "${NetworkConfig.BASE_URL}admin/agents",
       );
-      final responseData = AgentsResponse.fromJson(response.data);
+      final responseData = AgentsResponse.fromJson(response.data); //AgentsResponse.fromJson(response.data);
       print("getAgents from Remote layer:: ${responseData.data} response:$response");
       return responseData.data;
     } catch (error) {
@@ -363,6 +364,39 @@ class UserRemoteImpl extends UserRemote {
       );
       final responseData = GetSingleAgentsResponse.fromJson(response.data);
       print("getAgents from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<ConvertData?> convertBuyCurrency(String queryParams) async {
+    try {
+      var response = await dioClient.get(
+          "${NetworkConfig.BASE_URL}user/convert/purchase?$queryParams");
+      final responseData = ConvertResponse.fromJson(response.data);
+      print("convertBuyCurrency from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<WithdrawData?> buyDhoro(TokenMetaData tokenMetaData, String value, String agent, String proofOfPayment, String currencyType) async {
+    try {
+      var _data = {
+        'value': value,
+        'agent': agent,
+        'proof_of_payment': proofOfPayment,
+        'currency_type': currencyType
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/request/purchase", data: _data);
+      final responseData = WithdrawResponse.fromJson(response.data);
+      print("buyDhoro from Remote layer:: $responseData");
       return responseData.data;
     } catch (error) {
       handleError(error);

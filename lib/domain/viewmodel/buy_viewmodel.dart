@@ -4,15 +4,15 @@ import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/data/remote/model/withdraw/withdraw.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/viewmodel/base/base_view_model.dart';
 import 'package:dhoro_mobile/main.dart';
+import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_amount.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_checkout.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_payment.dart';
-import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_account_details.dart';
-import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_amount.dart';
-import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_summary.dart';
+import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
 
 
@@ -22,50 +22,42 @@ class BuyViewModel extends BaseViewModel {
     initialPage: 0,
   );
 
-  //LoggedInUser? loggedInUser;
   List<RequestData> requestList = [];
   ViewState _state = ViewState.Idle;
-  ConvertData? convertData;
+  ConvertData? convertCurrency;
   List<PaymentProcessorData> paymentProcessor = [];
   List<AgentsData> agents = [];
   AgentsData? anAgents;
+  WithdrawData? purchase;
   GetUserData? user;
-  String? pK;
+
 
   ViewState get viewState => _state;
-  //List<RequestData> userInterests = [];
-  Set<String> currentUserGender = Set();
-  Set<String> currentUserInterest = Set();
-  Set<String> selectedPhoto = Set();
-  String photoId = "";
-
-  List<String> rightThreeImages = ["", "", ""];
-  List<String> bottomFirstTwoImages = ["", ""];
-  String primaryImage = "";
+  Set<String> currentUserAgent = Set();
+  String selectedAgent = "";
   List<String> images = [];
   String errorMessage = "";
+
   String amount = "";
   String bankName = "";
   String userName = "";
-  String accountNumber = "";
-  bool isWithdrawAmount = true;
-  bool isBankDetails = true;
+  String agentId = "";
+  String paymentId = "";
+  String currencyType = "";
 
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController descriptionController = new TextEditingController();
-  TextEditingController dobController = new TextEditingController();
-  TextEditingController genderController = new TextEditingController();
-  TextEditingController genderControllerId = new TextEditingController();
+  String accountNumber = "";
+  bool isBuyAmount = true;
+  bool isBankDetails = true;
 
   int currentPage = 0;
 
   final widgetPages = [
     Container(
-        padding: EdgeInsets.only(bottom: 84), child: BuyAmountPage()),
+        padding: EdgeInsets.only(bottom: 20), child: BuyAmountPage()),
     Container(
-        padding: EdgeInsets.only(bottom: 84), child: BuyCheckoutPage()),
+        padding: EdgeInsets.only(bottom: 20), child: BuyCheckoutPage()),
     Container(
-        padding: EdgeInsets.only(bottom: 84), child: BuyPaymentPage()),
+        padding: EdgeInsets.only(bottom: 20), child: BuyPaymentPage()),
 
   ];
 
@@ -118,8 +110,8 @@ class BuyViewModel extends BaseViewModel {
     return pagesAnswers[index];
   }
 
-  void validateWithdrawAmount() {
-    isWithdrawAmount = isValidAmount();
+  void validateBuyAmount() {
+    isBuyAmount = isValidAmount();
     notifyListeners();
   }
 
@@ -151,12 +143,12 @@ class BuyViewModel extends BaseViewModel {
   }
 
   /// Convert currency
-  Future<ConvertData?> convertCurrency(String query) async {
+  Future<ConvertData?> convertBuyCurrency(String query) async {
     try {
       setViewState(ViewState.Loading);
       var loginResponse = await userRepository.convertCurrency(query);
-      convertData = loginResponse;
       setViewState(ViewState.Success);
+      convertCurrency = loginResponse;
       print("Showing convertCurrency response::: $loginResponse");
       return loginResponse;
     } catch (error) {
@@ -182,21 +174,22 @@ class BuyViewModel extends BaseViewModel {
   }
 
   /// get user getAgents
-  Future<List<AgentsData>?> getAgents() async {
+  Future<AgentsData?> getAgents() async {
     try {
       setViewState(ViewState.Loading);
       var response = await userRepository.getAgents();
-      setViewState(ViewState.Success);
-      print("Showing getAgents response::: $response");
       agents = response ?? [];
-      return response;
+      print("Showing getAgents response::: $response");
+      setViewState(ViewState.Success);
+      print("Showing success getAgents response::: $agents");
+      //return response;
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
   }
 
-  /// get user getAgents
+  /// get user Agent
   Future<AgentsData?> getSingleAgents(String pk) async {
     try {
       setViewState(ViewState.Loading);
@@ -219,6 +212,37 @@ class BuyViewModel extends BaseViewModel {
       user = response;
       setViewState(ViewState.Success);
     } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// purchase/buy dhoro
+  Future<WithdrawData?> buyDhoro(BuildContext context) async {
+    try {
+      var value = amount;
+      var agent = agentId;
+      var currency = currencyType;
+      var proofOfPayment = paymentId;
+
+      setViewState(ViewState.Loading);
+      var response = await userRepository.buyDhoro(value, agent, proofOfPayment, currency);
+      setViewState(ViewState.Success);
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
+      //Navigator.of(context).pushNamed(AppRoutes.dashboard);
+      print("Showing getSingleAgents response::: $response");
+      purchase = response;
+      return response;
+    } catch (error) {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: error.toString(),
+            isError: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ));
       setViewState(ViewState.Error);
       setError(error.toString());
     }

@@ -1,15 +1,55 @@
+import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
+import 'package:dhoro_mobile/domain/viewmodel/buy_viewmodel.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
-import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart' as sharedProvider;
+import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart'
+    as sharedProvider;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/src/provider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../main.dart';
+
+// final userAgentProvider =
+// ChangeNotifierProvider.autoDispose<BuyViewModel>((ref) {
+//   ref.onDispose(() {});
+//   final viewmodel = locator.get<BuyViewModel>();
+//   viewmodel.getAgents();
+//   //Load all setup questions here
+//   // viewmodel.getRequest();
+//   // viewmodel.getPaymentProcessor();
+//   return viewmodel;
+// });
+
+final _agentStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(sharedProvider.userBuyProvider).viewState;
+});
+final agentStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(_agentStateProvider);
+});
+
+final _agentsProvider =
+Provider.autoDispose<List<AgentsData>>((ref) {
+  return ref.watch(sharedProvider.userBuyProvider).agents;
+});
+final agentsProvider =
+Provider.autoDispose<List<AgentsData>>((ref) {
+  return ref.watch(_agentsProvider);
+});
+
+final _userSelectedAgentProvider = Provider.autoDispose<Set<String>>((ref) {
+  return ref.watch(sharedProvider.userBuyProvider).currentUserAgent;
+});
+final userSelectedAgentProvider = Provider.autoDispose<Set<String>>((ref) {
+  return ref.watch(_userSelectedAgentProvider);
+});
+
 
 class BuyCheckoutPage extends StatefulHookWidget {
   const BuyCheckoutPage({Key? key}) : super(key: key);
@@ -19,12 +59,17 @@ class BuyCheckoutPage extends StatefulHookWidget {
 }
 
 class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
+  List<AgentsData> selectedAgents = [];
+  int selected = 0;
+
   @override
   Widget build(BuildContext context) {
-    final isValidLogin = true;
-    List<AgentsData>? agents =
-        useProvider(sharedProvider.userRequestProvider).agents;
-    bool isChecked = false;
+
+    List<AgentsData>? agents = useProvider(sharedProvider.userBuyProvider).agents;
+    context.read(sharedProvider.userBuyProvider).agentId = "${agents.first.pk}";
+
+    ViewState viewState = useProvider(agentStateProvider);
+    print("Showing agents length: ${agents.length}");
 
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -40,153 +85,171 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: 280.0,),
-
-                    Container(
-                      height: 113,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1.0, color: Pallet.colorBlue),
-                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                      ),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(agents.length, (index) {
-                                return GestureDetector(
-                                  onTap: (){
-                                    context.read(sharedProvider.userRequestProvider).getSingleAgents(agents[index].pk.toString());
-                                    context.read(sharedProvider.userRequestProvider).pK = agents[index].pk;
-                                  },
-                                  child: Container(
-                                    child: Row(
-                                      children: [
-                                        Checkbox(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 160.0,
+                  ),
+                  agents.isNotEmpty == true
+                      ? viewState == ViewState.Loading
+                      ? Center(child: CircularProgressIndicator())
+                      : Container(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(agents.length, (index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selected = index;
+                                });
+                              },
+                              child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: Pallet.colorBlue),
+                                borderRadius: BorderRadius.all(Radius.circular(2)),
+                              ),
+                                child: Row(
+                                  children: [
+                                    Checkbox(
                                         checkColor: Colors.white,
-                                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                                        value: isChecked,
+                                        fillColor: MaterialStateProperty
+                                            .resolveWith(getColor),
+                                        value: selected == index,
                                         onChanged: (bool? value) {
-                                        setState(() {
-                                        isChecked = value!;
-                                        });
-                                        }
-                                        ),
-                                        AppFontsStyle.getAppTextViewBold("${agents[index].accountName!.toTitleCase()!}",
+                                          setState(() {
+                                            context.read(sharedProvider.userBuyProvider).agentId = agents[index].pk!;
+                                            print("Show clicked INDEX... ${agents[index].pk}");
+                                          });
+                                        }),
+                                    AppFontsStyle.getAppTextViewBold(
+                                        "${agents[index].accountName!.toTitleCase()!}",
+                                        weight: FontWeight.w500,
+                                        size:
+                                        AppFontsStyle.textFontSize12),
+                                    Spacer(),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 16.0),
+                                      child: Container(
+                                        child: AppFontsStyle.getAppTextViewBold(
+                                            "${agents[index].bankName!.toTitleCase()!}",
                                             weight: FontWeight.w500,
-                                            size: AppFontsStyle.textFontSize12),
-                                        SizedBox(height: 12.0,),
-                                        AppFontsStyle.getAppTextViewBold("${agents[index].bankName!}",
-                                            weight: FontWeight.w500,
-                                            size: AppFontsStyle.textFontSize12),
-                                        SizedBox(height: 12.0,),
-                                      ],
+                                            color: Pallet.colorGrey,
+                                            size:
+                                            AppFontsStyle.textFontSize12),
+                                      ),
                                     ),
-                                  ),
-                                );
-                            })
-
-
-                              // ],
-                            ),
-                          ),
-                          Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Pallet.colorBackground,
-                                    borderRadius: BorderRadius.all(Radius.circular(2)),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                                    child: AppFontsStyle.getAppTextViewBold("Change",
-                                        weight: FontWeight.w400,
-                                        size: AppFontsStyle.textFontSize10),
-                                  ),
+                                    SizedBox(
+                                      height: 12.0,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 100,
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap:(){
-                            // context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
-                            // context.read(sharedProvider.userRequestProvider).userName = "${userTransactions.first.label!.toTitleCase()!}";
-                            // context.read(sharedProvider.userRequestProvider).bankName = "${userTransactions.first.processor}";
-                            // context.read(sharedProvider.userRequestProvider).accountNumber = "${userTransactions.first.value}";
-
-              },
-                          child: Container(
-                            height: 50,
-                            width: 120,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1.0, color: Pallet.colorRed),
-                              borderRadius: BorderRadius.all(Radius.circular(2))),
-                            child: Center(
-                              child: AppFontsStyle.getAppTextViewBold("Cancel",
-                                  color: Pallet.colorRed,),
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                        GestureDetector(
-                          onTap: (){
-                            context.read(sharedProvider.userRequestProvider).moveToNextPage();
-                          },
-                          child: Container(
-                            height: 50,
-                            width: 120,
-                            decoration: BoxDecoration(
-                              color: Pallet.colorBlue,
-                              borderRadius: BorderRadius.circular(2),
-                              border: Border.all(
-                                color: Colors.transparent,
-                                width: 1.5,
                               ),
                             ),
-                            child: Center(
-                              child: AppFontsStyle.getAppTextViewBold("PROCEED",
-                                  color: Pallet.colorWhite,),
+                          );
+                        })
+                    ),
+                  )
+                      :buildEmptyView(),
+
+                  SizedBox(
+                    height: 16,
+                  ),
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          context.read(sharedProvider.userBuyProvider).moveToPreviousPage();
+                        },
+                        child: Container(
+                          height: 50,
+                          width: 120,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1.0, color: Pallet.colorRed),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(2))),
+                          child: Center(
+                            child: AppFontsStyle.getAppTextViewBold(
+                              "Cancel",
+                              color: Pallet.colorRed,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                  ],
+                      ),
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          context
+                              .read(sharedProvider.userBuyProvider).moveToNextPage();
+                          setState(() {
+                            context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[selected].pk}");
+                          });
+                        },
+                        child: Container(
+                          height: 50,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            color: Pallet.colorBlue,
+                            borderRadius: BorderRadius.circular(2),
+                            border: Border.all(
+                              color: Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Center(
+                            child: AppFontsStyle.getAppTextViewBold(
+                              "PROCEED",
+                              color: Pallet.colorWhite,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
+  Widget buildEmptyView() {
+    return Container(
+      height: 80,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 20.0,
+          ),
+          AppFontsStyle.getAppTextViewBold("No agents yet",
+              size: 14, textAlign: TextAlign.center, color: Pallet.colorBlue),
+          SizedBox(
+            height: 8.0,
+          ),
+        ],
+      ),
+    );
+  }
 }

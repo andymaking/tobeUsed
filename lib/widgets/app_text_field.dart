@@ -177,6 +177,7 @@ class _AmountFormFieldState extends State<AmountFormField> {
                       onChanged: widget.onChanged,
                       validator: widget.validator,
                       maxLines: null,
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
                       style: GoogleFonts.manrope(
                         color: Pallet.colorBlue,
                         fontSize: AppFontsStyle.textFontSize14,
