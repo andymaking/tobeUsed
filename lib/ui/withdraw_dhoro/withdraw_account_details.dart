@@ -23,6 +23,7 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
     final isValidLogin = true;
     List<PaymentProcessorData>? userTransactions =
         useProvider(sharedProvider.userRequestProvider).paymentProcessor;
+    context.read(sharedProvider.userRequestProvider).paymentId = "${userTransactions.first.pk}";
 
     return Scaffold(
       body: SafeArea(

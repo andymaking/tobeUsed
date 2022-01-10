@@ -186,4 +186,10 @@ class UserRepositoryImpl extends UserRepository {
     return await userRemote.buyDhoro(token,value, agent, proofOfPayment, currencyType);
   }
 
+  @override
+  Future<WithdrawData?> withdrawDhoro(String amount, String agent, String paymentMethod, String currencyType) async {
+    final token = await getToken();
+    return await userRemote.withdrawDhoro(token,amount, agent, paymentMethod, currencyType);
+  }
+
 }

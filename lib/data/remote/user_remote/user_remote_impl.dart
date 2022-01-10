@@ -403,7 +403,25 @@ class UserRemoteImpl extends UserRemote {
     }
   }
 
-
+  @override
+  Future<WithdrawData?> withdrawDhoro(TokenMetaData tokenMetaData, String amount, String agent, String paymentMethod, String currencyType) async {
+    try {
+      var _data = {
+        'amount': amount,
+        'currency_type': currencyType,
+        'payment_method': paymentMethod,
+        'agent': agent,
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/request/destroy", data: _data);
+      final responseData = WithdrawResponse.fromJson(response.data);
+      print("withdrawDhoro from Remote layer:: $responseData");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
 
 
 
