@@ -28,7 +28,8 @@ abstract class UserRemote {
       );
   Future<String?> verifyAccount(String otp);
   Future<WalletData?> getWalletBalance(TokenMetaData tokenMetaData);
-  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData,);
+  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData);
+  Future<List<TransferHistoryData>?> getTransferHistoryQuery(TokenMetaData tokenMetaData, String query);
   Future<GetUserData?> getUser(TokenMetaData tokenMetaData);
   Future<String?> changePassword(TokenMetaData tokenMetaData,String oldPassword, String newPassword);
   Future<String?> forgotPassword(String email,);

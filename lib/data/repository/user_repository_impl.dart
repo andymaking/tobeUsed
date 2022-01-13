@@ -192,4 +192,10 @@ class UserRepositoryImpl extends UserRepository {
     return await userRemote.withdrawDhoro(token,amount, agent, paymentMethod, currencyType);
   }
 
+  @override
+  Future<List<TransferHistoryData>?> getTransferHistoryQuery(String query) async {
+    final tokenMeta = await getToken();
+    return await userRemote.getTransferHistoryQuery(tokenMeta, query);
+  }
+
 }
