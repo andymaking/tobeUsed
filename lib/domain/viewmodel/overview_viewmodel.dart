@@ -34,6 +34,7 @@ class OverviewViewModel extends BaseViewModel {
   ViewState get viewState => _state;
   String? errorMessage;
   String email = "";
+  String popupSelection = "";
   String password = "";
   bool isValidLogin = false;
   bool isHidePassword = true;
@@ -169,6 +170,20 @@ class OverviewViewModel extends BaseViewModel {
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
       print("Success transferHistory $transferHistory");
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  Future<TransferHistoryData?> getTransferHistoryQuery(String query) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getTransferHistoryQuery(query);
+      transferHistory = response ?? [];
+      print("getTransferHistoryQuery $transferHistory");
+      setViewState(ViewState.Success);
+      print("Success getTransferHistoryQuery $transferHistory");
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());

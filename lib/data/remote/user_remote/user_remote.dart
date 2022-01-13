@@ -28,7 +28,8 @@ abstract class UserRemote {
       );
   Future<String?> verifyAccount(String otp);
   Future<WalletData?> getWalletBalance(TokenMetaData tokenMetaData);
-  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData,);
+  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData);
+  Future<List<TransferHistoryData>?> getTransferHistoryQuery(TokenMetaData tokenMetaData, String query);
   Future<GetUserData?> getUser(TokenMetaData tokenMetaData);
   Future<String?> changePassword(TokenMetaData tokenMetaData,String oldPassword, String newPassword);
   Future<String?> forgotPassword(String email,);
@@ -38,6 +39,7 @@ abstract class UserRemote {
   Future<List<PaymentProcessorData>?> getPaymentProcessors(TokenMetaData tokenMetaData);
   Future<MessageResponse?> deletePaymentProcessor(String pk,TokenMetaData tokenMetaData);
   Future<List<RequestData>?> getRequests(TokenMetaData tokenMetaData);
+  Future<List<RequestData>?> getRequestsQuery(TokenMetaData tokenMetaData, String query);
   Future<GetUserData?> updateUserProfile(TokenMetaData tokenMetaData,String firstName, String lastName, String phoneNumber);
   Future<PaymentProcessorData?> addPaymentProcessors(TokenMetaData tokenMetaData,String bankName, String userName, String accountNumber);
   Future<GetUserData?> addAvatar(TokenMetaData tokenMetaData,String avatar);

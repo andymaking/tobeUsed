@@ -12,6 +12,7 @@ class AppFormField extends StatefulWidget {
    */
   InputDecoration? decorator;
   double? height;
+  double? width;
   String label;
   Widget? icon;
   Function()? onTap;
@@ -24,6 +25,7 @@ class AppFormField extends StatefulWidget {
       {this.controller,
         this.decorator,
         this.height,
+        this.width,
         required this.label,
         this.icon,
         this.onTap,
@@ -54,6 +56,7 @@ class _AppFormFieldState extends State<AppFormField> {
     return Container(
       padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
       height: widget.height ?? null,
+      width: widget.height ?? null,
       decoration: BoxDecoration(
         border: widget.focus == true
             ? Border.all(width: 1.0, color: Pallet.colorBlue)

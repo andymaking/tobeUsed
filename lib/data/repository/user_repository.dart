@@ -31,12 +31,14 @@ abstract class UserRepository {
   Future<String?> forgotPassword(String email);
   Future<String?> changePassword(String oldPassword, String newPassword);
   Future<List<TransferHistoryData>?> getTransferHistory();
+  Future<List<TransferHistoryData>?> getTransferHistoryQuery(String query);
   Future<WalletStatusMessage?> getWalletStatus();
   Future<MessageResponse?> lockOrUnlockWallet(bool status);
   Future<String?> getWalletPercentage();
   Future<List<PaymentProcessorData>?> getPaymentProcessors();
   Future<MessageResponse?> deletePaymentProcessor(String pk);
   Future<List<RequestData>?> getRequests();
+  Future<List<RequestData>?> getRequestsQuery(String query);
   Future<GetUserData?> updateUserProfile(String firstName, String lastName, String phoneNumber );
   Future<PaymentProcessorData?> addPaymentProcessors(String bankName, String userName, String accountNumber);
   Future<GetUserData?> addAvatar(String avatar);

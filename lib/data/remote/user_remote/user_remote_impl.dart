@@ -423,6 +423,36 @@ class UserRemoteImpl extends UserRemote {
     }
   }
 
+  @override
+  Future<List<TransferHistoryData>?> getTransferHistoryQuery(TokenMetaData tokenMetaData, String query) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/transfer/history?$query",
+      );
+      final responseData = TransferHistoryDataResponse.fromJson(response.data);
+      print("TransferHistory from Remote layer:: $responseData");
+      return responseData.results?.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<List<RequestData>?> getRequestsQuery(TokenMetaData tokenMetaData, String query) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/request?$query",
+      );
+      final responseData = RequestResponse.fromJson(response.data);
+      print("getRequests from Remote layer:: ${responseData.results?.data} response:$response");
+      return responseData.results?.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
 
 
 }
