@@ -19,6 +19,7 @@ class Pallet {
   static Color colorGrey = Color(0xff13283F).withOpacity(0.5);
   static Color colorBlue = Color(0xff13283F);
   static Color colorBackground = Color(0xFFE8EEF3);
+  static Color buttonColor = Color(0xFFD2DFEA);
 
 
 }

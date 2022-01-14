@@ -1,9 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
-import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/domain/viewmodel/overview_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
@@ -14,12 +14,12 @@ import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:logger/logger.dart';
 
 final overviewProvider =
     ChangeNotifierProvider.autoDispose<OverviewViewModel>((ref) {
@@ -226,26 +226,31 @@ class _OverviewPageState extends State<OverviewPage> {
                                     height: 8,
                                   ),
                                   AppFontsStyle.getAppTextViewBold(
-                                    "5675 DHR",
+                                    "Send DHR",
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize10,
                                   ),
                                 ],
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(AppImages.redArrowDown),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  AppFontsStyle.getAppTextViewBold(
-                                    "Receive DHR",
-                                    weight: FontWeight.w500,
-                                    size: AppFontsStyle.textFontSize10,
-                                  ),
-                                ],
+                              GestureDetector(
+                                onTap: (){
+                                  showDepositBottomSheet(context, "${userData?.qrCode?.code}", "${userData?.wid}");
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(AppImages.redArrowDown),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    AppFontsStyle.getAppTextViewBold(
+                                      "Receive DHR",
+                                      weight: FontWeight.w500,
+                                      size: AppFontsStyle.textFontSize10,
+                                    ),
+                                  ],
+                                ),
                               ),
                               GestureDetector(
                                   onTap: () {
@@ -459,6 +464,146 @@ class _OverviewPageState extends State<OverviewPage> {
         ],
       ),
     );
+  }
+
+  showDepositBottomSheet(BuildContext context, String qrcode, String walletAddress) {
+    showModalBottomSheet(
+        elevation: 10,
+        backgroundColor: Colors.white,
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24), topRight: Radius.circular(24)),
+        ),
+        builder: (context) => Container(
+          height: 425,
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              color: Colors.white),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 8,
+              ),
+              SvgPicture.asset("assets/images/top_indicator.svg"),
+              SizedBox(
+                height: 24,
+              ),
+              AppFontsStyle.getAppTextViewBold("Deposit Dhoro",
+                  color: Pallet.colorRed,
+                  weight: FontWeight.w700,
+                  size: AppFontsStyle.textFontSize16),
+              SizedBox(
+                height: 24,
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: CachedNetworkImage(
+                  height: 116,
+                  width: 116,
+                  fit: BoxFit.contain,
+                  imageUrl: "https://api.dhoro.io$qrcode",
+                  placeholder: (context, url) => SvgPicture.asset(
+                    "assets/images/ic_qrcode.svg",
+                    height: 116,
+                    width: 116,
+                    fit: BoxFit.contain,
+                  ),
+                  errorWidget: (context, url, error) => SvgPicture.asset(
+                    "assets/images/ic_error_qrcode.svg",
+                    height: 116,
+                    width: 116,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: AppFontsStyle.getAppTextViewBold(
+                  "The sender can scan the QR code to send DHR or Dhoro tokens to this DHR wallet.",
+                  weight: FontWeight.w400,
+                  textAlign: TextAlign.center,
+                  size: AppFontsStyle.textFontSize12,
+                ),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Pallet.colorWhite,
+                  border: Border.all(width: 1.0, color: Pallet.colorBlue),
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: AppFontsStyle.getAppTextViewBold(
+                        walletAddress,
+                        weight: FontWeight.w400,
+                        size: AppFontsStyle.textFontSize12,
+                      ),
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: GestureDetector(
+                        onTap: (){
+                          Clipboard.setData(ClipboardData(text: walletAddress));
+                          Fluttertoast.showToast(msg: "Wallet ID copied to clipboard");
+                          walletAddress.isNotEmpty ? ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Wallet ID copied to clipboard"),
+                            ),
+                          ) : ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Nothing to copied to clipboard"),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 25,
+                          decoration: BoxDecoration(
+                             color: Pallet.buttonColor,
+                              borderRadius: BorderRadius.all(Radius.circular(2))),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold("Copy",
+                                  weight: FontWeight.w400,
+                                  textAlign: TextAlign.center,
+                                  size: AppFontsStyle.textFontSize10),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: AppFontsStyle.getAppTextViewBold(
+                  "This address can only be used to receive DHR or Dhoro tokens on the Dhoro network.",
+                  weight: FontWeight.w400,
+                  textAlign: TextAlign.center,
+                  size: AppFontsStyle.textFontSize12,
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
 
