@@ -198,4 +198,10 @@ class UserRepositoryImpl extends UserRepository {
     return await userRemote.getTransferHistoryQuery(tokenMeta, query);
   }
 
+  @override
+  Future<List<RequestData>?> getRequestsQuery(String query) async {
+    final token = await getToken();
+    return await userRemote.getRequestsQuery(token, query);
+  }
+
 }

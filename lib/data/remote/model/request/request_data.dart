@@ -1,3 +1,4 @@
+import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 
 class RequestData {
@@ -10,7 +11,7 @@ class RequestData {
   double? totalUsd;
   double? totalNgn;
   String? wid;
-  String? proof;
+  PaymentProcessorData? proof;
   Payment? payment;
   String? type;
   String? status;
@@ -44,7 +45,7 @@ class RequestData {
     totalUsd = json['total_usd'];
     totalNgn = json['total_ngn'];
     wid = json['wid'];
-    proof = json['proof'];
+    proof = json['proof'] != null ? PaymentProcessorData.fromJson(json['proof']) : null;
     payment = json['payment'] != null ? Payment.fromJson(json['payment']) : null;
     type = json['type'];
     status = json['status'];
@@ -63,7 +64,9 @@ class RequestData {
     map['total_usd'] = totalUsd;
     map['total_ngn'] = totalNgn;
     map['wid'] = wid;
-    map['proof'] = proof;
+    if (proof != null) {
+      map['proof'] = proof?.toJson();
+    }
     if (payment != null) {
       map['payment'] = payment?.toJson();
     }

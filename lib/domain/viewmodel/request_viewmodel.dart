@@ -137,10 +137,25 @@ class RequestViewModel extends BaseViewModel {
     try {
       setViewState(ViewState.Loading);
       var response = await userRepository.getRequests();
-      requestList = response ?? [];
       print("getRequest $requestList");
       setViewState(ViewState.Success);
-      print("Success getRequest $requestList");
+      requestList = response ?? [];
+      print("Success viewModel getRequest $requestList");
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// get request with query
+  Future<RequestData?> getRequestQuery(String query) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getRequestsQuery(query);
+      print("getRequestQuery $requestList");
+      setViewState(ViewState.Success);
+      requestList = response ?? [];
+      print("Success viewModel getRequestQuery $requestList");
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
