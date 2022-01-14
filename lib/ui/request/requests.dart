@@ -422,7 +422,7 @@ class _RequestsPageState extends State<RequestsPage> {
             Visibility(
               visible: focusPopStatus == true,
               child: Padding(
-                padding: const EdgeInsets.only(top: 110.0, right: 24),
+                padding: const EdgeInsets.only(top: 210.0, right: 24),
                 child: Align(
                     alignment: Alignment.topRight,
                     child: statusPopView(
@@ -457,7 +457,7 @@ class _RequestsPageState extends State<RequestsPage> {
             Visibility(
               visible: focusPopType == true,
               child: Padding(
-                padding: const EdgeInsets.only(top: 110.0, right: 24),
+                padding: const EdgeInsets.only(top: 210.0, right: 24),
                 child: Align(
                     alignment: Alignment.topRight,
                     child: typePopView(
@@ -465,7 +465,7 @@ class _RequestsPageState extends State<RequestsPage> {
                         setState(() {
                           print("pressed WITHDRAW");
                           selectedType = "WITHDRAW";
-                          focusPopStatus = false;
+                          focusPopType = false;
                           context.read(requestProvider).getRequestQuery("$selectedOption=$selectedType");
                         });
                       },
@@ -473,7 +473,7 @@ class _RequestsPageState extends State<RequestsPage> {
                         setState(() {
                           print("pressed PURCHASE");
                           selectedType = "PURCHASE";
-                          focusPopStatus = false;
+                          focusPopType = false;
                           context.read(requestProvider).getRequestQuery("$selectedOption=$selectedType");
                         });
                       },
@@ -484,14 +484,12 @@ class _RequestsPageState extends State<RequestsPage> {
             Visibility(
                 visible: focusPopInput,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 110.0, right: 24),
+                  padding: const EdgeInsets.only(top: 210.0, right: 24),
                   child: Align(
-                    alignment: Alignment.topRight,
+                    alignment: Alignment.centerRight,
                     child: inputPopView(
-                        selectedOption.contains("amount") ? "Enter Amount"
-                            : selectedOption.contains("receive") ? "Sent From Wallet ID"
-                            : selectedOption.contains("send") ? "Sent to Wallet ID"
-                            : "",
+                        selectedOption.contains("wid") ? "Enter Wallet ID"
+                            : "Enter Total",
                             (value){
                           setState(() {
                             inputValue = value.trim();
@@ -505,7 +503,7 @@ class _RequestsPageState extends State<RequestsPage> {
                           return null;
                         },
                         _inputController,
-                        selectedOption.contains("amount")
+                        selectedOption.contains("total")
                             ? TextInputType.numberWithOptions(decimal: true)
                             : TextInputType.text),
                   ),
@@ -614,7 +612,7 @@ class _RequestsPageState extends State<RequestsPage> {
       Function()? onPressedDeclined
       ) {
     return Container(
-      height: 105,
+      height: 140,
       decoration: BoxDecoration(
         color: Pallet.colorWhite,
         border: Border.all(width: 1.0, color: Pallet.colorBlue),
