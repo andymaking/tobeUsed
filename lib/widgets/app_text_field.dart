@@ -56,7 +56,7 @@ class _AppFormFieldState extends State<AppFormField> {
     return Container(
       padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
       height: widget.height ?? null,
-      width: widget.height ?? null,
+      width: widget.width ?? null,
       decoration: BoxDecoration(
         border: widget.focus == true
             ? Border.all(width: 1.0, color: Pallet.colorBlue)

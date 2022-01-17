@@ -3,7 +3,6 @@ import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
-import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -20,7 +19,6 @@ class WithdrawAccountDetailsPage extends StatefulHookWidget {
 class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage> {
   @override
   Widget build(BuildContext context) {
-    final isValidLogin = true;
     List<PaymentProcessorData>? userTransactions =
         useProvider(sharedProvider.userRequestProvider).paymentProcessor;
     context.read(sharedProvider.userRequestProvider).paymentId = "${userTransactions.first.pk}";
@@ -52,9 +50,6 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // userTransactions[index].label!.toTitleCase()!,
-                                // userTransactions[index].processor!,
-                                // userTransactions[index].value!
                                 context.read(sharedProvider.userRequestProvider).userName.isEmpty
                                     ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
                                     weight: FontWeight.w500,

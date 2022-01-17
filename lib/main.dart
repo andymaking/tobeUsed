@@ -12,7 +12,6 @@ import 'package:dhoro_mobile/domain/viewmodel/profile_viewmodel.dart';
 import 'package:dhoro_mobile/domain/viewmodel/request_viewmodel.dart';
 import 'package:dhoro_mobile/domain/viewmodel/signup_viewmodel.dart';
 import 'package:dhoro_mobile/domain/viewmodel/verify_account_viewmodel.dart';
-import 'package:dhoro_mobile/domain/viewmodel/withdraw_viewmodel.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/change_statusbar_color.dart';

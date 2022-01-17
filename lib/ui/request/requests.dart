@@ -233,7 +233,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                             width: 137,
                                             child: Center(
                                               child: AppFontsStyle.getAppTextViewBold(
-                                                  'WITHDRAW DHORO',
+                                                  'SELL DHORO',
                                                   size: AppFontsStyle.textFontSize12,
                                                   color: Pallet.colorBlue,
                                                   textAlign: TextAlign.center),
