@@ -108,6 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           }
                           return null;
                         },
+                        isHidden: false,
                       ),
                       SizedBox(
                         height: 16,
@@ -125,6 +126,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           }
                           return null;
                         },
+                        isHidden: false,
                       ),
                       SizedBox(
                         height: 16,
@@ -142,6 +144,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           }
                           return null;
                         },
+                        isHidden: false,
                       ),
                       SizedBox(
                         height: 16,
@@ -160,6 +163,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           }
                           return null;
                         },
+                        isHidden: false,
                       ),
                       SizedBox(
                         height: 16.0,

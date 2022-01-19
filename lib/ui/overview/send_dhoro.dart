@@ -147,6 +147,7 @@ class _SendDhoroPageState extends State<SendDhoroPage> {
                               }
                               return null;
                             },
+                            isHidden: false,
                           ),
                           SizedBox(
                             height: 20,

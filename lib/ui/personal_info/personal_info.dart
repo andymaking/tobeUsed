@@ -131,6 +131,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                                 }
                                 return null;
                               },
+                              isHidden: false,
                             ),
                             SizedBox(
                               height: 16,
@@ -148,6 +149,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                                 }
                                 return null;
                               },
+                              isHidden: false,
                             ),
                             SizedBox(height: 32.0,),
                             AppFontsStyle.getAppTextViewBold(
@@ -229,6 +231,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                                 }
                                 return null;
                               },
+                              isHidden: false,
                             ),
                             SizedBox(height: 32.0,),
                             viewState == ViewState.Loading

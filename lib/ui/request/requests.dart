@@ -299,6 +299,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                     focusPopInput = false;
                                     focusPopStatus = false;
                                     focusPopType = false;
+                                    _inputController.text = "";
                                   });
                                 },
                                 child: SvgPicture.asset(AppImages.iconMenu)),
@@ -346,9 +347,6 @@ class _RequestsPageState extends State<RequestsPage> {
                                             requestList[index]
                                                 .payment?.user ?? ""
                                         ),
-                                        // SizedBox(
-                                        //   height: 8,
-                                        // ),
                                         Divider(
                                           height: 1,
                                           color: Pallet.colorBlue.withOpacity(0.3),
@@ -666,6 +664,7 @@ class _RequestsPageState extends State<RequestsPage> {
           onChanged: onChanged,
           validator: validator,
           keyboardType: keyboardType,
+          isHidden: false,
         ),
       ),
     );

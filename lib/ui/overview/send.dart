@@ -167,6 +167,7 @@ class _SendPageState extends State<SendPage> {
                           }
                           return null;
                         },
+                        isHidden: false,
                       ),
                       SizedBox(
                         height: 20,

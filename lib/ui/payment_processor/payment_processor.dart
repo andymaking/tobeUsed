@@ -128,6 +128,7 @@ class _PaymentProcessorPageState extends State<PaymentProcessorPage> {
                                   }
                                   return null;
                                 },
+                                isHidden: false,
                               ),
                               SizedBox(
                                 height: 16,
@@ -145,6 +146,7 @@ class _PaymentProcessorPageState extends State<PaymentProcessorPage> {
                                   }
                                   return null;
                                 },
+                                isHidden: false,
                               ),
                               SizedBox(
                                 height: 16,
@@ -162,6 +164,7 @@ class _PaymentProcessorPageState extends State<PaymentProcessorPage> {
                                   }
                                   return null;
                                 },
+                                isHidden: false,
                               ),
                               SizedBox(height: 32.0,),
                               viewState == ViewState.Loading

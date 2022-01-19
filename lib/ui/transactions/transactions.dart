@@ -156,6 +156,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                                   focus = !focus;
                                   focusPopInput = false;
                                   focusPopStatus = false;
+                                  _inputController.text = "";
                                 });
                               },
                               child: Column(
@@ -465,6 +466,7 @@ class _TransactionsPageState extends State<TransactionsPage>
           onChanged: onChanged,
           validator: validator,
           keyboardType: keyboardType,
+          isHidden: false,
         ),
       ),
     );
