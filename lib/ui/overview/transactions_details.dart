@@ -35,6 +35,7 @@ class TransactionsDetailsPage extends HookWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               OverViewToolBar(
                 "Transaction details",
@@ -43,7 +44,7 @@ class TransactionsDetailsPage extends HookWidget {
                 initials: initials,
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 16.0),
+                padding: const EdgeInsets.only(top: 16.0, left: 20, bottom: 16),
                 child: GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
                     child: SvgPicture.asset("assets/images/arrow_back.svg")),

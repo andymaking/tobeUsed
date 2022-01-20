@@ -677,7 +677,7 @@ class TransactionHeader extends StatelessWidget {
               width: 24,
             ),
             AppFontsStyle.getAppTextViewBold(
-              AppString.value,
+              "Amount",
               color: Pallet.colorWhite,
               size: AppFontsStyle.textFontSize12,
             ),
