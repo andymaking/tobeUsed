@@ -1,46 +1,39 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
-import 'package:dhoro_mobile/domain/viewmodel/overview_viewmodel.dart';
+import 'package:dhoro_mobile/domain/viewmodel/transactions_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/ui/overview/transactions_details.dart';
 import 'package:dhoro_mobile/ui/transactions/popup_view.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
+import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final transactionsProvider =
-    ChangeNotifierProvider.autoDispose<OverviewViewModel>((ref) {
+    ChangeNotifierProvider.autoDispose<TransactionsViewModel>((ref) {
   ref.onDispose(() {});
-  final viewModel = locator.get<OverviewViewModel>();
+  final viewModel = locator.get<TransactionsViewModel>();
   viewModel.getTransferHistory();
   viewModel.getUser();
-  // viewModel.walletBalance();
-  // viewModel.getWalletStatus();
-  // viewModel.getWalletPercentage();
   return viewModel;
 });
 
-final _percentageProvider = Provider.autoDispose<String?>((ref) {
-  return ref.watch(transactionsProvider).walletPercentage;
-});
-final percentageProvider = Provider.autoDispose<String?>((ref) {
-  return ref.watch(_percentageProvider);
-});
-
-final _overviewStateProvider = Provider.autoDispose<ViewState>((ref) {
+final _transactionsStateProvider = Provider.autoDispose<ViewState>((ref) {
   return ref.watch(transactionsProvider).viewState;
 });
-final profileStateProvider = Provider.autoDispose<ViewState>((ref) {
-  return ref.watch(_overviewStateProvider);
+final transactionsStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(_transactionsStateProvider);
 });
 
 final _userTransfersProvider =
@@ -68,6 +61,8 @@ class _TransactionsPageState extends State<TransactionsPage>
   String selectedOption = "Status";
   String selectedStatus = "DESTROY";
   String inputValue = "";
+  int page = 1;
+  int lastPage = 0;
 
   @override
   void initState() {
@@ -77,45 +72,15 @@ class _TransactionsPageState extends State<TransactionsPage>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        print("app in resumed");
-        break;
-      case AppLifecycleState.inactive:
-        print("app in inactive");
-        break;
-      case AppLifecycleState.paused:
-        focus = false;
-        focusPopInput = false;
-        focusPopStatus = false;
-        print(
-            "app in paused.. focus: $focus, focusPopInput: $focusPopInput, focusPopStatus: $focusPopStatus");
-        break;
-      case AppLifecycleState.detached:
-        focus = false;
-        focusPopInput = false;
-        focusPopStatus = false;
-        print(
-            "app in detached.. focus: $focus, focusPopInput: $focusPopInput, focusPopStatus: $focusPopStatus");
-        break;
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
+    final viewState = useProvider(transactionsStateProvider);
     List<TransferHistoryData>? userTransactions =
-        useProvider(transactionsProvider).transferHistory;
+        useProvider(userTransferProvider);
     GetUserData? userData = useProvider(transactionsProvider).user;
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
-    //FocusScopeNode currentFocus = FocusScope.of(context);
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -146,7 +111,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                             width: 8,
                           ),
                           AppFontsStyle.getAppTextViewBold(
-                            "Latest 12 from a total of ${userTransactions.length} transactions",
+                            "Latest 12 from a total of ${userTransactions?.length} transactions",
                             weight: FontWeight.w500,
                             size: AppFontsStyle.textFontSize10,
                           ),
@@ -171,73 +136,205 @@ class _TransactionsPageState extends State<TransactionsPage>
                     height: 16,
                   ),
                   TransactionHeader(),
-                  userTransactions.isNotEmpty == true
+                  userTransactions?.isNotEmpty == true
                       ? Padding(
                           padding: const EdgeInsets.only(
                               left: 24.0, right: 24, bottom: 24),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(2)),
-                                color: const Color(0xfffffffff)),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: List.generate(userTransactions.length,
-                                    (index) {
-                                  return GestureDetector(
-                                    onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 2.0),
-                                      child: Container(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            TransactionList(
-                                                () {
+                          child: viewState == ViewState.Loading
+                              ? AppProgressBar()
+                              : Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(2)),
+                                      color: const Color(0xfffffffff)),
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 10.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: List.generate(
+                                          userTransactions!.length, (index) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 2.0),
+                                          child: Container(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                TransactionList(() {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => TransactionsDetailsPage(data : userTransactions[index]),
+                                                      builder: (context) =>
+                                                          TransactionsDetailsPage(
+                                                              data:
+                                                                  userTransactions[
+                                                                      index]),
                                                     ),
                                                   );
                                                 },
-                                                userTransactions[index]
-                                                    .pk
-                                                    .toString(),
-                                                userTransactions[index]
-                                                    .status
-                                                    .toString(),
-                                                userTransactions[index]
-                                                    .amount
-                                                    .toString(),
-                                                userTransactions[index]
-                                                    .send
-                                                    .toString()),
-                                            // SizedBox(
-                                            //   height: 8,
-                                            // ),
-                                            Divider(
-                                              height: 1,
-                                              color: Pallet.colorBlue
-                                                  .withOpacity(0.3),
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                                    userTransactions[index]
+                                                        .pk
+                                                        .toString(),
+                                                    userTransactions[index]
+                                                        .status
+                                                        .toString(),
+                                                    userTransactions[index]
+                                                        .amount
+                                                        .toString(),
+                                                    userTransactions[index]
+                                                        .send
+                                                        .toString()),
+                                                // SizedBox(
+                                                //   height: 8,
+                                                // ),
+                                                Divider(
+                                                  height: 1,
+                                                  color: Pallet.colorBlue
+                                                      .withOpacity(0.3),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }),
                                     ),
-                                  );
-                                }),
-                              ),
-                            ),
-                          ),
+                                  ),
+                                ),
                         )
                       : buildEmptyView(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            print("Pressed one");
+                            context
+                                .read(transactionsProvider)
+                                .getTransferHistoryWithPaging(1);
+                          });
+                        },
+                        child: Container(
+                          height: 40,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 2.5, horizontal: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: Pallet.colorWhite,
+                          ),
+                          child: Center(
+                            child: AppFontsStyle.getAppTextViewBold("First",
+                                size: AppFontsStyle.textFontSize16,
+                                color: Pallet.colorBlue),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            page -= 1;
+                            print("Pressed:: $page");
+                            context
+                                .read(transactionsProvider)
+                                .getTransferHistoryWithPaging(page);
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              "assets/images/back_arrow.svg",
+                              width: 40,
+                              height: 40,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
+                        child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              height: 40,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 2.5, horizontal: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(2),
+                                color: Pallet.colorWhite,
+                              ),
+                              child: Center(
+                                child: AppFontsStyle.getAppTextViewBold(
+                                    "1 of ${context.read(transactionsProvider).lastPage}",
+                                    size: AppFontsStyle.textFontSize12,
+                                    color: Pallet.colorBlue),
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                page += 1;
+                                print("Pressed:: $page");
+                                context
+                                    .read(transactionsProvider)
+                                    .getTransferHistoryWithPaging(page);
+                              });
+                            }),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            page += 1;
+                            print("Pressed:: $page");
+                            context
+                                .read(transactionsProvider)
+                                .getTransferHistoryWithPaging(page);
+                          });
+                        },
+                        child: SvgPicture.asset(
+                          "assets/images/arrow_forward.svg",
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          var last = await sharedPreference.getTransLastPage();
+                          setState(() {
+                            print("Pressed:: $last");
+                            context
+                                .read(transactionsProvider)
+                                .getTransferHistoryWithPaging(last);
+                          });
+                        },
+                        child: Container(
+                          height: 40,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 2.5, horizontal: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: Pallet.colorWhite,
+                          ),
+                          child: Center(
+                            child: AppFontsStyle.getAppTextViewBold("Last",
+                                size: AppFontsStyle.textFontSize16,
+                                color: Pallet.colorBlue),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
                 ],
               ),
             ]),

@@ -75,8 +75,25 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 280.0,),
-
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 30.0,),
+                          child: GestureDetector(
+                            onTap: (){
+                              print("Clicked");
+                              Navigator.of(context).pop();
+                            },
+                            child: SvgPicture.asset(
+                              "assets/images/back_arrow.svg",
+                              width: 40,
+                              height: 40,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 250.0,),
                     AmountFormField(
                       label: AppString.amount,
                       controller: _amountController,
@@ -142,19 +159,19 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                     ),
                     Row(
                       children: [
-                        convert == null ? Container()
+                        convert == null && _amountController.text.isEmpty ? Container()
                         : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            selectedOption == "USD" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.usd ?? 0.0}",
+                            selectedOption == "USD" ? Container() : AppFontsStyle.getAppTextViewBold("${convert?.usd ?? 0.0}",
                                 weight: FontWeight.w500,
                                 size: AppFontsStyle.textFontSize12),
                             SizedBox(height: 4,),
-                            selectedOption == "DHR" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.dhr ?? 0.0}",
+                            selectedOption == "DHR" ? Container() : AppFontsStyle.getAppTextViewBold("${convert?.dhr ?? 0.0}",
                                 weight: FontWeight.w500,
                                 size: AppFontsStyle.textFontSize12),
                             SizedBox(height: 4,),
-                            selectedOption == "NGN" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.ngn ?? 0.0}",
+                            selectedOption == "NGN" ? Container() : AppFontsStyle.getAppTextViewBold("${convert?.ngn ?? 0.0}",
                                 weight: FontWeight.w500,
                                 size: AppFontsStyle.textFontSize12),
                           ],

@@ -7,6 +7,7 @@ import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart' as sharedProvider;
@@ -33,6 +34,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
     "USD",
     "NGN",
   ];
+  bool showCovertCurrency = false;
   String selectedOption = "DHR";
   TextEditingController _amountController = TextEditingController();
   PageController controller = PageController();
@@ -74,7 +76,25 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 280.0,),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 30.0,),
+                          child: GestureDetector(
+                            onTap: (){
+                              print("Clicked");
+                              Navigator.of(context).pop();
+                            },
+                            child: SvgPicture.asset(
+                              "assets/images/back_arrow.svg",
+                              width: 40,
+                              height: 40,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 250.0,),
 
                     AmountFormField(
                       label: AppString.amount,
@@ -141,7 +161,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                     ),
                     Row(
                       children: [
-                        convert != null
+                        convert != null && _amountController.text.isNotEmpty
                             ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

@@ -147,7 +147,7 @@ class BuyViewModel extends BaseViewModel {
   Future<RequestData?> getRequest() async {
     try {
       setViewState(ViewState.Loading);
-      var response = await userRepository.getRequests();
+      var response = await userRepository.getRequests(1);
       requestList = response ?? [];
       print("getRequest $requestList");
       setViewState(ViewState.Success);

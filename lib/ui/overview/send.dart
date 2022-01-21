@@ -74,6 +74,17 @@ class _SendPageState extends State<SendPage> {
             SizedBox(
               height: 200,
             ),
+            GestureDetector(
+              onTap: (){
+                print("Clicked");
+                Navigator.of(context).pop();
+              },
+              child: SvgPicture.asset(
+                "assets/images/back_arrow.svg",
+                width: 40,
+                height: 40,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),
               child: Container(
@@ -316,29 +327,6 @@ class _SendPageState extends State<SendPage> {
       ),
     );
   }
-
-  // void observeState(BuildContext context) async {
-  //   final sendViewModel = context.read(sharedProvider.overviewProvider);
-  //   context.read(sharedProvider.overviewProvider).sendDhoro(
-  //       context,
-  //       "${_amountController.text.trim()}",
-  //       selectedOption,
-  //       "${_walletIdController.text.trim()}");
-  //   var viewModel = await sendViewModel.sendDhoro(
-  //       context,
-  //       "${_amountController.text.trim()}",
-  //       selectedOption,
-  //       "${_walletIdController.text.trim()}");
-  //   if (sendViewModel.viewState == ViewState.Success) {
-  //     //print('signin details $signIn');
-  //     showSuccessBottomSheet(context, "${_amountController.text.trim()}$selectedOption",
-  //         _walletIdController.text.trim());
-  //     //Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
-  //   } else {
-  //     showFailedBottomSheet(context, viewModel!.message.toString(),
-  //         "${_amountController.text.trim()}$selectedOption", _walletIdController.text.trim());
-  //   }
-  // }
 
 }
 

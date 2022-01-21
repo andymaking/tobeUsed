@@ -131,9 +131,9 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<List<RequestData>?> getRequests() async{
+  Future<List<RequestData>?> getRequests(int page) async{
     final token = await getToken();
-    return await userRemote.getRequests(token);
+    return await userRemote.getRequests(token, page);
   }
 
   @override

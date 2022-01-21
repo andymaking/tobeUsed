@@ -116,6 +116,7 @@ class UserRemoteImpl extends UserRemote {
       );
       final responseData = TransferHistoryDataResponse.fromJson(response.data);
       print("TransferHistory from Remote layer:: $responseData");
+      sharedPreference.saveTransLastPage(responseData.totalPages!);
       return responseData.results?.data;
     } catch (error) {
       handleError(error);
@@ -244,14 +245,18 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<List<RequestData>?> getRequests(TokenMetaData tokenMetaData) async {
+  Future<List<RequestData>?> getRequests(TokenMetaData tokenMetaData, int page) async {
     try {
+      var _queryData = {
+        'page': page,
+      };
       dioClient.options.headers['Authorization'] = tokenMetaData.token;
       var response = await dioClient.get(
-        "${NetworkConfig.BASE_URL}user/request",
+        "${NetworkConfig.BASE_URL}user/request",queryParameters: _queryData
       );
       final responseData = RequestResponse.fromJson(response.data);
       print("getRequests from Remote layer:: ${responseData.results?.data} response:$response");
+      sharedPreference.saveRequestLastPage(responseData.totalPages!);
       return responseData.results?.data;
     } catch (error) {
       handleError(error);
