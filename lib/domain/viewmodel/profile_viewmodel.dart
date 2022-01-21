@@ -66,6 +66,7 @@ class ProfileViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   Future<GetUserData?> updateUserProfile(BuildContext context, String firstName, String lastName,String phoneNumber) async {
@@ -81,6 +82,7 @@ class ProfileViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   Future<GetUserData?> addAvatar(BuildContext context, String avatar) async {
@@ -115,6 +117,7 @@ class ProfileViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
 

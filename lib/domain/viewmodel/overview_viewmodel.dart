@@ -117,6 +117,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// user walletBalance
@@ -132,14 +133,15 @@ class OverviewViewModel extends BaseViewModel {
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
-      // await showTopModalSheet<String>(
-      //     context: context,
-      //     child: ShowDialog(
-      //       title: '$error',
-      //       isError: true,
-      //       onPressed: () {},
-      //     ));
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: '$error',
+            isError: true,
+            onPressed: () {},
+          ));
     }
+    notifyListeners();
   }
 
   /// user walletBalance
@@ -155,6 +157,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// dhoro rate
@@ -170,6 +173,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// user walletBalance
@@ -188,32 +192,14 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
-  int pageNumber = 1;
-  bool hasMoreNext = true;
-  String? totalPages;
-  bool loading = false;
-  int? page;
-
-  Future<void> reload() async {
-    transferHistory = <TransferHistoryData>[];
-    pageNumber = 1;
-    await userRepository.getTransferHistory(pageNumber);
-  }
-
-  Future<void> getNextPage() async {
-    if (transferHistoryDataResponse!.next!.isEmpty == true) {
-      loading = true;
-      await userRepository.getTransferHistory(pageNumber);
-      loading = false;
-    }
-  }
 
   Future<void> getTransferHistory() async {
     try {
       setViewState(ViewState.Loading);
-      var response = await userRepository.getTransferHistory(pageNumber);
+      var response = await userRepository.getTransferHistory(1);
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
@@ -223,6 +209,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   Future<void> getTransferHistoryWithPaging(pageNumber) async {
@@ -266,6 +253,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// Convert currency
@@ -301,11 +289,6 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
-  }
-
-  void updateLoginStatus(bool status) async {
-    final box = await Hive.openBox<bool>(DbTable.LOGIN_TABLE_NAME);
-    box.add(status);
   }
 
 }
