@@ -6,6 +6,7 @@ import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/send_dhoro/send_dhoro.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
+import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
@@ -27,6 +28,7 @@ class OverviewViewModel extends BaseViewModel {
   //LoggedInUser? user;
   GetUserData? user;
   List<TransferHistoryData> transferHistory = [];
+  TransferHistoryDataResponse? transferHistoryDataResponse;
   WalletData? walletData;
   RateData? rateData;
   ConvertData? convertData;
@@ -47,6 +49,9 @@ class OverviewViewModel extends BaseViewModel {
   bool isValidLogin = false;
   bool isHidePassword = true;
   bool isLoggedIn = false;
+  bool shouldFetchNextPage = true;
+  int offset = 1;
+  ScrollController? _controller;
 
   void setViewState(ViewState state) {
     _state = state;
@@ -183,10 +188,44 @@ class OverviewViewModel extends BaseViewModel {
     }
   }
 
-  Future<TransferHistoryData?> getTransferHistory() async {
+  int pageNumber = 1;
+  bool hasMoreNext = true;
+  String? totalPages;
+  bool loading = false;
+  int? page;
+
+  Future<void> reload() async {
+    transferHistory = <TransferHistoryData>[];
+    pageNumber = 1;
+    await userRepository.getTransferHistory(pageNumber);
+  }
+
+  Future<void> getNextPage() async {
+    if (transferHistoryDataResponse!.next!.isEmpty == true) {
+      loading = true;
+      await userRepository.getTransferHistory(pageNumber);
+      loading = false;
+    }
+  }
+
+  Future<void> getTransferHistory() async {
     try {
       setViewState(ViewState.Loading);
-      var response = await userRepository.getTransferHistory();
+      var response = await userRepository.getTransferHistory(pageNumber);
+      transferHistory = response ?? [];
+      print("transferHistory $transferHistory");
+      setViewState(ViewState.Success);
+      print("Success transferHistory $transferHistory");
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  Future<void> getTransferHistoryWithPaging(pageNumber) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getTransferHistory(pageNumber);
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
@@ -250,13 +289,6 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Success);
       Navigator.pop(context);
       print("Showing sendDhoro response::: $response");
-      // await showTopModalSheet<String>(
-      //     context: context,
-      //     child: ShowDialog(
-      //       title: '${response!.message}',
-      //       isError: false,
-      //       onPressed: () {},
-      //     ));
       showSuccessBottomSheet(context, "$amount $currency", wid);
       return response;
     } catch (error) {

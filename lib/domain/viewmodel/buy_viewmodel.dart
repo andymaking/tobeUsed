@@ -13,6 +13,7 @@ import 'package:dhoro_mobile/ui/buy_dhoro/buy_amount.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_checkout.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_payment.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
+import 'package:dhoro_mobile/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
 
 
@@ -50,6 +51,21 @@ class BuyViewModel extends BaseViewModel {
   bool isBankDetails = true;
 
   int currentPage = 0;
+
+  void disposeBuyDhoroControllers(){
+    print("dispose Buy Dhoro");
+    pagesAnswers = _initSetupAnswers();
+    pages = _initWidgetPages();
+    amount = "";
+    agentId = "";
+    currencyType = "";
+    paymentId = "";
+    isBuyAmount = false;
+    currentPage = 0;
+    controller = PageController(
+      initialPage: 0,
+    );
+  }
 
   final widgetPages = [
     Container(
@@ -227,12 +243,15 @@ class BuyViewModel extends BaseViewModel {
 
       setViewState(ViewState.Loading);
       var response = await userRepository.buyDhoro(value, agent, proofOfPayment, currency);
+      purchase = response;
+      print("Showing buyDhoro response::: $response");
+
       setViewState(ViewState.Success);
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
-      print("Showing buyDhoro response::: $response");
-      purchase = response;
-      return response;
+      showToast("Successfully bought Dhoro");
+      //return response;
     } catch (error) {
+      print("Showing buyDhoro error::: $error");
       await showTopModalSheet<String>(
           context: context,
           child: ShowDialog(

@@ -31,7 +31,7 @@ abstract class UserRepository {
   Future<WalletData?> walletBalance();
   Future<String?> forgotPassword(String email);
   Future<String?> changePassword(String oldPassword, String newPassword);
-  Future<List<TransferHistoryData>?> getTransferHistory();
+  Future<List<TransferHistoryData>?> getTransferHistory(int page);
   Future<List<TransferHistoryData>?> getTransferHistoryQuery(String query);
   Future<WalletStatusMessage?> getWalletStatus();
   Future<MessageResponse?> lockOrUnlockWallet(bool status);

@@ -48,6 +48,7 @@ class _SetupPagerContainerState extends State<SetupPagerContainer> {
 
   @override
   void initState() {
+    context.read(userRequestProvider).disposeSellDhoroControllers();
     super.initState();
   }
 
@@ -115,7 +116,7 @@ class _SetupPagerContainerState extends State<SetupPagerContainer> {
 
   @override
   void dispose() {
-    context.read(userRequestProvider).controller.dispose();
+    context.read(userRequestProvider).disposeSellDhoroControllers();
     super.dispose();
   }
 

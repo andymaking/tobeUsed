@@ -1,4 +1,5 @@
 import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
+import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 
 class WithdrawResponse {
   int? status;
@@ -39,7 +40,7 @@ class WithdrawData {
   double? totalUsd;
   double? totalNgn;
   String? wid;
-  String? proof;
+  PaymentProcessorData? proof;
   AgentsData? agentDetail;
   String? type;
   String? status;
@@ -73,7 +74,7 @@ class WithdrawData {
     totalUsd = json['total_usd'];
     totalNgn = json['total_ngn'];
     wid = json['wid'];
-    proof = json['proof'];
+    proof = json['proof'] != null ? PaymentProcessorData.fromJson(json['proof']) : null;
     agentDetail = json['agent_detail'] != null ? AgentsData.fromJson(json['agent_detail']) : null;
     type = json['type'];
     status = json['status'];
@@ -92,7 +93,9 @@ class WithdrawData {
     map['total_usd'] = totalUsd;
     map['total_ngn'] = totalNgn;
     map['wid'] = wid;
-    map['proof'] = proof;
+    if (proof != null) {
+      map['proof'] = proof?.toJson();
+    }
     if (agentDetail != null) {
       map['agent_detail'] = agentDetail?.toJson();
     }

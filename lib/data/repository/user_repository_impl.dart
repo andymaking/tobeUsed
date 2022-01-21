@@ -95,9 +95,9 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<List<TransferHistoryData>?> getTransferHistory() async{
+  Future<List<TransferHistoryData>?> getTransferHistory(int page) async{
     final tokenMeta = await getToken();
-    return await userRemote.getTransferHistory(tokenMeta);
+    return await userRemote.getTransferHistory(tokenMeta, page);
   }
 
   @override

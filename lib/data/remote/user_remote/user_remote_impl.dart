@@ -105,11 +105,14 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData) async{
+  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData, int page) async{
     try {
+      var _queryData = {
+        'page': page,
+      };
       dioClient.options.headers['Authorization'] = tokenMetaData.token;
       var response = await dioClient.get(
-        "${NetworkConfig.BASE_URL}user/transfer/history",
+        "${NetworkConfig.BASE_URL}user/transfer/history",queryParameters: _queryData
       );
       final responseData = TransferHistoryDataResponse.fromJson(response.data);
       print("TransferHistory from Remote layer:: $responseData");
@@ -400,6 +403,7 @@ class UserRemoteImpl extends UserRemote {
       print("buyDhoro from Remote layer:: $responseData");
       return responseData.data;
     } catch (error) {
+      print("buyDhoro error from Remote layer:: $error");
       handleError(error);
     }
   }

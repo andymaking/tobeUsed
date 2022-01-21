@@ -3,6 +3,7 @@ import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
+import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
@@ -14,10 +15,12 @@ import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -80,6 +83,7 @@ class OverviewPage extends StatefulHookWidget {
 class _OverviewPageState extends State<OverviewPage> {
   TextEditingController _walletIdController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
+  late ScrollController _controller;
   final _formKey = GlobalKey<FormState>();
   bool isLock = false;
   List<String> options = [
@@ -91,6 +95,22 @@ class _OverviewPageState extends State<OverviewPage> {
   String usd = "";
   String dhr = "";
   String ngn = "";
+  TransferHistoryDataResponse? transferHistoryDataResponse;
+  int page = 1;
+
+  Future<void> getNextPage() async {
+    print("Pressed:: $page");
+    int pageNumber = 1;
+    print("Pressed pageNumber:: $pageNumber");
+    if (transferHistoryDataResponse?.next?.isEmpty == true) {
+      setState(() {
+        page += 1;
+        print("Pressed:: $page, pageNumber: $pageNumber");
+        context.read(overviewProvider).getTransferHistoryWithPaging(page);
+      });
+      //context.read(overviewProvider).getTransferHistory();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -407,6 +427,48 @@ class _OverviewPageState extends State<OverviewPage> {
                             ),
                           )
                     : buildEmptyView(),
+                //SizedBox(height: 16,),
+                if(context.read(overviewProvider).shouldFetchNextPage == true)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 80.0, right: 80),
+                        child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              height: 50,
+                              width: 120,
+                              padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(2),
+                                color: Pallet.colorBlue,
+                              ),
+                              child: Center(
+                                child: AppFontsStyle.getAppTextViewBold("Load next page",
+                                    size: AppFontsStyle.textFontSize12, color: Pallet.colorWhite),
+                              ),
+                            ),
+                            onPressed: (){
+                              setState(() {
+                                page += 1;
+                                print("Pressed:: $page");
+                                context.read(overviewProvider).getTransferHistoryWithPaging(page);
+                              });
+                            }),
+
+                        // AppButton(
+                        //   onPressed: getNextPage,
+                        //   enabled: true,
+                        //   disabledColor: Pallet.colorGrey,
+                        //   enabledColor: Pallet.colorBlue,
+                        //   title: "Load next page",
+                        //   titleColor: Pallet.colorWhite,
+                        // ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 16,),
               ],
             ),
           ]),
