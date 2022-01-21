@@ -29,6 +29,7 @@ import 'data/remote/user_remote/user_remote.dart';
 import 'data/remote/user_remote/user_remote_impl.dart';
 import 'data/repository/user_repository.dart';
 import 'data/repository/user_repository_impl.dart';
+import 'domain/viewmodel/transactions_viewmodel.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -107,7 +108,7 @@ void registerViewModels() {
   locator.registerFactory(() => BuyViewModel());
   locator.registerFactory(() => ProfileViewModel());
   locator.registerFactory(() => ChangePasswordViewModel());
-  //locator.registerFactory(() => LogoutViewModel());
+  locator.registerFactory(() => TransactionsViewModel());
   locator.registerFactory(() => RequestViewModel());
 }
 

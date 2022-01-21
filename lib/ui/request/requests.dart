@@ -10,9 +10,11 @@ import 'package:dhoro_mobile/ui/request/request_transactions_details.dart';
 import 'package:dhoro_mobile/ui/transactions/popup_view.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
+import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -53,12 +55,8 @@ class _RequestsPageState extends State<RequestsPage> {
   String selectedStatus = "DESTROY";
   String selectedType = "WITHDRAW";
   String inputValue = "";
+  int page = 1;
 
-  // @override
-  // void initState() {
-  //   context.read(requestProvider).getRequest();
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -366,6 +364,110 @@ class _RequestsPageState extends State<RequestsPage> {
                       ),
                     )
                         : buildEmptyView(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              print("Pressed one");
+                              context.read(requestProvider).getRequestWithPaging(1);
+                            });
+                          },
+                          child: Container(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              color: Pallet.colorWhite,
+                            ),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold("First",
+                                  size: AppFontsStyle.textFontSize16,
+                                  color: Pallet.colorBlue),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              page -= 1;
+                              print("Pressed:: $page");
+                              context.read(requestProvider).getRequestWithPaging(page);
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Center(
+                              child: SvgPicture.asset("assets/images/back_arrow.svg",
+                                width: 40, height: 40,),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                height: 40,
+                                padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(2),
+                                  color: Pallet.colorWhite,
+                                ),
+                                child: Center(
+                                  child: AppFontsStyle.getAppTextViewBold("1 of ${context.read(requestProvider).lastPage}",
+                                      size: AppFontsStyle.textFontSize12,
+                                      color: Pallet.colorBlue),
+                                ),
+                              ),
+                              onPressed: (){
+                                setState(() {
+                                  page += 1;
+                                  print("Pressed:: $page");
+                                  context.read(requestProvider).getRequestWithPaging(page);
+                                });
+                              }),
+
+                        ),
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              page += 1;
+                              print("Pressed:: $page");
+                              context.read(overviewProvider).getTransferHistoryWithPaging(page);
+                            });
+                          },
+                          child: SvgPicture.asset("assets/images/arrow_forward.svg",
+                            width: 40, height: 40,),
+                        ),
+                        SizedBox(width: 8,),
+                        GestureDetector(
+                          onTap: () async {
+                            var last = await sharedPreference.getRequestLastPage();
+                            setState(() {
+
+                              print("Pressed:: $last");
+                              context.read(requestProvider).getRequestWithPaging(last);
+                            });
+                          },
+                          child: Container(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              color: Pallet.colorWhite,
+                            ),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold("Last",
+                                  size: AppFontsStyle.textFontSize16,
+                                  color: Pallet.colorBlue),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16,),
                   ],
                 ),
               ]),

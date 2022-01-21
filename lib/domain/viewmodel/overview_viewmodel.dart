@@ -16,6 +16,7 @@ import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart'
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
 import 'package:dhoro_mobile/ui/overview/send.dart';
+import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -51,6 +52,7 @@ class OverviewViewModel extends BaseViewModel {
   bool isLoggedIn = false;
   bool shouldFetchNextPage = true;
   int offset = 1;
+  int? lastPage;
   ScrollController? _controller;
 
   void setViewState(ViewState state) {
@@ -215,6 +217,7 @@ class OverviewViewModel extends BaseViewModel {
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
+      lastPage = await sharedPreference.getTransLastPage();
       print("Success transferHistory $transferHistory");
     } catch (error) {
       setViewState(ViewState.Error);
@@ -229,6 +232,7 @@ class OverviewViewModel extends BaseViewModel {
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
+      print("lastPage lastPage $lastPage");
       print("Success transferHistory $transferHistory");
     } catch (error) {
       setViewState(ViewState.Error);

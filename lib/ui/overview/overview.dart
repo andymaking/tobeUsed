@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
-import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
@@ -14,11 +13,9 @@ import 'package:dhoro_mobile/ui/overview/transactions_details.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
+import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
-import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
-import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
-import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +69,6 @@ final userTransferProvider =
   return ref.watch(_userTransfersProvider);
 });
 
-
 class OverviewPage extends StatefulHookWidget {
   const OverviewPage({Key? key}) : super(key: key);
 
@@ -114,9 +110,8 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    // changeStatusAndNavBarColor(
-    //     Pallet.colorWhite, Pallet.colorWhite, false, false);
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
 
     ViewState viewState = useProvider(profileStateProvider);
     WalletData? walletBalance = useProvider(overviewProvider).walletData;
@@ -138,7 +133,6 @@ class _OverviewPageState extends State<OverviewPage> {
     print("Showing walletStatus:: $walletStatus");
     print("Showing percent:: $percent");
     var dhrBalance = walletBalance?.dhrBalance?.toStringAsFixed(3);
-
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -382,8 +376,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                   children: List.generate(
                                       userTransactions.length, (index) {
                                     return Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: 2.0),
+                                      padding: const EdgeInsets.only(top: 2.0),
                                       child: Container(
                                         child: Column(
                                           crossAxisAlignment:
@@ -391,15 +384,18 @@ class _OverviewPageState extends State<OverviewPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
-                                            TransactionList(
-                                                () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => TransactionsDetailsPage(data : userTransactions[index]),
-                                                    ),
-                                                  );
-                                                },
+                                            TransactionList(() {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TransactionsDetailsPage(
+                                                          data:
+                                                              userTransactions[
+                                                                  index]),
+                                                ),
+                                              );
+                                            },
                                                 userTransactions[index]
                                                     .pk
                                                     .toString(),
@@ -428,47 +424,133 @@ class _OverviewPageState extends State<OverviewPage> {
                           )
                     : buildEmptyView(),
                 //SizedBox(height: 16,),
-                if(context.read(overviewProvider).shouldFetchNextPage == true)
+                if (context.read(overviewProvider).shouldFetchNextPage == true)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            print("Pressed one");
+                            context
+                                .read(overviewProvider)
+                                .getTransferHistoryWithPaging(1);
+                          });
+                        },
+                        child: Container(
+                          height: 40,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 2.5, horizontal: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: Pallet.colorWhite,
+                          ),
+                          child: Center(
+                            child: AppFontsStyle.getAppTextViewBold("First",
+                                size: AppFontsStyle.textFontSize16,
+                                color: Pallet.colorBlue),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            page -= 1;
+                            print("Pressed:: $page");
+                            context
+                                .read(overviewProvider)
+                                .getTransferHistoryWithPaging(page);
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              "assets/images/back_arrow.svg",
+                              width: 40,
+                              height: 40,
+                            ),
+                          ),
+                        ),
+                      ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 80.0, right: 80),
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
                         child: CupertinoButton(
                             padding: EdgeInsets.zero,
                             child: Container(
-                              height: 50,
-                              width: 120,
-                              padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                              height: 40,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 2.5, horizontal: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(2),
-                                color: Pallet.colorBlue,
+                                color: Pallet.colorWhite,
                               ),
                               child: Center(
-                                child: AppFontsStyle.getAppTextViewBold("Load next page",
-                                    size: AppFontsStyle.textFontSize12, color: Pallet.colorWhite),
+                                child: AppFontsStyle.getAppTextViewBold(
+                                    "1 of ${context.read(overviewProvider).lastPage}",
+                                    size: AppFontsStyle.textFontSize12,
+                                    color: Pallet.colorBlue),
                               ),
                             ),
-                            onPressed: (){
+                            onPressed: () {
                               setState(() {
                                 page += 1;
                                 print("Pressed:: $page");
-                                context.read(overviewProvider).getTransferHistoryWithPaging(page);
+                                context
+                                    .read(overviewProvider)
+                                    .getTransferHistoryWithPaging(page);
                               });
                             }),
-
-                        // AppButton(
-                        //   onPressed: getNextPage,
-                        //   enabled: true,
-                        //   disabledColor: Pallet.colorGrey,
-                        //   enabledColor: Pallet.colorBlue,
-                        //   title: "Load next page",
-                        //   titleColor: Pallet.colorWhite,
-                        // ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            page += 1;
+                            print("Pressed:: $page");
+                            context
+                                .read(overviewProvider)
+                                .getTransferHistoryWithPaging(page);
+                          });
+                        },
+                        child: SvgPicture.asset(
+                          "assets/images/arrow_forward.svg",
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          var last = await sharedPreference.getTransLastPage();
+                          setState(() {
+                            print("Pressed:: $last");
+                            context
+                                .read(overviewProvider)
+                                .getTransferHistoryWithPaging(last);
+                          });
+                        },
+                        child: Container(
+                          height: 40,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 2.5, horizontal: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: Pallet.colorWhite,
+                          ),
+                          child: Center(
+                            child: AppFontsStyle.getAppTextViewBold("Last",
+                                size: AppFontsStyle.textFontSize16,
+                                color: Pallet.colorBlue),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                SizedBox(height: 16,),
+                SizedBox(
+                  height: 16,
+                ),
               ],
             ),
           ]),
@@ -703,7 +785,6 @@ class _OverviewPageState extends State<OverviewPage> {
               ),
             ));
   }
-
 }
 
 class TransactionHeader extends StatelessWidget {

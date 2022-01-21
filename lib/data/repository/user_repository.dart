@@ -38,7 +38,7 @@ abstract class UserRepository {
   Future<String?> getWalletPercentage();
   Future<List<PaymentProcessorData>?> getPaymentProcessors();
   Future<MessageResponse?> deletePaymentProcessor(String pk);
-  Future<List<RequestData>?> getRequests();
+  Future<List<RequestData>?> getRequests(int page);
   Future<List<RequestData>?> getRequestsQuery(String query);
   Future<GetUserData?> updateUserProfile(String firstName, String lastName, String phoneNumber );
   Future<PaymentProcessorData?> addPaymentProcessors(String bankName, String userName, String accountNumber);

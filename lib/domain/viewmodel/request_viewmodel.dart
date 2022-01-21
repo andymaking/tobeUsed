@@ -4,6 +4,7 @@ import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/remote/model/withdraw/withdraw.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/viewmodel/base/base_view_model.dart';
@@ -12,6 +13,7 @@ import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_account_details.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_amount.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_summary.dart';
+import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:dhoro_mobile/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,7 +33,7 @@ class RequestViewModel extends BaseViewModel {
   WithdrawData? purchase;
   AgentsData? anAgents;
   GetUserData? user;
-
+  WalletData? walletData;
   ViewState get viewState => _state;
   Set<String> currentUserGender = Set();
   Set<String> currentUserInterest = Set();
@@ -44,11 +46,11 @@ class RequestViewModel extends BaseViewModel {
   String accountNumber = "";
   bool isWithdrawAmount = true;
   bool isBankDetails = true;
-
   String amount = "";
   String agentId = "";
   String paymentId = "";
   String currencyType = "";
+  int? lastPage;
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
@@ -152,7 +154,21 @@ class RequestViewModel extends BaseViewModel {
   Future<RequestData?> getRequest() async {
     try {
       setViewState(ViewState.Loading);
-      var response = await userRepository.getRequests();
+      var response = await userRepository.getRequests(1);
+      print("getRequest $requestList");
+      setViewState(ViewState.Success);
+      requestList = response ?? [];
+      lastPage = await sharedPreference.getRequestLastPage();
+      print("Success viewModel getRequest $requestList");
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+  Future<RequestData?> getRequestWithPaging(page) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getRequests(page);
       print("getRequest $requestList");
       setViewState(ViewState.Success);
       requestList = response ?? [];
@@ -216,6 +232,7 @@ class RequestViewModel extends BaseViewModel {
       await userRepository.getUser();
       setViewState(ViewState.Success);
       user = response;
+      walletBalance();
       print("Showing withdraw user data::: $user");
       print("Showing withdraw getUser response::: $response");
       return response;
@@ -232,7 +249,6 @@ class RequestViewModel extends BaseViewModel {
       var agent = agentId;
       var currency = currencyType;
       var proofOfPayment = paymentId;
-
       setViewState(ViewState.Loading);
       var response = await userRepository.withdrawDhoro(value, agent, proofOfPayment, currency);
       setViewState(ViewState.Success);
@@ -256,5 +272,50 @@ class RequestViewModel extends BaseViewModel {
     }
   }
 
+  /// get user Agent
+  Future<AgentsData?> getSingleAgents(String pk) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getSingleAgent(pk);
+      setViewState(ViewState.Success);
+      print("Showing getSingleAgents response::: $response");
+      anAgents = response;
+      return response;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// get user getAgents
+  Future<AgentsData?> getAgents() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.getAgents();
+      agents = response ?? [];
+      print("Showing getAgents response::: $response");
+      setViewState(ViewState.Success);
+      print("Showing success getAgents response::: $agents");
+      //return response;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// user walletBalance
+  Future<WalletData?> walletBalance() async {
+    try {
+      setViewState(ViewState.Loading);
+      var walletBalanceResponse = await userRepository.walletBalance();
+      setViewState(ViewState.Success);
+      print("Showing walletBalance response::: $walletBalanceResponse");
+      walletData = walletBalanceResponse;
+      return walletBalanceResponse;
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
 
 }
