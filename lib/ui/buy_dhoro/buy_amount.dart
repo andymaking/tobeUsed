@@ -80,7 +80,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                       label: AppString.amount,
                       controller: _amountController,
                       onChanged: (value) {
-                        value.length >2 ? currentFocus.unfocus() : currentFocus.requestFocus();
+                        value.length >7 ? currentFocus.unfocus() : currentFocus.requestFocus();
                         context.read(sharedProvider.userBuyProvider)
                             .convertBuyCurrency("$selectedOption=${_amountController.text.trim()}");
                         context.read(sharedProvider.userBuyProvider).amount = value.trim();
@@ -189,6 +189,12 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    selectedOption = "";
+    super.dispose();
   }
 
 }

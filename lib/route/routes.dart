@@ -6,6 +6,8 @@ import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
 import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
+import 'package:dhoro_mobile/ui/overview/send.dart';
+import 'package:dhoro_mobile/ui/overview/send_dhoro.dart';
 import 'package:dhoro_mobile/ui/password_and_security/password_and_security.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor_list.dart';
@@ -46,6 +48,9 @@ class AppRoutes {
   static const uploadPhotosOptions = '/uploadPhotosOptions';
   static const selectBuyPaymentProcessor = '/selectBuyPaymentProcessor';
   static const selectWithdrawPaymentProcessor = '/selectWithdrawPaymentProcessor';
+  static const sendDhoro = '/sendDhoro';
+  static const send = '/send';
+
 
 
 }
@@ -162,7 +167,18 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-
+      case AppRoutes.sendDhoro:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => SendDhoroPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.send:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => SendPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
       default:
         return MaterialPageRoute<dynamic>(
           builder: (_) => ErrorPage(),

@@ -4,6 +4,7 @@ import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/domain/viewmodel/overview_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
+import 'package:dhoro_mobile/ui/overview/transactions_details.dart';
 import 'package:dhoro_mobile/ui/transactions/popup_view.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -156,6 +157,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                                   focus = !focus;
                                   focusPopInput = false;
                                   focusPopStatus = false;
+                                  _inputController.text = "";
                                 });
                               },
                               child: Column(
@@ -197,7 +199,14 @@ class _TransactionsPageState extends State<TransactionsPage>
                                               MainAxisAlignment.start,
                                           children: [
                                             TransactionList(
-                                                () {},
+                                                () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => TransactionsDetailsPage(data : userTransactions[index]),
+                                                    ),
+                                                  );
+                                                },
                                                 userTransactions[index]
                                                     .pk
                                                     .toString(),
@@ -465,6 +474,7 @@ class _TransactionsPageState extends State<TransactionsPage>
           onChanged: onChanged,
           validator: validator,
           keyboardType: keyboardType,
+          isHidden: false,
         ),
       ),
     );

@@ -145,6 +145,7 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                                   }
                                   return null;
                                 },
+                                isHidden: false,
                               ),
                               SizedBox(
                                 height: 16,
@@ -162,6 +163,7 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                                   }
                                   return null;
                                 },
+                                isHidden: false,
                               ),
                               // SizedBox(
                               //   height: 16,

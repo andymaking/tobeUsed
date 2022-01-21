@@ -6,6 +6,7 @@ import 'package:dhoro_mobile/domain/viewmodel/request_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
+import 'package:dhoro_mobile/ui/request/request_transactions_details.dart';
 import 'package:dhoro_mobile/ui/transactions/popup_view.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -233,7 +234,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                             width: 137,
                                             child: Center(
                                               child: AppFontsStyle.getAppTextViewBold(
-                                                  'WITHDRAW DHORO',
+                                                  'SELL DHORO',
                                                   size: AppFontsStyle.textFontSize12,
                                                   color: Pallet.colorBlue,
                                                   textAlign: TextAlign.center),
@@ -299,6 +300,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                     focusPopInput = false;
                                     focusPopStatus = false;
                                     focusPopType = false;
+                                    _inputController.text = "";
                                   });
                                 },
                                 child: SvgPicture.asset(AppImages.iconMenu)),
@@ -325,36 +327,36 @@ class _RequestsPageState extends State<RequestsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: List.generate(requestList.length, (index) {
-                              return GestureDetector(
-                                onTap: () {},
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 2.0),
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        TransactionList(
-                                                (){},
-                                            requestList[index]
-                                                .pk ?? "",
-                                            requestList[index]
-                                                .status ?? "",
-                                            requestList[index]
-                                                .amount
-                                                .toString(),
-                                            requestList[index]
-                                                .payment?.user ?? ""
-                                        ),
-                                        // SizedBox(
-                                        //   height: 8,
-                                        // ),
-                                        Divider(
-                                          height: 1,
-                                          color: Pallet.colorBlue.withOpacity(0.3),
-                                        )
-                                      ],
-                                    ),
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Container(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      TransactionList(
+                                              (){
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => RequestTransactionsDetailsPage(data : requestList[index]),
+                                                  ),
+                                                );
+                                              },
+                                          requestList[index]
+                                              .pk ?? "",
+                                          requestList[index]
+                                              .status ?? "",
+                                          requestList[index]
+                                              .amount
+                                              .toString(),
+                                          requestList[index].type.toString()
+                                      ),
+                                      Divider(
+                                        height: 1,
+                                        color: Pallet.colorBlue.withOpacity(0.3),
+                                      )
+                                    ],
                                   ),
                                 ),
                               );
@@ -666,6 +668,7 @@ class _RequestsPageState extends State<RequestsPage> {
           onChanged: onChanged,
           validator: validator,
           keyboardType: keyboardType,
+          isHidden: false,
         ),
       ),
     );
@@ -726,84 +729,26 @@ class TransactionList extends StatefulWidget {
 class _TransactionListState extends State<TransactionList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 56,
-      width: MediaQuery.of(context).size.width,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 9.0, right: 5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(AppImages.icEye),
-            SizedBox(
-              width: 12,
-            ),
-            Container(
-              width: 90,
-              child: Text(widget.transId,
-                  textAlign: TextAlign.left,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  style: GoogleFonts.manrope(
-                      color: Pallet.colorBlue,
-                      fontSize: AppFontsStyle.textFontSize12,
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.normal,
-                      height: 1.5)),
-            ),
-            SizedBox(
-              width: 12,
-            ),
-            Container(
-              width: 58,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(3)),
-                  color: widget.status.contains("PENDING")
-                      ? Pallet.colorYellow : widget.status.contains("DECLINED")
-                      ? Pallet.colorRed : Pallet.colorYellow.withOpacity(0.4)),
-              child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
-                child: AppFontsStyle.getAppTextView(
-                  widget.status,
-                  color: Pallet.colorBlue,
-                  textAlign: TextAlign.center,
-                  size: AppFontsStyle.textFontSize8,
-                ),
+    return GestureDetector(
+      onTap: widget.onItemClicked,
+      child: Container(
+        height: 56,
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 9.0, right: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(AppImages.icEye),
+              SizedBox(
+                width: 12,
               ),
-            ),
-            SizedBox(
-              width: 12,
-            ),
-            Container(
-              width: 35,
-              child: Text(widget.value,
-                  textAlign: TextAlign.left,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  style: GoogleFonts.manrope(
-                      color: Pallet.colorBlue,
-                      fontSize: AppFontsStyle.textFontSize12,
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.normal,
-                      height: 1.5)),
-            ),
-            // AppFontsStyle.getAppTextView(
-            //   widget.value,
-            //   color: Pallet.colorBlue,
-            //   size: AppFontsStyle.textFontSize12,
-            // ),
-            SizedBox(
-              width: 12,
-            ),
-            Flexible(
-              child: Container(
-                child: Text(widget.senderId,
+              Container(
+                width: 90,
+                child: Text(widget.transId,
                     textAlign: TextAlign.left,
-                    //maxLines: 1,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
                     style: GoogleFonts.manrope(
@@ -813,7 +758,121 @@ class _TransactionListState extends State<TransactionList> {
                         fontStyle: FontStyle.normal,
                         height: 1.5)),
               ),
-            )
+              SizedBox(
+                width: 12,
+              ),
+              Container(
+                width: 58,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(3)),
+                    color: widget.status.contains("PENDING")
+                        ? Pallet.colorYellow : widget.status.contains("DECLINED")
+                        ? Pallet.colorRed : Pallet.colorYellow.withOpacity(0.4)),
+                child: Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
+                  child: AppFontsStyle.getAppTextView(
+                    widget.status,
+                    color: Pallet.colorBlue,
+                    textAlign: TextAlign.center,
+                    size: AppFontsStyle.textFontSize8,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              Container(
+                width: 35,
+                child: Text(widget.value,
+                    textAlign: TextAlign.left,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: GoogleFonts.manrope(
+                        color: Pallet.colorBlue,
+                        fontSize: AppFontsStyle.textFontSize12,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.normal,
+                        height: 1.5)),
+              ),
+              // AppFontsStyle.getAppTextView(
+              //   widget.value,
+              //   color: Pallet.colorBlue,
+              //   size: AppFontsStyle.textFontSize12,
+              // ),
+              SizedBox(
+                width: 12,
+              ),
+              Flexible(
+                child: Container(
+                  child: Text(widget.senderId,
+                      textAlign: TextAlign.left,
+                      //maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: GoogleFonts.manrope(
+                          color: Pallet.colorBlue,
+                          fontSize: AppFontsStyle.textFontSize12,
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FontStyle.normal,
+                          height: 1.5)),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class TransactionHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Container(
+        height: 56,
+        width: MediaQuery.of(context).size.width,
+        color: Pallet.colorBlue,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 34,
+            ),
+            AppFontsStyle.getAppTextViewBold(
+              AppString.transactionId,
+              color: Pallet.colorWhite,
+              size: AppFontsStyle.textFontSize12,
+            ),
+            SizedBox(
+              width: 28,
+            ),
+            AppFontsStyle.getAppTextViewBold(
+              AppString.status,
+              color: Pallet.colorWhite,
+              size: AppFontsStyle.textFontSize12,
+            ),
+            SizedBox(
+              width: 24,
+            ),
+            AppFontsStyle.getAppTextViewBold(
+              "Amount",
+              color: Pallet.colorWhite,
+              size: AppFontsStyle.textFontSize12,
+            ),
+            SizedBox(
+              width: 24,
+            ),
+            AppFontsStyle.getAppTextViewBold(
+              "Type",
+              color: Pallet.colorWhite,
+              size: AppFontsStyle.textFontSize12,
+            ),
           ],
         ),
       ),

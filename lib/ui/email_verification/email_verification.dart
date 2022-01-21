@@ -126,6 +126,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                           }
                           return null;
                         },
+                        isHidden: false,
                       ),
                       SizedBox(
                         height: 24,

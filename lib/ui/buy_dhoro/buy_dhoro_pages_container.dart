@@ -41,6 +41,7 @@ class _BuySetupPagerContainerState extends State<BuySetupPagerContainer> {
 
   @override
   void initState() {
+    context.read(userBuyProvider).disposeBuyDhoroControllers();
     super.initState();
   }
 
@@ -108,7 +109,7 @@ class _BuySetupPagerContainerState extends State<BuySetupPagerContainer> {
 
   @override
   void dispose() {
-    context.read(userBuyProvider).controller.dispose();
+    context.read(userBuyProvider).disposeBuyDhoroControllers();
     super.dispose();
   }
 

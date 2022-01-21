@@ -8,6 +8,7 @@ import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_process
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/request/request_response.dart';
+import 'package:dhoro_mobile/data/remote/model/send_dhoro/send_dhoro.dart';
 import 'package:dhoro_mobile/data/remote/model/success_message.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
@@ -104,11 +105,14 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData) async{
+  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData, int page) async{
     try {
+      var _queryData = {
+        'page': page,
+      };
       dioClient.options.headers['Authorization'] = tokenMetaData.token;
       var response = await dioClient.get(
-        "${NetworkConfig.BASE_URL}user/transfer/history",
+        "${NetworkConfig.BASE_URL}user/transfer/history",queryParameters: _queryData
       );
       final responseData = TransferHistoryDataResponse.fromJson(response.data);
       print("TransferHistory from Remote layer:: $responseData");
@@ -399,6 +403,7 @@ class UserRemoteImpl extends UserRemote {
       print("buyDhoro from Remote layer:: $responseData");
       return responseData.data;
     } catch (error) {
+      print("buyDhoro error from Remote layer:: $error");
       handleError(error);
     }
   }
@@ -448,6 +453,25 @@ class UserRemoteImpl extends UserRemote {
       final responseData = RequestResponse.fromJson(response.data);
       print("getRequests from Remote layer:: ${responseData.results?.data} response:$response");
       return responseData.results?.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<SendDhoroStatus?> sendDhoro(TokenMetaData tokenMetaData, String amount, String currencyType, String wid) async {
+    try {
+      var _data = {
+        'amount': amount,
+        'currency_type': currencyType,
+        'wid': wid,
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/transfer/fund", data: _data);
+      final responseData = SendDhoroStatus.fromJson(response.data);
+      print("withdrawDhoro from Remote layer:: $responseData");
+      return responseData;
     } catch (error) {
       handleError(error);
     }

@@ -14,12 +14,13 @@ class AppFormField extends StatefulWidget {
   double? height;
   double? width;
   String label;
-  Widget? icon;
+  Widget? suffixIcon;
   Function()? onTap;
   FormFieldValidator<String>? validator;
   Function(String)? onChanged;
   bool? enabled = true;
   TextInputType? keyboardType;
+  bool isHidden = true;
 
   AppFormField(
       {this.controller,
@@ -27,12 +28,13 @@ class AppFormField extends StatefulWidget {
         this.height,
         this.width,
         required this.label,
-        this.icon,
+        this.suffixIcon,
         this.onTap,
         this.enabled,
         this.validator,
         this.onChanged,
-        this.keyboardType
+        this.keyboardType,
+        required this.isHidden
       });
 
   @override
@@ -56,7 +58,7 @@ class _AppFormFieldState extends State<AppFormField> {
     return Container(
       padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
       height: widget.height ?? null,
-      width: widget.height ?? null,
+      width: widget.width ?? null,
       decoration: BoxDecoration(
         border: widget.focus == true
             ? Border.all(width: 1.0, color: Pallet.colorBlue)
@@ -76,16 +78,17 @@ class _AppFormFieldState extends State<AppFormField> {
                 keyboardType: widget.keyboardType ?? TextInputType.text,
                 onChanged: widget.onChanged,
                 validator: widget.validator,
-                maxLines: null,
+                maxLines: 1,
                 style: GoogleFonts.manrope(
                   color: Pallet.colorBlue,
                   fontSize: AppFontsStyle.textFontSize14,
                   fontWeight: FontWeight.w500,
                   fontStyle: FontStyle.normal,
                 ),
+                obscureText: widget.isHidden,
                 decoration: widget.decorator ??
                     InputDecoration(
-                      suffixIcon: widget.icon,
+                      suffixIcon: widget.suffixIcon,
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       labelText: widget.label,
                       contentPadding: EdgeInsets.symmetric(vertical: 4.0),
@@ -101,6 +104,7 @@ class _AppFormFieldState extends State<AppFormField> {
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
                     ),
+
               ))),
     );
   }

@@ -23,12 +23,6 @@ class BuyPaymentPage extends StatefulHookWidget {
 class _BuyPaymentPageState extends State<BuyPaymentPage> {
 
   @override
-  void dispose() {
-    context.read(sharedProvider.userBuyProvider).controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final isValidLogin = true;
     List<PaymentProcessorData>? userTransactions =

@@ -16,14 +16,24 @@ class AppToolBar extends StatelessWidget {
       Container(
       child: Row(
         children: [
-          SvgPicture.asset(AppImages.appLogo),
+          Row(
+            children: [
+              Image.asset(AppImages.appLogo,width: 45, height: 45,),
+              //SizedBox(width: 8,),
+              AppFontsStyle.getAppTextViewBold(
+                "Dhoro",
+                weight: FontWeight.w700,
+                size: AppFontsStyle.textFontSize20,
+              ),
+            ],
+          ),
           Spacer(),
-          GestureDetector(
-              onTap: () {
-                trailingIconClicked ?? Navigator.of(context).pop();
-              },
-              child:
-              SvgPicture.asset(AppImages.iconClose)),
+          // GestureDetector(
+          //     onTap: () {
+          //       trailingIconClicked ?? Navigator.of(context).pop();
+          //     },
+          //     child:
+          //     SvgPicture.asset(AppImages.iconClose)),
         ],
       ),
     );

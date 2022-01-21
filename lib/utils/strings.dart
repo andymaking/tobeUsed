@@ -42,7 +42,7 @@ class AppString{
 }
 
 class AppImages{
-  static const String appLogo = "assets/images/ic_dhoro.svg";
+  static const String appLogo = "assets/images/logo.png";
   static const String icYouTube = "assets/images/ic_youtube.svg";
   static const String icDhoroFinance = "assets/images/ic_dhoro_finance.svg";
   static const String icFacebook = "assets/images/ic_facebook_white.svg";

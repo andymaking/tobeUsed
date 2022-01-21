@@ -1,25 +1,33 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
+import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
-import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/domain/viewmodel/overview_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
+import 'package:dhoro_mobile/route/routes.dart';
+import 'package:dhoro_mobile/ui/overview/transactions_details.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
+import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
+import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:logger/logger.dart';
 
 final overviewProvider =
     ChangeNotifierProvider.autoDispose<OverviewViewModel>((ref) {
@@ -64,6 +72,7 @@ final userTransferProvider =
   return ref.watch(_userTransfersProvider);
 });
 
+
 class OverviewPage extends StatefulHookWidget {
   const OverviewPage({Key? key}) : super(key: key);
 
@@ -72,12 +81,43 @@ class OverviewPage extends StatefulHookWidget {
 }
 
 class _OverviewPageState extends State<OverviewPage> {
+  TextEditingController _walletIdController = TextEditingController();
+  TextEditingController _amountController = TextEditingController();
+  late ScrollController _controller;
+  final _formKey = GlobalKey<FormState>();
   bool isLock = false;
+  List<String> options = [
+    "DHR",
+    "USD",
+    "NGN",
+  ];
+  String selectedOption = "DHR";
+  String usd = "";
+  String dhr = "";
+  String ngn = "";
+  TransferHistoryDataResponse? transferHistoryDataResponse;
+  int page = 1;
+
+  Future<void> getNextPage() async {
+    print("Pressed:: $page");
+    int pageNumber = 1;
+    print("Pressed pageNumber:: $pageNumber");
+    if (transferHistoryDataResponse?.next?.isEmpty == true) {
+      setState(() {
+        page += 1;
+        print("Pressed:: $page, pageNumber: $pageNumber");
+        context.read(overviewProvider).getTransferHistoryWithPaging(page);
+      });
+      //context.read(overviewProvider).getTransferHistory();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    changeStatusAndNavBarColor(
-        Pallet.colorWhite, Pallet.colorWhite, false, false);
+
+    // changeStatusAndNavBarColor(
+    //     Pallet.colorWhite, Pallet.colorWhite, false, false);
+
     ViewState viewState = useProvider(profileStateProvider);
     WalletData? walletBalance = useProvider(overviewProvider).walletData;
     bool? walletStatus = useProvider(overviewProvider).walletStatus;
@@ -97,8 +137,9 @@ class _OverviewPageState extends State<OverviewPage> {
     print("Showing TransferHistoryData:: $userTransactions");
     print("Showing walletStatus:: $walletStatus");
     print("Showing percent:: $percent");
-    var dhrBalance = walletBalance?.dhrBalance?.toStringAsFixed(2);
-    //observePercentageState(context);
+    var dhrBalance = walletBalance?.dhrBalance?.toStringAsFixed(3);
+
+
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(
@@ -217,35 +258,49 @@ class _OverviewPageState extends State<OverviewPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(AppImages.iconGreenArrowUp),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  AppFontsStyle.getAppTextViewBold(
-                                    "5675 DHR",
-                                    weight: FontWeight.w500,
-                                    size: AppFontsStyle.textFontSize10,
-                                  ),
-                                ],
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, AppRoutes.send);
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                        AppImages.iconGreenArrowUp),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    AppFontsStyle.getAppTextViewBold(
+                                      "Send DHR",
+                                      weight: FontWeight.w500,
+                                      size: AppFontsStyle.textFontSize10,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(AppImages.redArrowDown),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  AppFontsStyle.getAppTextViewBold(
-                                    "Receive DHR",
-                                    weight: FontWeight.w500,
-                                    size: AppFontsStyle.textFontSize10,
-                                  ),
-                                ],
+                              GestureDetector(
+                                onTap: () {
+                                  showDepositBottomSheet(
+                                      context,
+                                      "${userData?.qrCode?.code}",
+                                      "${userData?.wid}");
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(AppImages.redArrowDown),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    AppFontsStyle.getAppTextViewBold(
+                                      "Receive DHR",
+                                      weight: FontWeight.w500,
+                                      size: AppFontsStyle.textFontSize10,
+                                    ),
+                                  ],
+                                ),
                               ),
                               GestureDetector(
                                   onTap: () {
@@ -326,39 +381,43 @@ class _OverviewPageState extends State<OverviewPage> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: List.generate(
                                       userTransactions.length, (index) {
-                                    return GestureDetector(
-                                      onTap: () {},
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 2.0),
-                                        child: Container(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              TransactionList(
-                                                  () => null,
-                                                  userTransactions[index]
-                                                      .pk
-                                                      .toString(),
-                                                  userTransactions[index]
-                                                      .status
-                                                      .toString(),
-                                                  userTransactions[index]
-                                                      .amount
-                                                      .toString(),
-                                                  userTransactions[index]
-                                                      .send
-                                                      .toString()),
-                                              Divider(
-                                                height: 1,
-                                                color: Pallet.colorBlue
-                                                    .withOpacity(0.3),
-                                              )
-                                            ],
-                                          ),
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(top: 2.0),
+                                      child: Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            TransactionList(
+                                                () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => TransactionsDetailsPage(data : userTransactions[index]),
+                                                    ),
+                                                  );
+                                                },
+                                                userTransactions[index]
+                                                    .pk
+                                                    .toString(),
+                                                userTransactions[index]
+                                                    .status
+                                                    .toString(),
+                                                userTransactions[index]
+                                                    .amount
+                                                    .toString(),
+                                                userTransactions[index]
+                                                    .send
+                                                    .toString()),
+                                            Divider(
+                                              height: 1,
+                                              color: Pallet.colorBlue
+                                                  .withOpacity(0.3),
+                                            )
+                                          ],
                                         ),
                                       ),
                                     );
@@ -368,6 +427,48 @@ class _OverviewPageState extends State<OverviewPage> {
                             ),
                           )
                     : buildEmptyView(),
+                //SizedBox(height: 16,),
+                if(context.read(overviewProvider).shouldFetchNextPage == true)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 80.0, right: 80),
+                        child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              height: 50,
+                              width: 120,
+                              padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(2),
+                                color: Pallet.colorBlue,
+                              ),
+                              child: Center(
+                                child: AppFontsStyle.getAppTextViewBold("Load next page",
+                                    size: AppFontsStyle.textFontSize12, color: Pallet.colorWhite),
+                              ),
+                            ),
+                            onPressed: (){
+                              setState(() {
+                                page += 1;
+                                print("Pressed:: $page");
+                                context.read(overviewProvider).getTransferHistoryWithPaging(page);
+                              });
+                            }),
+
+                        // AppButton(
+                        //   onPressed: getNextPage,
+                        //   enabled: true,
+                        //   disabledColor: Pallet.colorGrey,
+                        //   enabledColor: Pallet.colorBlue,
+                        //   title: "Load next page",
+                        //   titleColor: Pallet.colorWhite,
+                        // ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 16,),
               ],
             ),
           ]),
@@ -460,6 +561,149 @@ class _OverviewPageState extends State<OverviewPage> {
       ),
     );
   }
+
+  showDepositBottomSheet(
+      BuildContext context, String qrcode, String walletAddress) {
+    showModalBottomSheet(
+        elevation: 10,
+        backgroundColor: Colors.white,
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24), topRight: Radius.circular(24)),
+        ),
+        builder: (context) => Container(
+              height: 425,
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  color: Colors.white),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 8,
+                  ),
+                  SvgPicture.asset("assets/images/top_indicator.svg"),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  AppFontsStyle.getAppTextViewBold("Deposit Dhoro",
+                      color: Pallet.colorRed,
+                      weight: FontWeight.w700,
+                      size: AppFontsStyle.textFontSize16),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: CachedNetworkImage(
+                      height: 116,
+                      width: 116,
+                      fit: BoxFit.contain,
+                      imageUrl: "https://api.dhoro.io$qrcode",
+                      placeholder: (context, url) => SvgPicture.asset(
+                        "assets/images/ic_qrcode.svg",
+                        height: 116,
+                        width: 116,
+                        fit: BoxFit.contain,
+                      ),
+                      errorWidget: (context, url, error) => SvgPicture.asset(
+                        "assets/images/ic_error_qrcode.svg",
+                        height: 116,
+                        width: 116,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: AppFontsStyle.getAppTextViewBold(
+                      "The sender can scan the QR code to send DHR or Dhoro tokens to this DHR wallet.",
+                      weight: FontWeight.w400,
+                      textAlign: TextAlign.center,
+                      size: AppFontsStyle.textFontSize12,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Pallet.colorWhite,
+                      border: Border.all(width: 1.0, color: Pallet.colorBlue),
+                      borderRadius: BorderRadius.all(Radius.circular(2)),
+                    ),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: AppFontsStyle.getAppTextViewBold(
+                            walletAddress,
+                            weight: FontWeight.w400,
+                            size: AppFontsStyle.textFontSize12,
+                          ),
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: walletAddress));
+                              Fluttertoast.showToast(
+                                  msg: "Wallet ID copied to clipboard");
+                              walletAddress.isNotEmpty
+                                  ? Fluttertoast.showToast(
+                                      msg: "Wallet ID copied to clipboard")
+                                  : Fluttertoast.showToast(
+                                      msg: "Nothing to copied to clipboard");
+                            },
+                            child: Container(
+                              height: 25,
+                              decoration: BoxDecoration(
+                                  color: Pallet.buttonColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(2))),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
+                                child: Center(
+                                  child: AppFontsStyle.getAppTextViewBold(
+                                      "Copy",
+                                      weight: FontWeight.w400,
+                                      textAlign: TextAlign.center,
+                                      size: AppFontsStyle.textFontSize10),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: AppFontsStyle.getAppTextViewBold(
+                      "This address can only be used to receive DHR or Dhoro tokens on the Dhoro network.",
+                      weight: FontWeight.w400,
+                      textAlign: TextAlign.center,
+                      size: AppFontsStyle.textFontSize12,
+                    ),
+                  ),
+                ],
+              ),
+            ));
+  }
+
 }
 
 class TransactionHeader extends StatelessWidget {
@@ -495,7 +739,7 @@ class TransactionHeader extends StatelessWidget {
               width: 24,
             ),
             AppFontsStyle.getAppTextViewBold(
-              AppString.value,
+              "Amount",
               color: Pallet.colorWhite,
               size: AppFontsStyle.textFontSize12,
             ),
@@ -533,82 +777,26 @@ class TransactionList extends StatefulWidget {
 class _TransactionListState extends State<TransactionList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 56,
-      width: MediaQuery.of(context).size.width,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 9.0, right: 5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(AppImages.icEye),
-            SizedBox(
-              width: 12,
-            ),
-            Container(
-              width: 90,
-              child: Text(widget.transId,
-                  textAlign: TextAlign.left,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  style: GoogleFonts.manrope(
-                      color: Pallet.colorBlue,
-                      fontSize: AppFontsStyle.textFontSize12,
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.normal,
-                      height: 1.5)),
-            ),
-            SizedBox(
-              width: 12,
-            ),
-            Container(
-              width: 58,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(3)),
-                  color: widget.status.contains("DESTROY") ? Pallet.colorYellow : Pallet.colorGreen.withOpacity(0.4)),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
-                child: AppFontsStyle.getAppTextView(
-                  widget.status,
-                  color: Pallet.colorBlue,
-                  textAlign: TextAlign.center,
-                  size: AppFontsStyle.textFontSize8,
-                ),
+    return GestureDetector(
+      onTap: widget.onItemClicked,
+      child: Container(
+        height: 56,
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 9.0, right: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(AppImages.icEye),
+              SizedBox(
+                width: 12,
               ),
-            ),
-            SizedBox(
-              width: 12,
-            ),
-            Container(
-              width: 35,
-              child: Text(widget.value,
-                  textAlign: TextAlign.left,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  style: GoogleFonts.manrope(
-                      color: Pallet.colorBlue,
-                      fontSize: AppFontsStyle.textFontSize12,
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.normal,
-                      height: 1.5)),
-            ),
-            // AppFontsStyle.getAppTextView(
-            //   widget.value,
-            //   color: Pallet.colorBlue,
-            //   size: AppFontsStyle.textFontSize12,
-            // ),
-            SizedBox(
-              width: 12,
-            ),
-            Flexible(
-              child: Container(
-                child: Text(widget.senderId,
+              Container(
+                width: 90,
+                child: Text(widget.transId,
                     textAlign: TextAlign.left,
-                    //maxLines: 1,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
                     style: GoogleFonts.manrope(
@@ -618,8 +806,69 @@ class _TransactionListState extends State<TransactionList> {
                         fontStyle: FontStyle.normal,
                         height: 1.5)),
               ),
-            )
-          ],
+              SizedBox(
+                width: 12,
+              ),
+              Container(
+                width: 58,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(3)),
+                    color: widget.status.contains("DESTROY")
+                        ? Pallet.colorYellow
+                        : Pallet.colorGreen.withOpacity(0.4)),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
+                  child: AppFontsStyle.getAppTextView(
+                    widget.status,
+                    color: Pallet.colorBlue,
+                    textAlign: TextAlign.center,
+                    size: AppFontsStyle.textFontSize8,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              Container(
+                width: 35,
+                child: Text(widget.value,
+                    textAlign: TextAlign.left,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: GoogleFonts.manrope(
+                        color: Pallet.colorBlue,
+                        fontSize: AppFontsStyle.textFontSize12,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.normal,
+                        height: 1.5)),
+              ),
+              // AppFontsStyle.getAppTextView(
+              //   widget.value,
+              //   color: Pallet.colorBlue,
+              //   size: AppFontsStyle.textFontSize12,
+              // ),
+              SizedBox(
+                width: 12,
+              ),
+              Flexible(
+                child: Container(
+                  child: Text(widget.senderId,
+                      textAlign: TextAlign.left,
+                      //maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: GoogleFonts.manrope(
+                          color: Pallet.colorBlue,
+                          fontSize: AppFontsStyle.textFontSize12,
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FontStyle.normal,
+                          height: 1.5)),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

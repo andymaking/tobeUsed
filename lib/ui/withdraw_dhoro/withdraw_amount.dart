@@ -81,7 +81,7 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                       label: AppString.amount,
                       controller: _amountController,
                       onChanged: (value) {
-                        value.length >2 ? currentFocus.unfocus() : currentFocus.requestFocus();
+                        value.length >7 ? currentFocus.unfocus() : currentFocus.requestFocus();
                         context.read(sharedProvider.userRequestProvider)
                             .convertCurrency("$selectedOption=${_amountController.text.trim()}");
                         context.read(sharedProvider.userRequestProvider).amount = value.trim();
@@ -191,4 +191,9 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
     );
   }
 
+  @override
+  void dispose() {
+    selectedOption = "";
+    super.dispose();
+  }
 }

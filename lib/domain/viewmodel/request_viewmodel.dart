@@ -13,6 +13,7 @@ import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_account_details.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_amount.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_summary.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
+import 'package:dhoro_mobile/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
 
 
@@ -56,6 +57,21 @@ class RequestViewModel extends BaseViewModel {
   TextEditingController genderControllerId = new TextEditingController();
 
   int currentPage = 0;
+
+  void disposeSellDhoroControllers(){
+    print("dispose Buy Dhoro");
+    pagesAnswers = _initSetupAnswers();
+    pages = _initWidgetPages();
+    amount = "";
+    agentId = "";
+    currencyType = "";
+    paymentId = "";
+    isWithdrawAmount = false;
+    currentPage = 0;
+    controller = PageController(
+      initialPage: 0,
+    );
+  }
 
   final widgetPages = [
     Container(
@@ -209,7 +225,7 @@ class RequestViewModel extends BaseViewModel {
     }
   }
 
-  /// purchase/buy dhoro
+  /// withdraw/sell dhoro
   Future<WithdrawData?> withdrawDhoro(BuildContext context) async {
     try {
       var value = amount;
@@ -221,6 +237,7 @@ class RequestViewModel extends BaseViewModel {
       var response = await userRepository.withdrawDhoro(value, agent, proofOfPayment, currency);
       setViewState(ViewState.Success);
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
+      showToast("Successfully withdrawn Dhoro");
       print("Showing withdrawDhoro response::: $response");
       purchase = response;
       return response;

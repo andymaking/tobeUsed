@@ -76,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
     final isValidSignIn = useProvider(validSignInProvider);
     final signInViewState = useProvider(signInStateProvider);
     GetUserData? loggedInUser = useProvider(loggedInUserProvider);
+    final isHidden = useProvider(togglePasswordProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -126,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
+                        isHidden: false,
                       ),
                       SizedBox(
                         height: 16,
@@ -144,6 +146,18 @@ class _LoginPageState extends State<LoginPage> {
                           return null;
                         },
                         keyboardType: TextInputType.visiblePassword,
+                        suffixIcon: IconButton(
+                          iconSize: 18,
+                          color: Pallet.colorWhite,
+                          onPressed: () => context.read(signInProvider).togglePassword(),
+                          icon: isHidden
+                              ? const Icon(
+                            Icons.visibility_off,
+                            color: Colors.black,
+                          )
+                              : const Icon(Icons.visibility, color: Colors.black),
+                        ),
+                        isHidden: isHidden,
                       ),
                       SizedBox(
                         height: 24,
