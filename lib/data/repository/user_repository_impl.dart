@@ -211,4 +211,10 @@ class UserRepositoryImpl extends UserRepository {
     return await userRemote.sendDhoro(token, amount, currencyType, wid);
   }
 
+  @override
+  Future<MessageResponse?> claimAirdrop(String wid) async {
+    final token = await getToken();
+    return await userRemote.claimAirdrop(wid, token);
+  }
+
 }

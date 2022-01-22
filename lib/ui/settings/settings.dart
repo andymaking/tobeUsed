@@ -260,7 +260,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   disabledColor: Pallet.colorGrey,
                   onPressed: () async {
                     setState(() {
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
                     });
                   },
                 ),

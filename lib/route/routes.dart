@@ -115,7 +115,7 @@ class AppRouter {
         );
       case AppRoutes.settings:
         return MaterialPageRoute<dynamic>(
-          builder: (_) => SettingsPage(),
+          builder: (_) => DashboardPage(selectedIndex: 3,),
           settings: settings,
           fullscreenDialog: true,
         );

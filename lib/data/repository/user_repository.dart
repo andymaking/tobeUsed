@@ -51,5 +51,6 @@ abstract class UserRepository {
   Future<WithdrawData?> buyDhoro(String value, String agent, String proofOfPayment, String currencyType);
   Future<WithdrawData?> withdrawDhoro(String amount, String agent, String paymentMethod, String currencyType);
   Future<SendDhoroStatus?> sendDhoro(String amount, String currencyType, String wid);
+  Future<MessageResponse?> claimAirdrop(String wid);
 
 }
