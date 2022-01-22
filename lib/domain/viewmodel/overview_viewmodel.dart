@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/airdrop_info.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/claim_airdrop.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/send_dhoro/send_dhoro.dart';
@@ -38,7 +40,8 @@ class OverviewViewModel extends BaseViewModel {
   RateData? rateData;
   ConvertData? convertData;
   SendDhoroStatus? sendDhoroStatus;
-  MessageResponse? messageResponse;
+  ClaimAirdropResponse? messageResponse;
+  AirdropInfoData? airdropInfoData;
   bool? walletStatus;
   //WalletPercentage? walletPercentage;
   String? walletPercentage;
@@ -297,7 +300,7 @@ class OverviewViewModel extends BaseViewModel {
   }
 
   /// Claim Airdrop
-  Future<MessageResponse?> claimAirdrop(BuildContext context, String wid) async {
+  Future<ClaimAirdropResponse?> claimAirdrop(BuildContext context, String wid) async {
     try {
       setViewState(ViewState.Loading);
       var response = await userRepository.claimAirdrop(wid);
@@ -314,6 +317,21 @@ class OverviewViewModel extends BaseViewModel {
       setError(error.toString());
     }
   }
+
+  Future<AirdropInfoData?> getAirdropInfo() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.getAirdropInfo();
+      airdropInfoData = response;
+      setViewState(ViewState.Success);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+    notifyListeners();
+  }
+
 
 }
 

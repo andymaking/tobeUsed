@@ -867,7 +867,7 @@ class _TransactionListState extends State<TransactionList> {
                 width: 58,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(3)),
-                    color: widget.status.contains("PENDING")
+                    color: widget.status.contains("APPROVED") ? Pallet.colorGreen : widget.status.contains("PENDING")
                         ? Pallet.colorYellow : widget.status.contains("DECLINED")
                         ? Pallet.colorRed : Pallet.colorYellow.withOpacity(0.4)),
                 child: Padding(

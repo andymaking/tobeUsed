@@ -220,7 +220,7 @@ class WithdrawStepNames extends HookWidget {
             ),
           ),
           AppFontsStyle.getAppTextViewBold(
-              "Wallet ID",
+              "Bank Account",
               weight: FontWeight.w500,
               size: AppFontsStyle.textFontSize12,
               color: currentPage == 1 ? Pallet.colorBlue : Pallet.colorGrey,

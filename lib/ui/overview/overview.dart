@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/airdrop_info.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
@@ -16,7 +17,6 @@ import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
-import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +34,7 @@ final overviewProvider =
   viewModel.getTransferHistory();
   viewModel.getUser();
   viewModel.getRate();
+  viewModel.getAirdropInfo();
   viewModel.walletBalance();
   viewModel.getWalletStatus();
   viewModel.getWalletPercentage();
@@ -83,6 +84,7 @@ class _OverviewPageState extends State<OverviewPage> {
   late ScrollController _controller;
   final _formKey = GlobalKey<FormState>();
   bool isLock = false;
+  bool claimedAirdrop = false;
   List<String> options = [
     "DHR",
     "USD",
@@ -119,6 +121,9 @@ class _OverviewPageState extends State<OverviewPage> {
     MessageResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
     GetUserData? userData = useProvider(overviewProvider).user;
     RateData? rateData = useProvider(overviewProvider).rateData;
+    AirdropInfoData? airdropInfoData = useProvider(overviewProvider).airdropInfoData;
+    claimedAirdrop = airdropInfoData?.claimed ?? true;
+    print("Showing airdropInfoData : ${airdropInfoData?.amount}");
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
     /*WalletPercentage?*/
@@ -150,62 +155,65 @@ class _OverviewPageState extends State<OverviewPage> {
                   trailingIconClicked: () => null,
                   initials: initials,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 24.0, left: 24.0, right: 24.0),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0, vertical: 23),
-                    height: 200,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        color: Pallet.colorBlue),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 35.0),
-                      child: Column(
-                        children: [
-                          //$DHR Airdrop is live
-                          AppFontsStyle.getAppTextViewBold(
-                            "\$DHR Airdrop is live",
-                            weight: FontWeight.w600,
-                            color: Pallet.colorWhite,
-                            textAlign: TextAlign.center,
-                            size: AppFontsStyle.textFontSize24,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-                            child: AppFontsStyle.getAppTextViewBold(
-                              "Take part in the \$DHR Airdrop and claim free \$DHR tokens",
-                              weight: FontWeight.w500,
+                Visibility(
+                  visible: claimedAirdrop == false,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 24.0, left: 24.0, right: 24.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0, vertical: 23),
+                      //height: 220,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          color: Pallet.colorBlue),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Column(
+                          children: [
+                            //$DHR Airdrop is live
+                            AppFontsStyle.getAppTextViewBold(
+                              "\$${airdropInfoData?.amount ?? 0} Airdrop is live",
+                              weight: FontWeight.w600,
                               color: Pallet.colorWhite,
                               textAlign: TextAlign.center,
-                              size: AppFontsStyle.textFontSize12,
+                              size: AppFontsStyle.textFontSize24,
                             ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          GestureDetector(
-                            onTap: (){
-                              context.read(overviewProvider).claimAirdrop(context, "${userData?.wid}");
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(2)),
-                                  color: Pallet.colorWhite),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: AppFontsStyle.getAppTextViewBold(
-                                  "CLAIM AIRDROP",
-                                  weight: FontWeight.w600,
-                                  color: Pallet.colorBlue,
-                                  textAlign: TextAlign.center,
-                                  size: AppFontsStyle.textFontSize12,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                              child: AppFontsStyle.getAppTextViewBold(
+                                "Take part in the \$${airdropInfoData?.amount ?? 0} Airdrop and claim free \$${airdropInfoData?.amountPerAddress ?? 0} tokens",
+                                weight: FontWeight.w500,
+                                color: Pallet.colorWhite,
+                                textAlign: TextAlign.center,
+                                size: AppFontsStyle.textFontSize12,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                context.read(overviewProvider).claimAirdrop(context, "${userData?.wid}");
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(2)),
+                                    color: Pallet.colorWhite),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: AppFontsStyle.getAppTextViewBold(
+                                    "CLAIM AIRDROP",
+                                    weight: FontWeight.w600,
+                                    color: Pallet.colorBlue,
+                                    textAlign: TextAlign.center,
+                                    size: AppFontsStyle.textFontSize12,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
