@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:dhoro_mobile/data/core/network_config.dart';
 import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/airdrop_info.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/claim_airdrop.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
@@ -483,7 +485,7 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<MessageResponse?> claimAirdrop(String wid, TokenMetaData tokenMetaData) async {
+  Future<ClaimAirdropResponse?> claimAirdrop(String wid, TokenMetaData tokenMetaData) async {
     try {
       var _data = {
         'wallet_id': wid,
@@ -492,8 +494,38 @@ class UserRemoteImpl extends UserRemote {
       var response = await dioClient.post(
           "${NetworkConfig.BASE_URL}user/airdrop/claim", data: _data
       );
-      final responseData = MessageResponse.fromJson(response.data);
+      final responseData = ClaimAirdropResponse.fromJson(response.data);
       print("claimAirdrop from Remote layer:: $responseData");
+      return responseData;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<AirdropInfoData?> getAirdropInfo(TokenMetaData tokenMetaData) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/airdrop/info",
+      );
+      final responseData = AirdropInfoResponse.fromJson(response.data);
+      print("getAirdropInfo from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<AvatarResponse?> getAvatar(TokenMetaData tokenMetaData) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/profile/avatar",
+      );
+      final responseData = AvatarResponse.fromJson(response.data);
+      print("getAvatar from Remote layer:: ${responseData.data} response:$response");
       return responseData;
     } catch (error) {
       handleError(error);

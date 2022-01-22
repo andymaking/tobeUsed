@@ -1,6 +1,8 @@
 
 import 'package:dhoro_mobile/data/cache/user_cache.dart';
 import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/airdrop_info.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/claim_airdrop.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
@@ -9,6 +11,7 @@ import 'package:dhoro_mobile/data/remote/model/send_dhoro/send_dhoro.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
@@ -212,9 +215,21 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<MessageResponse?> claimAirdrop(String wid) async {
+  Future<ClaimAirdropResponse?> claimAirdrop(String wid) async {
     final token = await getToken();
     return await userRemote.claimAirdrop(wid, token);
+  }
+
+  @override
+  Future<AirdropInfoData?> getAirdropInfo() async {
+    final token = await getToken();
+    return await userRemote.getAirdropInfo(token);
+  }
+
+  @override
+  Future<AvatarResponse?> getAvatar() async {
+    final token = await getToken();
+    return await userRemote.getAvatar(token);
   }
 
 }

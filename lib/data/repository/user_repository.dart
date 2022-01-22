@@ -1,5 +1,7 @@
 
 import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/airdrop_info.dart';
+import 'package:dhoro_mobile/data/remote/model/airdrop/claim_airdrop.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/rate/rate.dart';
@@ -8,6 +10,7 @@ import 'package:dhoro_mobile/data/remote/model/send_dhoro/send_dhoro.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
@@ -51,6 +54,8 @@ abstract class UserRepository {
   Future<WithdrawData?> buyDhoro(String value, String agent, String proofOfPayment, String currencyType);
   Future<WithdrawData?> withdrawDhoro(String amount, String agent, String paymentMethod, String currencyType);
   Future<SendDhoroStatus?> sendDhoro(String amount, String currencyType, String wid);
-  Future<MessageResponse?> claimAirdrop(String wid);
+  Future<ClaimAirdropResponse?> claimAirdrop(String wid);
+  Future<AirdropInfoData?> getAirdropInfo();
+  Future<AvatarResponse?> getAvatar();
 
 }

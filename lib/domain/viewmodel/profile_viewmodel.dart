@@ -4,6 +4,7 @@ import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
 import 'package:dhoro_mobile/route/routes.dart';
@@ -18,6 +19,7 @@ class ProfileViewModel extends BaseViewModel {
   final userRepository = locator<UserRepository>();
   //LoggedInUser? user;
   GetUserData? user;
+  AvatarResponse? avatarResponse;
 
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
@@ -69,6 +71,20 @@ class ProfileViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  Future<AvatarResponse?> getAvatar() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.getAvatar();
+      avatarResponse = response;
+      setViewState(ViewState.Success);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+    notifyListeners();
+  }
+
   Future<GetUserData?> updateUserProfile(BuildContext context, String firstName, String lastName,String phoneNumber) async {
     try {
       setViewState(ViewState.Loading);
@@ -95,6 +111,7 @@ class ProfileViewModel extends BaseViewModel {
       //print("User Info::: $user");
       setViewState(ViewState.Success);
       await getUser();
+      await getAvatar();
       await showTopModalSheet<String>(
           context: context,
           child: ShowDialog(

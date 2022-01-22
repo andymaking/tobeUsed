@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/domain/viewmodel/profile_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
@@ -25,6 +26,7 @@ ChangeNotifierProvider.autoDispose<ProfileViewModel>((ref) {
   final viewModel = locator.get<ProfileViewModel>();
   //viewModel.getTransferHistory();
   viewModel.getUser();
+  viewModel.getAvatar();
   return viewModel;
 });
 
@@ -59,6 +61,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
   @override
   void initState() {
     context.read(profileProvider).getUser();
+    context.read(profileProvider).getAvatar();
     super.initState();
   }
   @override
@@ -66,6 +69,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
     final viewState = useProvider(profileStateProvider);
     final isValidLogin = useProvider(validProfileProvider);
     GetUserData? userData = useProvider(profileProvider).user;
+    AvatarResponse? avatar = useProvider(profileProvider).avatarResponse;
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
 
@@ -81,7 +85,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 children: <Widget>[
                   OverViewToolBar(
                     AppString.overView,
-                    userData?.avatar ?? "",
+                    avatar?.data ?? "",
                     trailingIconClicked: () => null,
                     initials: initials,
                   ),
@@ -189,12 +193,9 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                // for (var index = 0;
-                                // index < uploadTwoImages.length;
-                                // index++)
                                 Container(
                                   child: CircleImageFromNetwork(
-                                    userData?.avatar ?? "",
+                                    avatar?.data ?? "",
                                     "assets/images/ic_avatar.svg",
                                     "assets/images/ic_avatar.svg",
                                     size: 40.0,
@@ -210,7 +211,6 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                                       child: ImageToDisplay(
                                         "",
                                         MediaQuery.of(context).size.width,
-                                        //MediaQuery.of(context).size.width,
                                         onClick: () async {
                                           final result = await Navigator.of(context)
                                               .pushNamed(AppRoutes.uploadPhotosOptions);
