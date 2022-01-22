@@ -11,6 +11,7 @@ import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
@@ -42,6 +43,7 @@ class OverviewViewModel extends BaseViewModel {
   SendDhoroStatus? sendDhoroStatus;
   ClaimAirdropResponse? messageResponse;
   AirdropInfoData? airdropInfoData;
+  AvatarResponse? avatarResponse;
   bool? walletStatus;
   //WalletPercentage? walletPercentage;
   String? walletPercentage;
@@ -332,6 +334,19 @@ class OverviewViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  Future<AvatarResponse?> getAvatar() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.getAvatar();
+      avatarResponse = response;
+      setViewState(ViewState.Success);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+    notifyListeners();
+  }
 
 }
 

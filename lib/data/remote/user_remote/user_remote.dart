@@ -56,6 +56,7 @@ abstract class UserRemote {
   Future<SendDhoroStatus?> sendDhoro(TokenMetaData tokenMetaData,String amount, String currencyType, String wid);
   Future<ClaimAirdropResponse?> claimAirdrop(String wid,TokenMetaData tokenMetaData);
   Future<AirdropInfoData?> getAirdropInfo(TokenMetaData tokenMetaData);
+  Future<AvatarResponse?> getAvatar(TokenMetaData tokenMetaData);
 
 
 }
