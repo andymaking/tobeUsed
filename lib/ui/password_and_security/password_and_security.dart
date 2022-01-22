@@ -85,7 +85,23 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                     initials: initials,
                   ),
                   SizedBox(
-                    height: 24,
+                    height: 8,
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.settings, (route) => false);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: SvgPicture.asset(
+                        "assets/images/back_arrow.svg",
+                        width: 40,
+                        height: 40,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),

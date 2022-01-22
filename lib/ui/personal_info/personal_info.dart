@@ -12,6 +12,7 @@ import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
+import 'package:dhoro_mobile/widgets/circle_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -85,7 +86,23 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                     initials: initials,
                   ),
                   SizedBox(
-                    height: 24,
+                    height: 8,
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.settings, (route) => false);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: SvgPicture.asset(
+                        "assets/images/back_arrow.svg",
+                        width: 40,
+                        height: 40,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
@@ -176,8 +193,12 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                                 // index < uploadTwoImages.length;
                                 // index++)
                                 Container(
-                                  child: Image.asset(
-                                    AppImages.icDefaultImage,
+                                  child: CircleImageFromNetwork(
+                                    userData?.avatar ?? "",
+                                    "assets/images/ic_avatar.svg",
+                                    "assets/images/ic_avatar.svg",
+                                    size: 40.0,
+                                    text: initials,
                                   ),
                                 ),
                                 SizedBox(width: 24.0,),

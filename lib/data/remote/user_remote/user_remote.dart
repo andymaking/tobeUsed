@@ -52,6 +52,7 @@ abstract class UserRemote {
   Future<WithdrawData?> buyDhoro(TokenMetaData tokenMetaData,String value, String agent, String proofOfPayment, String currencyType);
   Future<WithdrawData?> withdrawDhoro(TokenMetaData tokenMetaData,String amount, String agent, String paymentMethod, String currencyType);
   Future<SendDhoroStatus?> sendDhoro(TokenMetaData tokenMetaData,String amount, String currencyType, String wid);
+  Future<MessageResponse?> claimAirdrop(String wid,TokenMetaData tokenMetaData);
 
 }
 

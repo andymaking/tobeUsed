@@ -16,9 +16,13 @@ import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart'
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
 import 'package:dhoro_mobile/ui/overview/send.dart';
+import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 
 import '../../main.dart';
@@ -34,6 +38,7 @@ class OverviewViewModel extends BaseViewModel {
   RateData? rateData;
   ConvertData? convertData;
   SendDhoroStatus? sendDhoroStatus;
+  MessageResponse? messageResponse;
   bool? walletStatus;
   //WalletPercentage? walletPercentage;
   String? walletPercentage;
@@ -117,6 +122,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// user walletBalance
@@ -132,14 +138,15 @@ class OverviewViewModel extends BaseViewModel {
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
-      // await showTopModalSheet<String>(
-      //     context: context,
-      //     child: ShowDialog(
-      //       title: '$error',
-      //       isError: true,
-      //       onPressed: () {},
-      //     ));
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: '$error',
+            isError: true,
+            onPressed: () {},
+          ));
     }
+    notifyListeners();
   }
 
   /// user walletBalance
@@ -155,6 +162,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// dhoro rate
@@ -170,6 +178,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// user walletBalance
@@ -188,32 +197,14 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
-  int pageNumber = 1;
-  bool hasMoreNext = true;
-  String? totalPages;
-  bool loading = false;
-  int? page;
-
-  Future<void> reload() async {
-    transferHistory = <TransferHistoryData>[];
-    pageNumber = 1;
-    await userRepository.getTransferHistory(pageNumber);
-  }
-
-  Future<void> getNextPage() async {
-    if (transferHistoryDataResponse!.next!.isEmpty == true) {
-      loading = true;
-      await userRepository.getTransferHistory(pageNumber);
-      loading = false;
-    }
-  }
 
   Future<void> getTransferHistory() async {
     try {
       setViewState(ViewState.Loading);
-      var response = await userRepository.getTransferHistory(pageNumber);
+      var response = await userRepository.getTransferHistory(1);
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
@@ -223,6 +214,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   Future<void> getTransferHistoryWithPaging(pageNumber) async {
@@ -266,6 +258,7 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// Convert currency
@@ -303,9 +296,152 @@ class OverviewViewModel extends BaseViewModel {
     }
   }
 
-  void updateLoginStatus(bool status) async {
-    final box = await Hive.openBox<bool>(DbTable.LOGIN_TABLE_NAME);
-    box.add(status);
+  /// Claim Airdrop
+  Future<MessageResponse?> claimAirdrop(BuildContext context, String wid) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response = await userRepository.claimAirdrop(wid);
+      messageResponse = response;
+      setViewState(ViewState.Success);
+      Navigator.pop(context);
+      print("Showing sendDhoro response::: $response");
+      showClaimSuccessBottomSheet(context, "${messageResponse?.message}");
+      return response;
+    } catch (error) {
+      showClaimFailedBottomSheet(context, error.toString(),);
+      print("Showing error response::: $error");
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
   }
 
+}
+
+
+showClaimSuccessBottomSheet(BuildContext context, String message) {
+  showModalBottomSheet(
+      elevation: 10,
+      backgroundColor: Colors.white,
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24), topRight: Radius.circular(24)),
+      ),
+      builder: (context) => Container(
+        height: 325,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 8,
+            ),
+            SvgPicture.asset("assets/images/top_indicator.svg"),
+            SizedBox(
+              height: 24,
+            ),
+            AppFontsStyle.getAppTextViewBold("Claim Airdrop",
+                color: Pallet.colorBlue,
+                weight: FontWeight.w700,
+                size: AppFontsStyle.textFontSize16),
+            SizedBox(
+              height: 24,
+            ),
+            SvgPicture.asset("assets/images/ic_success_send.svg"),
+            SizedBox(
+              height: 16,
+            ),
+            Container(
+                width: double.infinity,
+                child: GestureDetector(
+                  onTap: () {
+                    //Navigator.of(context).pushNamed(AppRoutes.signUp);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12.0, right: 12, top: 8),
+                    child: Center(
+                      child: AppFontsStyle.getAppTextViewBold(message,
+                          color: Pallet.colorBlue,
+                          weight: FontWeight.w500,
+                          size: AppFontsStyle.textFontSize18),
+                    ),
+                  ),
+                )),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      ));
+}
+
+showClaimFailedBottomSheet(
+    BuildContext context, String message) {
+  showModalBottomSheet(
+      elevation: 10,
+      backgroundColor: Colors.white,
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24), topRight: Radius.circular(24)),
+      ),
+      builder: (context) => Container(
+        height: 325,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 8,
+            ),
+            SvgPicture.asset("assets/images/top_indicator.svg"),
+            SizedBox(
+              height: 24,
+            ),
+            AppFontsStyle.getAppTextViewBold("Claim Airdrop Failed",
+                color: Pallet.colorBlue,
+                weight: FontWeight.w700,
+                size: AppFontsStyle.textFontSize16),
+            SizedBox(
+              height: 24,
+            ),
+            SvgPicture.asset("assets/images/ic_failed_send.svg"),
+            SizedBox(
+              height: 16,
+            ),
+            Container(
+                width: double.infinity,
+                child: GestureDetector(
+                  onTap: () {
+                    //Navigator.of(context).pushNamed(AppRoutes.signUp);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12.0, right: 12),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12.0, right: 12, top: 8),
+                        child: Center(
+                          child: AppFontsStyle.getAppTextViewBold(message,
+                              color: Pallet.colorBlue,
+                              weight: FontWeight.w500,
+                              size: AppFontsStyle.textFontSize18),
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      ));
 }

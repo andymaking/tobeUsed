@@ -156,6 +156,7 @@ class BuyViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// Convert currency
@@ -187,6 +188,7 @@ class BuyViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// get user getAgents
@@ -203,6 +205,7 @@ class BuyViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// get user Agent
@@ -231,6 +234,7 @@ class BuyViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+    notifyListeners();
   }
 
   /// purchase/buy dhoro

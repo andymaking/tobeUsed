@@ -482,6 +482,24 @@ class UserRemoteImpl extends UserRemote {
     }
   }
 
+  @override
+  Future<MessageResponse?> claimAirdrop(String wid, TokenMetaData tokenMetaData) async {
+    try {
+      var _data = {
+        'wallet_id': wid,
+      };
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/airdrop/claim", data: _data
+      );
+      final responseData = MessageResponse.fromJson(response.data);
+      print("claimAirdrop from Remote layer:: $responseData");
+      return responseData;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
 
 
 }
