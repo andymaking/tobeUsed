@@ -47,7 +47,7 @@ class OverviewViewModel extends BaseViewModel {
   bool? walletStatus;
   //WalletPercentage? walletPercentage;
   String? walletPercentage;
-  MessageResponse? lockUnlock;
+  LockAndUnlockWalletResponse? lockUnlock;
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
   String sendAmount = "";
@@ -131,7 +131,7 @@ class OverviewViewModel extends BaseViewModel {
   }
 
   /// user walletBalance
-  Future<MessageResponse?> lockOrUnlockWallet(status, BuildContext context) async {
+  Future<LockAndUnlockWalletResponse?> lockOrUnlockWallet(status, BuildContext context) async {
     try {
       setViewState(ViewState.Loading);
       var response = await userRepository.lockOrUnlockWallet(status);
@@ -209,7 +209,7 @@ class OverviewViewModel extends BaseViewModel {
   Future<void> getTransferHistory() async {
     try {
       setViewState(ViewState.Loading);
-      var response = await userRepository.getTransferHistory(1);
+      var response = await userRepository.getTransferHistory(1, 5);
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
@@ -225,7 +225,7 @@ class OverviewViewModel extends BaseViewModel {
   Future<void> getTransferHistoryWithPaging(pageNumber) async {
     try {
       setViewState(ViewState.Loading);
-      var response = await userRepository.getTransferHistory(pageNumber);
+      var response = await userRepository.getTransferHistory(pageNumber, 5);
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);

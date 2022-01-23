@@ -52,7 +52,7 @@ class TransactionsViewModel extends BaseViewModel {
     try {
       print("transaction getTransferHistory");
       setViewState(ViewState.Loading);
-      var response = await userRepository.getTransferHistory(1);
+      var response = await userRepository.getTransferHistory(1, 8);
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
@@ -67,7 +67,7 @@ class TransactionsViewModel extends BaseViewModel {
   Future<void> getTransferHistoryWithPaging(pageNumber) async {
     try {
       setViewState(ViewState.Loading);
-      var response = await userRepository.getTransferHistory(pageNumber);
+      var response = await userRepository.getTransferHistory(pageNumber, 8);
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);

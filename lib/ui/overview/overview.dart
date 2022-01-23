@@ -118,7 +118,7 @@ class _OverviewPageState extends State<OverviewPage> {
     ViewState viewState = useProvider(profileStateProvider);
     WalletData? walletBalance = useProvider(overviewProvider).walletData;
     bool? walletStatus = useProvider(overviewProvider).walletStatus;
-    MessageResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
+    LockAndUnlockWalletResponse? lockUnlock = useProvider(overviewProvider).lockUnlock;
     GetUserData? userData = useProvider(overviewProvider).user;
     RateData? rateData = useProvider(overviewProvider).rateData;
     AirdropInfoData? airdropInfoData = useProvider(overviewProvider).airdropInfoData;
@@ -492,129 +492,129 @@ class _OverviewPageState extends State<OverviewPage> {
                           )
                     : buildEmptyView(),
                 if (context.read(overviewProvider).shouldFetchNextPage == true)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            print("Pressed one");
-                            context
-                                .read(overviewProvider)
-                                .getTransferHistoryWithPaging(1);
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 2.5, horizontal: 16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Pallet.colorWhite,
-                          ),
-                          child: Center(
-                            child: AppFontsStyle.getAppTextViewBold("First",
-                                size: AppFontsStyle.textFontSize16,
-                                color: Pallet.colorBlue),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            page -= 1;
-                            print("Pressed:: $page");
-                            context
-                                .read(overviewProvider)
-                                .getTransferHistoryWithPaging(page);
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Center(
-                            child: SvgPicture.asset(
-                              "assets/images/back_arrow.svg",
-                              width: 40,
-                              height: 40,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8),
-                        child: CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            child: Container(
-                              height: 40,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 2.5, horizontal: 16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(2),
-                                color: Pallet.colorWhite,
-                              ),
-                              child: Center(
-                                child: AppFontsStyle.getAppTextViewBold(
-                                    "1 of ${context.read(overviewProvider).lastPage}",
-                                    size: AppFontsStyle.textFontSize12,
-                                    color: Pallet.colorBlue),
-                              ),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                page += 1;
-                                print("Pressed:: $page");
-                                context
-                                    .read(overviewProvider)
-                                    .getTransferHistoryWithPaging(page);
-                              });
-                            }),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            page += 1;
-                            print("Pressed:: $page");
-                            context
-                                .read(overviewProvider)
-                                .getTransferHistoryWithPaging(page);
-                          });
-                        },
-                        child: SvgPicture.asset(
-                          "assets/images/arrow_forward.svg",
-                          width: 40,
-                          height: 40,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          var last = await sharedPreference.getTransLastPage();
-                          setState(() {
-                            print("Pressed:: $last");
-                            context
-                                .read(overviewProvider)
-                                .getTransferHistoryWithPaging(last);
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 2.5, horizontal: 16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Pallet.colorWhite,
-                          ),
-                          child: Center(
-                            child: AppFontsStyle.getAppTextViewBold("Last",
-                                size: AppFontsStyle.textFontSize16,
-                                color: Pallet.colorBlue),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         setState(() {
+                  //           print("Pressed one");
+                  //           context
+                  //               .read(overviewProvider)
+                  //               .getTransferHistoryWithPaging(1);
+                  //         });
+                  //       },
+                  //       child: Container(
+                  //         height: 40,
+                  //         padding: EdgeInsets.symmetric(
+                  //             vertical: 2.5, horizontal: 16),
+                  //         decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(2),
+                  //           color: Pallet.colorWhite,
+                  //         ),
+                  //         child: Center(
+                  //           child: AppFontsStyle.getAppTextViewBold("First",
+                  //               size: AppFontsStyle.textFontSize16,
+                  //               color: Pallet.colorBlue),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         setState(() {
+                  //           page -= 1;
+                  //           print("Pressed:: $page");
+                  //           context
+                  //               .read(overviewProvider)
+                  //               .getTransferHistoryWithPaging(page);
+                  //         });
+                  //       },
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.only(left: 8.0),
+                  //         child: Center(
+                  //           child: SvgPicture.asset(
+                  //             "assets/images/back_arrow.svg",
+                  //             width: 40,
+                  //             height: 40,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 8.0, right: 8),
+                  //       child: CupertinoButton(
+                  //           padding: EdgeInsets.zero,
+                  //           child: Container(
+                  //             height: 40,
+                  //             padding: EdgeInsets.symmetric(
+                  //                 vertical: 2.5, horizontal: 16),
+                  //             decoration: BoxDecoration(
+                  //               borderRadius: BorderRadius.circular(2),
+                  //               color: Pallet.colorWhite,
+                  //             ),
+                  //             child: Center(
+                  //               child: AppFontsStyle.getAppTextViewBold(
+                  //                   "1 of ${context.read(overviewProvider).lastPage}",
+                  //                   size: AppFontsStyle.textFontSize12,
+                  //                   color: Pallet.colorBlue),
+                  //             ),
+                  //           ),
+                  //           onPressed: () {
+                  //             setState(() {
+                  //               page += 1;
+                  //               print("Pressed:: $page");
+                  //               context
+                  //                   .read(overviewProvider)
+                  //                   .getTransferHistoryWithPaging(page);
+                  //             });
+                  //           }),
+                  //     ),
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         setState(() {
+                  //           page += 1;
+                  //           print("Pressed:: $page");
+                  //           context
+                  //               .read(overviewProvider)
+                  //               .getTransferHistoryWithPaging(page);
+                  //         });
+                  //       },
+                  //       child: SvgPicture.asset(
+                  //         "assets/images/arrow_forward.svg",
+                  //         width: 40,
+                  //         height: 40,
+                  //       ),
+                  //     ),
+                  //     SizedBox(
+                  //       width: 8,
+                  //     ),
+                  //     GestureDetector(
+                  //       onTap: () async {
+                  //         var last = await sharedPreference.getTransLastPage();
+                  //         setState(() {
+                  //           print("Pressed:: $last");
+                  //           context
+                  //               .read(overviewProvider)
+                  //               .getTransferHistoryWithPaging(last);
+                  //         });
+                  //       },
+                  //       child: Container(
+                  //         height: 40,
+                  //         padding: EdgeInsets.symmetric(
+                  //             vertical: 2.5, horizontal: 16),
+                  //         decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(2),
+                  //           color: Pallet.colorWhite,
+                  //         ),
+                  //         child: Center(
+                  //           child: AppFontsStyle.getAppTextViewBold("Last",
+                  //               size: AppFontsStyle.textFontSize16,
+                  //               color: Pallet.colorBlue),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 SizedBox(
                   height: 16,
                 ),

@@ -10,6 +10,7 @@ import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
@@ -58,12 +59,12 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _imageController = TextEditingController();
 
-  @override
-  void initState() {
-    context.read(profileProvider).getUser();
-    context.read(profileProvider).getAvatar();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   context.read(profileProvider).getUser();
+  //   context.read(profileProvider).getAvatar();
+  //   super.initState();
+  // }
   @override
   Widget build(BuildContext context) {
     final viewState = useProvider(profileStateProvider);
@@ -193,7 +194,8 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(
+                                viewState == ViewState.Loading ? AppProgressBar()
+                                : Container(
                                   child: CircleImageFromNetwork(
                                     avatar?.data ?? "",
                                     "assets/images/ic_avatar.svg",
