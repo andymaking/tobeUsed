@@ -2,6 +2,7 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/domain/viewmodel/request_viewmodel.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:flutter/material.dart';
@@ -50,16 +51,21 @@ class _SetupPagerContainerState extends State<SetupPagerContainer> {
   }
 
   void navigate() {
-    final currentPage = useProvider(userRequestProvider).currentPage;
-    if(currentPage > 0) {
-      _controller.jumpToPage(currentPage - 1);
-    } else {
-      Navigator.of(context).pop();
-    }
+    setState(() {
+      final currentPage = useProvider(userRequestProvider).currentPage;
+      if(currentPage > 0) {
+        _controller.jumpToPage(currentPage - 1);
+      } else {
+        Navigator.of(context).pop();
+      }
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
     final currentPage = useProvider(userRequestProvider).currentPage;
     final totalPages = context.read(userRequestProvider).pages.length - 1;
     final progress =

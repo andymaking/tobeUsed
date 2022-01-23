@@ -2,6 +2,7 @@ import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/route/routes.dart';
+import 'package:dhoro_mobile/ui/withdraw_dhoro/select_withdraw_payment_processor.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
@@ -30,7 +31,28 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
     context.read(sharedProvider.userBuyProvider).paymentId = "${userTransactions.first.pk}";
     GetUserData? userData = useProvider(sharedProvider.userBuyProvider).user;
     AgentsData? agent = useProvider(sharedProvider.userBuyProvider).anAgents;
+    PushData? pushData;
 
+
+    String paymentId = "";
+    String userName = "";
+    String bankName = "";
+    String accountNumber = "";
+    setState(() {
+      print("pushData paymentId ... ${pushData?.paymentId}");
+      print("pushData userName ... ${pushData?.userName}");
+      print("pushData bankName ... ${pushData?.bankName}");
+      print("pushData accountNumber ... ${pushData?.accountNumber}");
+
+      paymentId = context.read(sharedProvider.userBuyProvider).paymentId;
+      userName = context.read(sharedProvider.userBuyProvider).userName;
+      bankName = context.read(sharedProvider.userBuyProvider).bankName;
+      accountNumber = context.read(sharedProvider.userBuyProvider).accountNumber;
+      print("paymentId ... $paymentId");
+      print("userName ... $userName");
+      print("bankName ... $bankName");
+      print("accountNumber ... $accountNumber");
+    });
 
     return Scaffold(
       body: SafeArea(
@@ -55,27 +77,27 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          context.read(sharedProvider.userBuyProvider).userName.isEmpty
+                          userName.isEmpty
                               ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12)
-                              : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userBuyProvider).userName,
+                              : AppFontsStyle.getAppTextViewBold(userName,
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           SizedBox(height: 12.0,),
-                          context.read(sharedProvider.userBuyProvider).bankName.isEmpty
+                          bankName.isEmpty
                           ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!.toTitleCase()!}",
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12)
-                          : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userBuyProvider).bankName,
+                          : AppFontsStyle.getAppTextViewBold(bankName,
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           SizedBox(height: 12.0,),
-                          context.read(sharedProvider.userBuyProvider).accountNumber.isEmpty
+                          accountNumber.isEmpty
                           ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12)
-                          : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userBuyProvider).accountNumber,
+                          : AppFontsStyle.getAppTextViewBold(accountNumber,
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                         ],
@@ -89,8 +111,13 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: (){
-                              Navigator.pushNamed(context, AppRoutes.selectBuyPaymentProcessor);
+                            onTap: () async {
+                              pushData = await Navigator.pushNamed(context, AppRoutes.selectBuyPaymentProcessor)as PushData;
+                              print("recieved... ${pushData?.paymentId}, ${pushData?.userName}");
+                              setState(() {
+
+
+                              });
                             },
                             child: Container(
                               decoration: BoxDecoration(

@@ -83,7 +83,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                           child: GestureDetector(
                             onTap: (){
                               print("Clicked");
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
                             },
                             child: SvgPicture.asset(
                               "assets/images/back_arrow.svg",

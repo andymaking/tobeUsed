@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_summary.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final _overviewStateProvider = Provider.autoDispose<ViewState>((ref) {
@@ -27,10 +30,15 @@ class SelectWithdrawPaymentProcessorPage extends StatefulHookWidget {
 
 class _SelectWithdrawPaymentProcessorPageState extends State<SelectWithdrawPaymentProcessorPage> {
   final isValidLogin = true;
-
+  String? paymentId;
+  String? userName;
+  String? bankName;
+  String? accountNumber;
 
   @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
     ViewState viewState = useProvider(processorStateProvider);
     List<PaymentProcessorData>? userTransactions =
         useProvider(sharedProvider.userRequestProvider).paymentProcessor;
@@ -48,9 +56,26 @@ class _SelectWithdrawPaymentProcessorPageState extends State<SelectWithdrawPayme
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0, left: 20),
+                        child: GestureDetector(
+                          onTap: (){
+                            print("Clicked");
+                            Navigator.of(context).pop();
+                          },
+                          child: SvgPicture.asset(
+                            "assets/images/back_arrow.svg",
+                            width: 40,
+                            height: 40,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(
-                    height: 24,
+                    height: 8,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
@@ -102,13 +127,13 @@ class _SelectWithdrawPaymentProcessorPageState extends State<SelectWithdrawPayme
                                                 PaymentDetailsView(
                                                     (){
                                                       setState(() {
-                                                        context.read(sharedProvider.userRequestProvider).paymentId = userTransactions[index].pk!;
-                                                        context.read(sharedProvider.userRequestProvider).userName = userTransactions[index].label!.toTitleCase()!;
-                                                        context.read(sharedProvider.userRequestProvider).bankName = userTransactions[index].processor!.toTitleCase()!;
-                                                        context.read(sharedProvider.userRequestProvider).accountNumber = userTransactions[index].label!;
-
+                                                        paymentId= context.read(sharedProvider.userRequestProvider).paymentId = userTransactions[index].pk!;
+                                                        userName = context.read(sharedProvider.userRequestProvider).userName = userTransactions[index].label!.toTitleCase()!;
+                                                        bankName  = context.read(sharedProvider.userRequestProvider).bankName = userTransactions[index].processor!.toTitleCase()!;
+                                                        accountNumber = context.read(sharedProvider.userRequestProvider).accountNumber = userTransactions[index].value!;
+                                                        print("Show processor details... paymentId:$paymentId, userName:$userName, bankName:$bankName, accountNumber:$accountNumber");
                                                       });
-                                                      Navigator.pop(context);
+                                                      Navigator.pop(context, PushData(paymentId, userName, bankName, accountNumber));
                                                     },
                                                     userTransactions[index].label!.toTitleCase()!,
                                                     userTransactions[index].processor!,
@@ -240,4 +265,13 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
       ),
     );
   }
+}
+
+class PushData {
+  final String? paymentId;
+  final String? userName;
+  final String? bankName;
+  final String? accountNumber;
+
+  const PushData(this.paymentId, this.userName, this.bankName, this.accountNumber);
 }

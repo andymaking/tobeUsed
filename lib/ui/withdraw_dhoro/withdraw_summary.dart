@@ -2,6 +2,7 @@ import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_process
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
@@ -9,17 +10,34 @@ import 'package:flutter/material.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/src/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'select_withdraw_payment_processor.dart';
 
 
 class WithdrawSummaryPage extends StatefulHookWidget {
-  const WithdrawSummaryPage({Key? key}) : super(key: key);
+
+  //PushData? pushData;
+
+  WithdrawSummaryPage(
+      {Key? key,
+        //this.pushData,
+      }) : super(key: key);
 
   @override
   _WithdrawSummaryPageState createState() => _WithdrawSummaryPageState();
 }
 
 class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
+
+  @override
+  void initState() {
+    //Future.delayed(Duration(milliseconds: 200));
+
+
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -29,15 +47,35 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
 
   @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
     final isValidLogin = true;
     GetUserData? userData = useProvider(sharedProvider.userRequestProvider).user;
     print("userData walletId... ${userData?.wid}");
     List<PaymentProcessorData>? userTransactions =
         useProvider(sharedProvider.userRequestProvider).paymentProcessor;
-    context.read(sharedProvider.userRequestProvider).paymentId = "${userTransactions.first.pk}";
-    context.read(sharedProvider.userRequestProvider).userName = "${userTransactions.first.label!.toTitleCase()!}";
-    context.read(sharedProvider.userRequestProvider).bankName = "${userTransactions.first.processor}";
-    context.read(sharedProvider.userRequestProvider).accountNumber = "${userTransactions.first.value}";
+    PushData? pushData;
+
+
+    String paymentId = "";
+    String userName = "";
+    String bankName = "";
+    String accountNumber = "";
+    setState(() {
+      print("pushData paymentId ... ${pushData?.paymentId}");
+      print("pushData userName ... ${pushData?.userName}");
+      print("pushData bankName ... ${pushData?.bankName}");
+      print("pushData accountNumber ... ${pushData?.accountNumber}");
+
+      paymentId = context.read(sharedProvider.userRequestProvider).paymentId;
+      userName = context.read(sharedProvider.userRequestProvider).userName;
+      bankName = context.read(sharedProvider.userRequestProvider).bankName;
+      accountNumber = context.read(sharedProvider.userRequestProvider).accountNumber;
+      print("paymentId ... $paymentId");
+      print("userName ... $userName");
+      print("bankName ... $bankName");
+      print("accountNumber ... $accountNumber");
+    });
 
 
     return Scaffold(
@@ -66,27 +104,27 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                context.read(sharedProvider.userRequestProvider).userName.isEmpty
+                                userName.isEmpty
                                     ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.label!.toTitleCase()!}",
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12)
-                                : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userRequestProvider).userName,
+                                : AppFontsStyle.getAppTextViewBold(userName,
                                 weight: FontWeight.w500,
                                 size: AppFontsStyle.textFontSize12),
                                 SizedBox(height: 12.0,),
-                                context.read(sharedProvider.userRequestProvider).bankName.isEmpty
+                                bankName.isEmpty
                                     ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.processor!}",
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12)
-                                    : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userRequestProvider).bankName,
+                                    : AppFontsStyle.getAppTextViewBold(bankName,
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12),
                                 SizedBox(height: 12.0,),
-                                context.read(sharedProvider.userRequestProvider).accountNumber.isEmpty
+                                accountNumber.isEmpty
                                     ? AppFontsStyle.getAppTextViewBold("${userTransactions.first.value!}",
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12)
-                                    : AppFontsStyle.getAppTextViewBold(context.read(sharedProvider.userRequestProvider).accountNumber,
+                                    : AppFontsStyle.getAppTextViewBold(accountNumber,
                                     weight: FontWeight.w500,
                                     size: AppFontsStyle.textFontSize12),
                               ],
@@ -100,8 +138,13 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 GestureDetector(
-                                  onTap: (){
-                                    Navigator.pushNamed(context, AppRoutes.selectWithdrawPaymentProcessor);
+                                  onTap: () async {
+                                   pushData = await Navigator.pushNamed(context, AppRoutes.selectWithdrawPaymentProcessor) as PushData;
+                                   print("recieved... ${pushData?.paymentId}, ${pushData?.userName}");
+                                   setState(() {
+
+
+                                   });
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -203,17 +246,42 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                       ],
                     ),
                     SizedBox(
-                      height: 100,
+                      height: 60,
                     ),
-                    AppButton(
-                        onPressed: (){
-                          context.read(sharedProvider.userRequestProvider).withdrawDhoro(context);
-                        },
-                        title: "COMPLETE REQUEST",
-                        disabledColor: Pallet.colorYellow.withOpacity(0.2),
-                        titleColor: Pallet.colorWhite,
-                        enabledColor: isValidLogin ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
-                        enabled: isValidLogin ? true : false),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 120,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1.0, color: Pallet.colorRed),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(2))),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold(
+                                "Cancel",
+                                color: Pallet.colorRed,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        AppButton(
+                            onPressed: (){
+                              context.read(sharedProvider.userRequestProvider).withdrawDhoro(context);
+                            },
+                            title: "COMPLETE REQUEST",
+                            disabledColor: Pallet.colorYellow.withOpacity(0.2),
+                            titleColor: Pallet.colorWhite,
+                            enabledColor: isValidLogin ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
+                            enabled: isValidLogin ? true : false),
+                      ],
+                    ),
                     SizedBox(
                       height: 16,
                     ),

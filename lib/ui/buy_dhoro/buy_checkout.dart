@@ -69,147 +69,150 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Stack(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 160.0,
-                  ),
-                  agents.isNotEmpty == true
-                      ? viewState == ViewState.Loading
-                      ? Center(child: CircularProgressIndicator())
-                      : Container(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(agents.length, (index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selected = index;
-                                });
-                              },
-                              child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 1.0,
-                                    color: Pallet.colorBlue),
-                                borderRadius: BorderRadius.all(Radius.circular(2)),
-                              ),
-                                child: Row(
-                                  children: [
-                                    Checkbox(
-                                        checkColor: Colors.white,
-                                        fillColor: MaterialStateProperty
-                                            .resolveWith(getColor),
-                                        value: selected == index,
-                                        onChanged: (bool? value) {
-                                          setState(() {
-                                            context.read(sharedProvider.userBuyProvider).agentId = agents[index].pk!;
-                                            print("Show clicked INDEX... ${agents[index].pk}");
-                                          });
-                                        }),
-                                    AppFontsStyle.getAppTextViewBold(
-                                        "${agents[index].accountName!.toTitleCase()!}",
-                                        weight: FontWeight.w500,
-                                        size:
-                                        AppFontsStyle.textFontSize12),
-                                    Spacer(),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 16.0),
-                                      child: Container(
-                                        child: AppFontsStyle.getAppTextViewBold(
-                                            "${agents[index].bankName!.toTitleCase()!}",
-                                            weight: FontWeight.w500,
-                                            color: Pallet.colorGrey,
-                                            size:
-                                            AppFontsStyle.textFontSize12),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 160.0,
+                    ),
+                    agents.isNotEmpty == true
+                        ? viewState == ViewState.Loading
+                        ? Center(child: CircularProgressIndicator())
+                        : Container(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(agents.length, (index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selected = index;
+                                  });
+                                },
+                                child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1.0,
+                                      color: Pallet.colorBlue),
+                                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                                ),
+                                  child: Row(
+                                    children: [
+                                      Checkbox(
+                                          checkColor: Colors.white,
+                                          fillColor: MaterialStateProperty
+                                              .resolveWith(getColor),
+                                          value: selected == index,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              context.read(sharedProvider.userBuyProvider).agentId = agents[index].pk!;
+                                              print("Show clicked INDEX... ${agents[index].pk}");
+                                            });
+                                          }),
+                                      AppFontsStyle.getAppTextViewBold(
+                                          "${agents[index].accountName!.toTitleCase()!}",
+                                          weight: FontWeight.w500,
+                                          size:
+                                          AppFontsStyle.textFontSize12),
+                                      Spacer(),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 16.0),
+                                        child: Container(
+                                          child: AppFontsStyle.getAppTextViewBold(
+                                              "${agents[index].bankName!.toTitleCase()!}",
+                                              weight: FontWeight.w500,
+                                              color: Pallet.colorGrey,
+                                              size:
+                                              AppFontsStyle.textFontSize12),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 12.0,
-                                    ),
-                                  ],
+                                      SizedBox(
+                                        height: 12.0,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        })
-                    ),
-                  )
-                      :buildEmptyView(),
+                            );
+                          })
+                      ),
+                    )
+                        :buildEmptyView(),
 
-                  SizedBox(
-                    height: 16,
-                  ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          context.read(sharedProvider.userBuyProvider).moveToPreviousPage();
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 120,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 1.0, color: Pallet.colorRed),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(2))),
-                          child: Center(
-                            child: AppFontsStyle.getAppTextViewBold(
-                              "Cancel",
-                              color: Pallet.colorRed,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          context
-                              .read(sharedProvider.userBuyProvider).moveToNextPage();
-                          setState(() {
-                            context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[selected].pk}");
-                          });
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 120,
-                          decoration: BoxDecoration(
-                            color: Pallet.colorBlue,
-                            borderRadius: BorderRadius.circular(2),
-                            border: Border.all(
-                              color: Colors.transparent,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Center(
-                            child: AppFontsStyle.getAppTextViewBold(
-                              "PROCEED",
-                              color: Pallet.colorWhite,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                  ],
                 ),
-              )
-            ],
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            context.read(sharedProvider.userBuyProvider).moveToPreviousPage();
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 120,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1.0, color: Pallet.colorRed),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(2))),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold(
+                                "Cancel",
+                                color: Pallet.colorRed,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            context
+                                .read(sharedProvider.userBuyProvider).moveToNextPage();
+                            setState(() {
+                              context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[selected].pk}");
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: Pallet.colorBlue,
+                              borderRadius: BorderRadius.circular(2),
+                              border: Border.all(
+                                color: Colors.transparent,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold(
+                                "PROCEED",
+                                color: Pallet.colorWhite,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

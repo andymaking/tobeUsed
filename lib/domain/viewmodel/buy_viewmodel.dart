@@ -243,10 +243,10 @@ class BuyViewModel extends BaseViewModel {
       var value = amount;
       var agent = agentId;
       var currency = currencyType;
-      var proofOfPayment = paymentId;
+      var proofOfPayment = paymentId.isEmpty ? paymentProcessor.first.pk : paymentId;
 
       setViewState(ViewState.Loading);
-      var response = await userRepository.buyDhoro(value, agent, proofOfPayment, currency);
+      var response = await userRepository.buyDhoro(value, agent, proofOfPayment!, currency);
       purchase = response;
       print("Showing buyDhoro response::: $response");
 

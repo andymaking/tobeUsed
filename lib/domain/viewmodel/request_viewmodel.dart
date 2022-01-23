@@ -248,9 +248,9 @@ class RequestViewModel extends BaseViewModel {
       var value = amount;
       var agent = agentId;
       var currency = currencyType;
-      var proofOfPayment = paymentId;
+      var proofOfPayment = paymentId.isEmpty ? paymentProcessor.first.pk : paymentId;
       setViewState(ViewState.Loading);
-      var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment, agent);
+      var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment!, agent);
       setViewState(ViewState.Success);
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
       showToast("Successfully withdrawn Dhoro");

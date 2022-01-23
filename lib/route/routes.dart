@@ -50,8 +50,7 @@ class AppRoutes {
   static const selectWithdrawPaymentProcessor = '/selectWithdrawPaymentProcessor';
   static const sendDhoro = '/sendDhoro';
   static const send = '/send';
-
-
+  static const request = '/request';
 
 }
 
@@ -116,6 +115,12 @@ class AppRouter {
       case AppRoutes.settings:
         return MaterialPageRoute<dynamic>(
           builder: (_) => DashboardPage(selectedIndex: 3,),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.request:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => DashboardPage(selectedIndex: 2,),
           settings: settings,
           fullscreenDialog: true,
         );
