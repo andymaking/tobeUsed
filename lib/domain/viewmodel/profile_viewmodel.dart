@@ -61,14 +61,13 @@ class ProfileViewModel extends BaseViewModel {
       setViewState(ViewState.Loading);
       var response = 
       await userRepository.getUser();
-      user = response;
-      //print("User Info::: $user");
       setViewState(ViewState.Success);
+      user = response;
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
-    notifyListeners();
+    //notifyListeners();
   }
 
   Future<AvatarResponse?> getAvatar() async {
@@ -104,14 +103,15 @@ class ProfileViewModel extends BaseViewModel {
   Future<GetUserData?> addAvatar(BuildContext context, String avatar) async {
     try {
       setViewState(ViewState.Loading);
-      //await Future.delayed(Duration(milliseconds: 200));
+      //
       var response =
       await userRepository.addAvatar(avatar);
       user = response;
       //print("User Info::: $user");
       setViewState(ViewState.Success);
-      await getUser();
-      await getAvatar();
+      await Future.delayed(Duration(milliseconds: 200));
+      getUser();
+      getAvatar();
       await showTopModalSheet<String>(
           context: context,
           child: ShowDialog(

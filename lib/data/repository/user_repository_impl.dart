@@ -98,9 +98,9 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<List<TransferHistoryData>?> getTransferHistory(int page) async{
+  Future<List<TransferHistoryData>?> getTransferHistory(int page, int pageSize) async{
     final tokenMeta = await getToken();
-    return await userRemote.getTransferHistory(tokenMeta, page);
+    return await userRemote.getTransferHistory(tokenMeta, page, pageSize);
   }
 
   @override
@@ -110,7 +110,7 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<MessageResponse?> lockOrUnlockWallet(bool status) async{
+  Future<LockAndUnlockWalletResponse?> lockOrUnlockWallet(bool status) async{
     final token = await getToken();
     return await userRemote.lockOrUnlockWallet(status,token);
   }
@@ -191,9 +191,9 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<WithdrawData?> withdrawDhoro(String amount, String agent, String paymentMethod, String currencyType) async {
+  Future<WithdrawData?> withdrawDhoro(double amount, String currencyType, String paymentMethod, String agent) async {
     final token = await getToken();
-    return await userRemote.withdrawDhoro(token,amount, agent, paymentMethod, currencyType);
+    return await userRemote.withdrawDhoro(token, amount, currencyType, paymentMethod, agent );
   }
 
   @override

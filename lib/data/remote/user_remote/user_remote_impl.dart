@@ -107,10 +107,11 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData, int page) async{
+  Future<List<TransferHistoryData>?> getTransferHistory(TokenMetaData tokenMetaData, int page, int pageSize) async{
     try {
       var _queryData = {
         'page': page,
+        "page_size": pageSize
       };
       dioClient.options.headers['Authorization'] = tokenMetaData.token;
       var response = await dioClient.get(
@@ -184,7 +185,7 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<MessageResponse?> lockOrUnlockWallet(bool status, TokenMetaData tokenMetaData) async{
+  Future<LockAndUnlockWalletResponse?> lockOrUnlockWallet(bool status, TokenMetaData tokenMetaData) async{
     try {
       var _data = {
         'status': status,
@@ -193,7 +194,7 @@ class UserRemoteImpl extends UserRemote {
       var response = await dioClient.post(
         "${NetworkConfig.BASE_URL}user/wallet/lock", data: _data
       );
-      final responseData = MessageResponse.fromJson(response.data);
+      final responseData = LockAndUnlockWalletResponse.fromJson(response.data);
       print("lockOrUnlockWallet from Remote layer:: $responseData");
       return responseData;
     } catch (error) {
@@ -416,7 +417,12 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<WithdrawData?> withdrawDhoro(TokenMetaData tokenMetaData, String amount, String agent, String paymentMethod, String currencyType) async {
+  Future<WithdrawData?> withdrawDhoro(
+      TokenMetaData tokenMetaData,
+      double amount,
+      String currencyType,
+      String paymentMethod,
+      String agent) async {
     try {
       var _data = {
         'amount': amount,

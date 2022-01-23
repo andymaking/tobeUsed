@@ -38,7 +38,7 @@ final transactionsStateProvider = Provider.autoDispose<ViewState>((ref) {
 
 final _userTransfersProvider =
     Provider.autoDispose<List<TransferHistoryData>>((ref) {
-  return ref.watch(overviewProvider).transferHistory;
+  return ref.watch(transactionsProvider).transferHistory;
 });
 final userTransferProvider =
     Provider.autoDispose<List<TransferHistoryData>>((ref) {
@@ -67,12 +67,13 @@ class _TransactionsPageState extends State<TransactionsPage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
     context.read(transactionsProvider).getTransferHistory();
+    WidgetsBinding.instance?.addObserver(this);
   }
 
   @override
   Widget build(BuildContext context) {
+    //context.read(transactionsProvider).getTransferHistory();
     changeStatusAndNavBarColor(
         Pallet.colorWhite, Pallet.colorWhite, false, false);
     final viewState = useProvider(transactionsStateProvider);
@@ -81,6 +82,7 @@ class _TransactionsPageState extends State<TransactionsPage>
     GetUserData? userData = useProvider(transactionsProvider).user;
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+    print("Transaction pageSige ${userTransactions?.length}");
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,

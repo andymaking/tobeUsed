@@ -34,10 +34,10 @@ abstract class UserRepository {
   Future<WalletData?> walletBalance();
   Future<String?> forgotPassword(String email);
   Future<String?> changePassword(String oldPassword, String newPassword);
-  Future<List<TransferHistoryData>?> getTransferHistory(int page);
+  Future<List<TransferHistoryData>?> getTransferHistory(int page, int pageSize);
   Future<List<TransferHistoryData>?> getTransferHistoryQuery(String query);
   Future<WalletStatusMessage?> getWalletStatus();
-  Future<MessageResponse?> lockOrUnlockWallet(bool status);
+  Future<LockAndUnlockWalletResponse?> lockOrUnlockWallet(bool status);
   Future<String?> getWalletPercentage();
   Future<List<PaymentProcessorData>?> getPaymentProcessors();
   Future<MessageResponse?> deletePaymentProcessor(String pk);
@@ -52,7 +52,7 @@ abstract class UserRepository {
   Future<List<AgentsData>?> getAgents();
   Future<AgentsData?> getSingleAgent(String pk);
   Future<WithdrawData?> buyDhoro(String value, String agent, String proofOfPayment, String currencyType);
-  Future<WithdrawData?> withdrawDhoro(String amount, String agent, String paymentMethod, String currencyType);
+  Future<WithdrawData?> withdrawDhoro(double amount, String currencyType, String paymentMethod, String agent);
   Future<SendDhoroStatus?> sendDhoro(String amount, String currencyType, String wid);
   Future<ClaimAirdropResponse?> claimAirdrop(String wid);
   Future<AirdropInfoData?> getAirdropInfo();
