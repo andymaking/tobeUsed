@@ -1,5 +1,6 @@
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
@@ -54,6 +55,9 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
 
   @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
+
     FocusScopeNode currentFocus = FocusScope.of(context);
     final currentPage = useProvider(sharedProvider.userRequestProvider).currentPage;
 
@@ -82,7 +86,7 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                           child: GestureDetector(
                             onTap: (){
                               print("Clicked");
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
                             },
                             child: SvgPicture.asset(
                               "assets/images/back_arrow.svg",
@@ -159,23 +163,23 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                     ),
                     Row(
                       children: [
-                        convert == null && _amountController.text.isEmpty ? Container()
-                        : Column(
+                        convert != null && _amountController.text.isNotEmpty
+                            ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            selectedOption == "USD" ? Container() : AppFontsStyle.getAppTextViewBold("${convert?.usd ?? 0.0}",
+                            selectedOption == "USD" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.usd ?? 0.0}",
                                 weight: FontWeight.w500,
                                 size: AppFontsStyle.textFontSize12),
                             SizedBox(height: 4,),
-                            selectedOption == "DHR" ? Container() : AppFontsStyle.getAppTextViewBold("${convert?.dhr ?? 0.0}",
+                            selectedOption == "DHR" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.dhr ?? 0.0}",
                                 weight: FontWeight.w500,
                                 size: AppFontsStyle.textFontSize12),
                             SizedBox(height: 4,),
-                            selectedOption == "NGN" ? Container() : AppFontsStyle.getAppTextViewBold("${convert?.ngn ?? 0.0}",
+                            selectedOption == "NGN" ? Container() : AppFontsStyle.getAppTextViewBold("${convert.ngn ?? 0.0}",
                                 weight: FontWeight.w500,
                                 size: AppFontsStyle.textFontSize12),
                           ],
-                        ),
+                        ) : Container(),
                       ],
                     ),
                     SizedBox(

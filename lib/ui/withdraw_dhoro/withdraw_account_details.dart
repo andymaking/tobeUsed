@@ -1,6 +1,7 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,8 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
 
   @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
 
     List<AgentsData>? agents = useProvider(sharedProvider.userRequestProvider).agents;
     context.read(sharedProvider.userRequestProvider).agentId = "${agents.first.pk}";
@@ -48,155 +51,158 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
 
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 200.0,
-                        ),
-                        agents.isNotEmpty == true
-                            ? viewState == ViewState.Loading
-                            ? Center(child: CircularProgressIndicator())
-                            : Container(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(agents.length, (index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        selected = index;
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1.0,
-                                            color: Pallet.colorBlue),
-                                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Checkbox(
-                                              checkColor: Colors.white,
-                                              fillColor: MaterialStateProperty
-                                                  .resolveWith(getColor),
-                                              value: selected == index,
-                                              onChanged: (bool? value) {
-                                                setState(() {
-                                                  context.read(sharedProvider.userRequestProvider).agentId = agents[index].pk!;
-                                                  print("Show clicked INDEX... ${agents[index].pk}");
-                                                });
-                                              }),
-                                          AppFontsStyle.getAppTextViewBold(
-                                              "${agents[index].accountName!.toTitleCase()!}",
-                                              weight: FontWeight.w500,
-                                              size:
-                                              AppFontsStyle.textFontSize12),
-                                          Spacer(),
-                                          Padding(
-                                            padding: const EdgeInsets.only(right: 16.0),
-                                            child: Container(
-                                              child: AppFontsStyle.getAppTextViewBold(
-                                                  "${agents[index].bankName!.toTitleCase()!}",
-                                                  weight: FontWeight.w500,
-                                                  color: Pallet.colorGrey,
-                                                  size:
-                                                  AppFontsStyle.textFontSize12),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 200.0,
+                          ),
+                          agents.isNotEmpty == true
+                              ? viewState == ViewState.Loading
+                              ? Center(child: CircularProgressIndicator())
+                              : Container(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(agents.length, (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 16.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          selected = index;
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1.0,
+                                              color: Pallet.colorBlue),
+                                          borderRadius: BorderRadius.all(Radius.circular(2)),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Checkbox(
+                                                checkColor: Colors.white,
+                                                fillColor: MaterialStateProperty
+                                                    .resolveWith(getColor),
+                                                value: selected == index,
+                                                onChanged: (bool? value) {
+                                                  setState(() {
+                                                    context.read(sharedProvider.userRequestProvider).agentId = agents[index].pk!;
+                                                    print("Show clicked INDEX... ${agents[index].pk}");
+                                                  });
+                                                }),
+                                            AppFontsStyle.getAppTextViewBold(
+                                                "${agents[index].accountName!.toTitleCase()!}",
+                                                weight: FontWeight.w500,
+                                                size:
+                                                AppFontsStyle.textFontSize12),
+                                            Spacer(),
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 16.0),
+                                              child: Container(
+                                                child: AppFontsStyle.getAppTextViewBold(
+                                                    "${agents[index].bankName!.toTitleCase()!}",
+                                                    weight: FontWeight.w500,
+                                                    color: Pallet.colorGrey,
+                                                    size:
+                                                    AppFontsStyle.textFontSize12),
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 12.0,
-                                          ),
-                                        ],
+                                            SizedBox(
+                                              height: 12.0,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              })
-                          ),
-                        )
-                            :buildEmptyView(),
+                                  );
+                                })
+                            ),
+                          )
+                              :buildEmptyView(),
 
-                        SizedBox(
-                          height: 16,
-                        ),
-                      ],
+                          SizedBox(
+                            height: 16,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20.0, left: 24, right: 24),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
-
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 120,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1.0, color: Pallet.colorRed),
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(2))),
-                        child: Center(
-                          child: AppFontsStyle.getAppTextViewBold(
-                            "Cancel",
-                            color: Pallet.colorRed,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        context
-                            .read(sharedProvider.userRequestProvider).moveToNextPage();
-                        setState(() {
-                          context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[selected].pk}");
-                        });
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 120,
-                        decoration: BoxDecoration(
-                          color: Pallet.colorBlue,
-                          borderRadius: BorderRadius.circular(2),
-                          border: Border.all(
-                            color: Colors.transparent,
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Center(
-                          child: AppFontsStyle.getAppTextViewBold(
-                            "PROCEED",
-                            color: Pallet.colorWhite,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
-            )
-          ]
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0, left: 24, right: 24),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
+
+                        },
+                        child: Container(
+                          height: 50,
+                          width: 120,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1.0, color: Pallet.colorRed),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(2))),
+                          child: Center(
+                            child: AppFontsStyle.getAppTextViewBold(
+                              "Cancel",
+                              color: Pallet.colorRed,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          context
+                              .read(sharedProvider.userRequestProvider).moveToNextPage();
+                          setState(() {
+                            context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[selected].pk}");
+                          });
+                        },
+                        child: Container(
+                          height: 50,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            color: Pallet.colorBlue,
+                            borderRadius: BorderRadius.circular(2),
+                            border: Border.all(
+                              color: Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Center(
+                            child: AppFontsStyle.getAppTextViewBold(
+                              "PROCEED",
+                              color: Pallet.colorWhite,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ]
+          ),
         ),
       ),
     );
