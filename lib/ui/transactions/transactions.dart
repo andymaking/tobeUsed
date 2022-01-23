@@ -67,8 +67,15 @@ class _TransactionsPageState extends State<TransactionsPage>
   @override
   void initState() {
     super.initState();
+    page = 1;
     context.read(transactionsProvider).getTransferHistory();
     WidgetsBinding.instance?.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    page = 1;
+    super.dispose();
   }
 
   @override
@@ -83,6 +90,10 @@ class _TransactionsPageState extends State<TransactionsPage>
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
     print("Transaction pageSige ${userTransactions?.length}");
+
+    setState(() {
+      //page = 1;
+    });
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -221,6 +232,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                       GestureDetector(
                         onTap: () {
                           setState(() {
+                            page = 1;
                             print("Pressed one");
                             context
                                 .read(transactionsProvider)
@@ -277,7 +289,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                               ),
                               child: Center(
                                 child: AppFontsStyle.getAppTextViewBold(
-                                    "1 of ${context.read(transactionsProvider).lastPage}",
+                                    "$page of ${context.read(transactionsProvider).lastPage}",
                                     size: AppFontsStyle.textFontSize12,
                                     color: Pallet.colorBlue),
                               ),
@@ -314,6 +326,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                       GestureDetector(
                         onTap: () async {
                           var last = await sharedPreference.getTransLastPage();
+                          page = last;
                           setState(() {
                             print("Pressed:: $last");
                             context
