@@ -4,6 +4,8 @@ import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/route/routes.dart';
+import 'package:dhoro_mobile/widgets/custom_dialog.dart';
+import 'package:dhoro_mobile/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
 import '../../main.dart';
 import 'base/base_view_model.dart';
@@ -63,44 +65,54 @@ class PaymentProcessorViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  /// get user paymentProcessors
+  /// add user paymentProcessors
   Future<PaymentProcessorData?> addPaymentProcessor(BuildContext context, String bankName, String userName, String accountNumber) async {
     try {
       setViewState(ViewState.Loading);
       var response = await userRepository.addPaymentProcessors(bankName, userName, accountNumber);
       setViewState(ViewState.Success);
-      await getPaymentProcessor();
+      getPaymentProcessor();
+      showToast("Delete payment processor successful");
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.paymentProcessorList, (route) => false);
       print("Showing getPaymentProcessor response::: $response");
       //paymentProcessor = response;
       return response;
     } catch (error) {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: "$error",
+            isError: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ));
       setViewState(ViewState.Error);
       setError(error.toString());
     }
   }
 
-  /// user walletBalance
+  /// delete Payment Processor
   Future<MessageResponse?> deletePaymentProcessor(String pk, BuildContext context) async {
     try {
       setViewState(ViewState.Loading);
       var response = await userRepository.deletePaymentProcessor(pk);
       setViewState(ViewState.Success);
-      await getPaymentProcessor();
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.settings, (route) => false);
+      getPaymentProcessor();
+      showToast("Delete payment processor successful");
       print("Showing deletePaymentProcessor: $response");
       return response;
     } catch (error) {
       print("Error $error");
-      // await showTopModalSheet<String>(
-      //     context: context,
-      //     child: ShowDialog(
-      //       title: "$error",
-      //       isError: true,
-      //       onPressed: () {
-      //         Navigator.of(context).pop();
-      //       },
-      //     ));
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: "$error",
+            isError: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ));
       setViewState(ViewState.Error);
       setError(error.toString());
     }

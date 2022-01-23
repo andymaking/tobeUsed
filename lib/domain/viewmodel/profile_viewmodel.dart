@@ -9,6 +9,7 @@ import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
+import 'package:dhoro_mobile/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -103,24 +104,13 @@ class ProfileViewModel extends BaseViewModel {
   Future<GetUserData?> addAvatar(BuildContext context, String avatar) async {
     try {
       setViewState(ViewState.Loading);
-      //
       var response =
       await userRepository.addAvatar(avatar);
-      user = response;
-      //print("User Info::: $user");
       setViewState(ViewState.Success);
-      await Future.delayed(Duration(milliseconds: 200));
+      user = response;
+      showToast("Photo uploaded successfully");
       getUser();
       getAvatar();
-      await showTopModalSheet<String>(
-          context: context,
-          child: ShowDialog(
-            title: 'Photo uploaded successfully',
-            isError: false,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ));
     } catch (error) {
       await showTopModalSheet<String>(
           context: context,
@@ -134,7 +124,6 @@ class ProfileViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
-    notifyListeners();
   }
 
 

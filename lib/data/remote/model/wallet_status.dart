@@ -42,7 +42,7 @@ class Message {
 }
 
 class MessageResponse {
-  bool? status;
+  int? status;
   String? message;
 
   MessageResponse({

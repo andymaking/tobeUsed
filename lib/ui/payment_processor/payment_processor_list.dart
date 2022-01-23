@@ -45,15 +45,27 @@ class PaymentProcessorListPage extends StatefulHookWidget {
 class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
   final isValidLogin = true;
 
+  @override
+  void initState() {
+    setState(() {
+      context.read(processorProvider).getPaymentProcessor();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
     ViewState viewState = useProvider(processorStateProvider);
     List<PaymentProcessorData>? userTransactions =
         useProvider(processorProvider).paymentProcessor;
     GetUserData? userData = useProvider(processorProvider).user;
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+
+    setState(() {
+
+    });
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -66,7 +78,7 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   OverViewToolBar(
-                    AppString.overView,
+                  "Payment Processor",
                     userData?.avatar ?? "",
                     trailingIconClicked: () => null,
                     initials: initials,
@@ -102,12 +114,7 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              AppFontsStyle.getAppTextViewBold(
-                                "Payment Processor",
-                                weight: FontWeight.w600,
-                                size: AppFontsStyle.textFontSize14,
-                              ),
-                              SizedBox(height: 32.0,),
+                              //SizedBox(height: 32.0,),
                               AppFontsStyle.getAppTextViewBold(
                                 "Payment Processor",
                                 weight: FontWeight.w500,
@@ -123,7 +130,10 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                               SizedBox(height: 24.0,),
                               userTransactions.isNotEmpty == true
                                ? viewState == ViewState.Loading
-                                  ? Center(child: CircularProgressIndicator())
+                                  ? Padding(
+                                    padding: const EdgeInsets.only(top: 80.0),
+                                    child: Center(child: CircularProgressIndicator()),
+                                  )
                                   : Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(Radius.circular(2)),
