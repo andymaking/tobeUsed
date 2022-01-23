@@ -30,12 +30,12 @@ class BuyAmountPage extends StatefulHookWidget {
 
 class _BuyAmountPageState extends State<BuyAmountPage> {
   List<String> options = [
-    "DHR",
     "USD",
+    "DHR",
     "NGN",
   ];
   bool showCovertCurrency = false;
-  String selectedOption = "DHR";
+  String selectedOption = "USD";
   TextEditingController _amountController = TextEditingController();
   PageController controller = PageController();
 
@@ -145,8 +145,8 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                           });
                         },
                         items: <String>[
-                          'DHR',
                           'USD',
+                          'DHR',
                           'NGN',
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(

@@ -32,11 +32,11 @@ class WithdrawAmountPage extends StatefulHookWidget {
 
 class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
   List<String> options = [
-    "DHR",
     "USD",
+    "DHR",
     "NGN",
   ];
-  String selectedOption = "DHR";
+  String selectedOption = "USD";
   TextEditingController _amountController = TextEditingController();
   PageController controller = PageController();
 
@@ -147,8 +147,8 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                           });
                         },
                         items: <String>[
-                          'DHR',
                           'USD',
+                          'DHR',
                           'NGN',
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(

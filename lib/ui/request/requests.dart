@@ -421,7 +421,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                   color: Pallet.colorWhite,
                                 ),
                                 child: Center(
-                                  child: AppFontsStyle.getAppTextViewBold("1 of ${context.read(requestProvider).lastPage}",
+                                  child: AppFontsStyle.getAppTextViewBold("$page of ${context.read(requestProvider).lastPage}",
                                       size: AppFontsStyle.textFontSize12,
                                       color: Pallet.colorBlue),
                                 ),
@@ -450,6 +450,7 @@ class _RequestsPageState extends State<RequestsPage> {
                         GestureDetector(
                           onTap: () async {
                             var last = await sharedPreference.getRequestLastPage();
+                            page = last;
                             setState(() {
 
                               print("Pressed:: $last");
