@@ -144,6 +144,7 @@ class _PaymentProcessorPageState extends State<PaymentProcessorPage> {
                                   }
                                   return null;
                                 },
+                                keyboardType: TextInputType.number,
                                 isHidden: false,
                               ),
                               SizedBox(

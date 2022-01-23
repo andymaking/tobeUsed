@@ -80,13 +80,19 @@ class OverViewToolBar extends StatelessWidget {
                   onTap: () {
                     trailingIconClicked ?? Navigator.of(context).pop();
                   },
-                  child:
-                  CircleImageFromNetwork(
-                    userImage,
-                    "assets/images/ic_avatar.svg",
-                    "assets/images/ic_avatar.svg",
-                    size: 32.0,
-                    text: initials,
+                  child: userImage.isEmpty
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Center(
+                      child: AppFontsStyle.getAppTextViewBold(initials,
+                          color: Pallet.colorWhite, size: 20.0),
+                    ),
+                  )
+                  : ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Image.network(
+                      "https://api.dhoro.io$userImage",
+                      height: 50, width: 50,),
                   ),
               ),
             ),

@@ -69,10 +69,16 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
   Widget build(BuildContext context) {
     final viewState = useProvider(profileStateProvider);
     final isValidLogin = useProvider(validProfileProvider);
-    GetUserData? userData = useProvider(profileProvider).user;
+    GetUserData? userData;
     AvatarResponse? avatar = useProvider(profileProvider).avatarResponse;
+    setState(() {
+      userData = useProvider(profileProvider).user;
+      //context.read(profileProvider).getUser();
+    });
+
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+    
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -196,12 +202,26 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               children: [
                                 viewState == ViewState.Loading ? AppProgressBar()
                                 : Container(
-                                  child: CircleImageFromNetwork(
-                                    avatar?.data ?? "",
-                                    "assets/images/ic_avatar.svg",
-                                    "assets/images/ic_avatar.svg",
-                                    size: 40.0,
-                                    text: initials,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 24.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                      },
+                                      child: avatar?.data == null
+                                          ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: Center(
+                                          child: AppFontsStyle.getAppTextViewBold(initials,
+                                              color: Pallet.colorWhite, size: 20.0),
+                                        ),
+                                      )
+                                          : ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: Image.network(
+                                          "https://api.dhoro.io${avatar?.data ?? ""}",
+                                          height: 50, width: 50,),
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 24.0,),
