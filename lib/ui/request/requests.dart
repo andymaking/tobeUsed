@@ -311,7 +311,10 @@ class _RequestsPageState extends State<RequestsPage> {
                     TransactionHeader(),
                     requestList.isNotEmpty == true
                         ? viewState == ViewState.Loading
-                        ? Center(child: CircularProgressIndicator())
+                        ? Padding(
+                          padding: const EdgeInsets.only(top: 60.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
                         : Padding(
                       padding:
                       const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
@@ -364,7 +367,9 @@ class _RequestsPageState extends State<RequestsPage> {
                       ),
                     )
                         : buildEmptyView(),
-                    Row(
+                    viewState == ViewState.Loading
+                        ? Container()
+                    : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
