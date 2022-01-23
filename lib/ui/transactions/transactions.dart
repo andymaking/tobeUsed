@@ -143,7 +143,10 @@ class _TransactionsPageState extends State<TransactionsPage>
                           padding: const EdgeInsets.only(
                               left: 24.0, right: 24, bottom: 24),
                           child: viewState == ViewState.Loading
-                              ? AppProgressBar()
+                              ? Padding(
+                                padding: const EdgeInsets.only(top: 140.0),
+                                child: Center(child: AppProgressBar()),
+                              )
                               : Container(
                                   decoration: BoxDecoration(
                                       borderRadius:
@@ -211,7 +214,8 @@ class _TransactionsPageState extends State<TransactionsPage>
                                 ),
                         )
                       : buildEmptyView(),
-                  Row(
+                  viewState == ViewState.Loading ? Container()
+                  : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
