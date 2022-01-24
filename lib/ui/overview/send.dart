@@ -34,11 +34,11 @@ class SendPage extends StatefulHookWidget {
 
 class _SendPageState extends State<SendPage> {
   List<String> options = [
-    "DHR",
     "USD",
+    "DHR",
     "NGN",
   ];
-  String selectedOption = "DHR";
+  String selectedOption = "USD";
   TextEditingController _walletIdController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
 
@@ -101,12 +101,12 @@ class _SendPageState extends State<SendPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
-                        height: 7,
-                      ),
-                      SvgPicture.asset(
-                        "assets/images/top_indicator.svg",
-                      ),
+                      // SizedBox(
+                      //   height: 7,
+                      // ),
+                      // SvgPicture.asset(
+                      //   "assets/images/top_indicator.svg",
+                      // ),
                       SizedBox(
                         height: 19,
                       ),
@@ -239,8 +239,8 @@ class _SendPageState extends State<SendPage> {
                             });
                           },
                           items: <String>[
-                            'DHR',
                             'USD',
+                            'DHR',
                             'NGN',
                           ].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
