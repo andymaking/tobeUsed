@@ -251,7 +251,7 @@ class BuyViewModel extends BaseViewModel {
       print("Showing buyDhoro response::: $response");
 
       setViewState(ViewState.Success);
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
       showToast("Successfully bought Dhoro");
       //return response;
     } catch (error) {

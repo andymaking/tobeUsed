@@ -369,7 +369,9 @@ class _RequestsPageState extends State<RequestsPage> {
                         : buildEmptyView(),
                     viewState == ViewState.Loading
                         ? Container()
-                    : Row(
+                    : context.read(requestProvider).lastPage != null &&
+                        context.read(requestProvider).lastPage! > 1
+                    ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
@@ -421,7 +423,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                   color: Pallet.colorWhite,
                                 ),
                                 child: Center(
-                                  child: AppFontsStyle.getAppTextViewBold("$page of ${context.read(requestProvider).lastPage}",
+                                  child: AppFontsStyle.getAppTextViewBold("${context.read(requestProvider).currentPage} of ${context.read(requestProvider).lastPage}",
                                       size: AppFontsStyle.textFontSize12,
                                       color: Pallet.colorBlue),
                                 ),
@@ -472,7 +474,8 @@ class _RequestsPageState extends State<RequestsPage> {
                           ),
                         ),
                       ],
-                    ),
+                    )
+                    : Container(),
                     SizedBox(height: 16,),
                   ],
                 ),

@@ -51,6 +51,7 @@ class RequestViewModel extends BaseViewModel {
   String paymentId = "";
   String currencyType = "";
   int? lastPage;
+  int? currentPaginationPage;
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
@@ -158,6 +159,7 @@ class RequestViewModel extends BaseViewModel {
       print("getRequest $requestList");
       setViewState(ViewState.Success);
       requestList = response ?? [];
+      currentPaginationPage = await sharedPreference.getRequestCurrentPage();
       lastPage = await sharedPreference.getRequestLastPage();
       print("Success viewModel getRequest $requestList");
     } catch (error) {
@@ -252,7 +254,9 @@ class RequestViewModel extends BaseViewModel {
       setViewState(ViewState.Loading);
       var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment!, agent);
       setViewState(ViewState.Success);
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
+      getRequest();
+      walletBalance();
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
       showToast("Successfully withdrawn Dhoro");
       print("Showing withdrawDhoro response::: $response");
       purchase = response;

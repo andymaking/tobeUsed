@@ -35,6 +35,7 @@ class TransactionsViewModel extends BaseViewModel {
   ViewState get viewState => _state;
   String? errorMessage;
   int? lastPage;
+  int? currentPaginationPage;
 
 
   void setViewState(ViewState state) {
@@ -57,6 +58,7 @@ class TransactionsViewModel extends BaseViewModel {
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
       lastPage = await sharedPreference.getTransLastPage();
+      currentPaginationPage = await sharedPreference.getTransCurrentPage();
       print("Success transferHistory $transferHistory");
     } catch (error) {
       setViewState(ViewState.Error);

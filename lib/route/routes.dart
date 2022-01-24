@@ -76,12 +76,6 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-      case AppRoutes.requests:
-        return MaterialPageRoute<dynamic>(
-          builder: (_) => RequestsPage(),
-          settings: settings,
-          fullscreenDialog: true,
-        );
       case AppRoutes.login:
         return MaterialPageRoute<dynamic>(
           builder: (_) => LoginPage(),
