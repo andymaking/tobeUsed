@@ -77,11 +77,11 @@ class RequestViewModel extends BaseViewModel {
 
   final widgetPages = [
     Container(
-        padding: EdgeInsets.only(bottom: 84), child: WithdrawAmountPage()),
+        padding: EdgeInsets.only(bottom: 40), child: WithdrawAmountPage()),
     Container(
-        padding: EdgeInsets.only(bottom: 84), child: WithdrawAccountDetailsPage()),
+        padding: EdgeInsets.only(bottom: 40), child: WithdrawAccountDetailsPage()),
     Container(
-        padding: EdgeInsets.only(bottom: 84), child: WithdrawSummaryPage()),
+        padding: EdgeInsets.only(bottom: 40), child: WithdrawSummaryPage()),
 
   ];
   late var pages = _initWidgetPages();

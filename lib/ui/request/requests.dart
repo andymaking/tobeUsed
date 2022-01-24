@@ -119,7 +119,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                             height: 18,
                                           ),
                                           AppFontsStyle.getAppTextViewBold(
-                                            "Purchase Request",
+                                            "Buy Request",
                                             color: Pallet.colorBlue,
                                             weight: FontWeight.w600,
                                             size: AppFontsStyle.textFontSize10,
@@ -205,7 +205,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                             height: 18,
                                           ),
                                           AppFontsStyle.getAppTextViewBold(
-                                            "Withdrawal Request",
+                                            "Sell Request",
                                             color: Pallet.colorBlue,
                                             weight: FontWeight.w600,
                                             size: AppFontsStyle.textFontSize10,

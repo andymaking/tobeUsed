@@ -218,9 +218,20 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                                           : ClipRRect(
                                         borderRadius: BorderRadius.circular(100),
                                         child: Image.network(
-                                          "https://api.dhoro.io${avatar?.data ?? ""}",
-                                          height: 50, width: 50,),
-                                      ),
+                                          'https://api.dhoro.io${avatar?.data}',
+                                          height: 50,
+                                          width: 50,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return SvgPicture.asset(
+                                              "assets/images/ic_avatar.svg",
+                                              height: 50,
+                                              width: 50,
+                                              fit: BoxFit.contain,
+                                            );
+                                          },
+                                        ),
+                                      )
                                     ),
                                   ),
                                 ),
