@@ -28,13 +28,6 @@ Provider.autoDispose<List<AgentsData>>((ref) {
   return ref.watch(_agentsProvider);
 });
 
-final _userSelectedAgentProvider = Provider.autoDispose<Set<String>>((ref) {
-  return ref.watch(sharedProvider.userBuyProvider).currentUserAgent;
-});
-final userSelectedAgentProvider = Provider.autoDispose<Set<String>>((ref) {
-  return ref.watch(_userSelectedAgentProvider);
-});
-
 
 class BuyCheckoutPage extends StatefulHookWidget {
   const BuyCheckoutPage({Key? key}) : super(key: key);
@@ -169,7 +162,7 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            context.read(sharedProvider.userBuyProvider).moveToPreviousPage();
+                            context.read(sharedProvider.userBuyProvider).moveBuyToPreviousPage();
                           },
                           child: Container(
                             height: 50,
@@ -191,7 +184,7 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                         GestureDetector(
                           onTap: () {
                             context
-                                .read(sharedProvider.userBuyProvider).moveToNextPage();
+                                .read(sharedProvider.userBuyProvider).moveBuyToNextPage();
                             setState(() {
                               context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[selected].pk}");
                             });

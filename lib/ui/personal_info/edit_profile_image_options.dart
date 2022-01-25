@@ -1,9 +1,7 @@
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
-import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/size_24_container.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';

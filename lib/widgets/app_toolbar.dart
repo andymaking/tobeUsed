@@ -52,14 +52,14 @@ class OverViewToolBar extends StatelessWidget {
   String title;
   String? initials;
   String? userImage;
+  ViewState? viewState;
 
-  //ViewState? viewState;
   OverViewToolBar(
     this.title,
     this.userImage, {
     this.trailingIconClicked,
     this.initials,
-    /*this.viewState*/
+    this.viewState
   });
 
   @override
@@ -94,7 +94,7 @@ class OverViewToolBar extends StatelessWidget {
                 onTap: () {
                   trailingIconClicked ?? Navigator.of(context).pop();
                 },
-                child: //viewState == ViewState.Loading ? AppProgressBar() :
+                child: viewState == ViewState.Loading ? AppProgressBar() :
                     userImage == null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(100),

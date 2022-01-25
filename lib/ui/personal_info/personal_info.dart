@@ -14,7 +14,6 @@ import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
-import 'package:dhoro_mobile/widgets/circle_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -91,7 +90,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   OverViewToolBar(
-                    AppString.overView,
+                    "Personal Information",
                     avatar?.data ?? "",
                     trailingIconClicked: () => null,
                     initials: initials,
@@ -113,7 +112,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 16,
+                    height: 10,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
@@ -127,12 +126,6 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            AppFontsStyle.getAppTextViewBold(
-                              "Personal Information",
-                              weight: FontWeight.w700,
-                              size: AppFontsStyle.textFontSize14,
-                            ),
-                            SizedBox(height: 32.0,),
                             AppFontsStyle.getAppTextViewBold(
                               "Name",
                               weight: FontWeight.w500,
@@ -289,7 +282,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                             ),
                             SizedBox(height: 32.0,),
                             viewState == ViewState.Loading
-                                ? Center(child: CircularProgressIndicator())
+                                ? Center(child: AppProgressBar())
                                 : AppButton(
                                 onPressed: (){
                                   final viewModel = context.read(profileProvider);
@@ -434,7 +427,7 @@ class ImageToDisplay extends StatelessWidget {
                 ),
               ),
               placeholder: (context, url) =>
-                  Center(child: CircularProgressIndicator()),
+                  Center(child: AppProgressBar()),
               errorWidget: (context, url, error) => Image.asset(
                 "assets/images/ic_avatar.svg",
                 fit: BoxFit.cover,

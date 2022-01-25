@@ -16,6 +16,7 @@ import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,13 +32,13 @@ final overviewProvider =
     ChangeNotifierProvider.autoDispose<OverviewViewModel>((ref) {
   ref.onDispose(() {});
   final viewModel = locator.get<OverviewViewModel>();
-  viewModel.getTransferHistory();
   viewModel.getUser();
   viewModel.getRate();
   viewModel.getAirdropInfo();
   viewModel.walletBalance();
   viewModel.getWalletStatus();
   viewModel.getWalletPercentage();
+  viewModel.getTransferHistory();
   return viewModel;
 });
 
@@ -79,35 +80,22 @@ class OverviewPage extends StatefulHookWidget {
 }
 
 class _OverviewPageState extends State<OverviewPage> {
-  TextEditingController _walletIdController = TextEditingController();
-  TextEditingController _amountController = TextEditingController();
-  late ScrollController _controller;
-  final _formKey = GlobalKey<FormState>();
   bool isLock = false;
   bool claimedAirdrop = false;
-  List<String> options = [
-    "DHR",
-    "USD",
-    "NGN",
-  ];
-  String selectedOption = "DHR";
-  String usd = "";
-  String dhr = "";
-  String ngn = "";
+
   TransferHistoryDataResponse? transferHistoryDataResponse;
   int page = 1;
 
-  Future<void> getNextPage() async {
-    print("Pressed:: $page");
-    int pageNumber = 1;
-    print("Pressed pageNumber:: $pageNumber");
-    if (transferHistoryDataResponse?.next?.isEmpty == true) {
-      setState(() {
-        page += 1;
-        print("Pressed:: $page, pageNumber: $pageNumber");
-        context.read(overviewProvider).getTransferHistoryWithPaging(page);
-      });
-    }
+
+  @override
+  void initState() {
+    setState(() {
+      context.read(overviewProvider).getWalletPercentage();
+      context.read(overviewProvider).walletBalance();
+      context.read(overviewProvider).getTransferHistory();
+      context.read(overviewProvider).getUser();
+    });
+    super.initState();
   }
 
   @override
@@ -138,6 +126,10 @@ class _OverviewPageState extends State<OverviewPage> {
     print("Showing walletStatus:: $walletStatus");
     print("Showing percent:: $percent");
     var dhrBalance = walletBalance?.dhrBalance?.toStringAsFixed(3);
+
+    setState(() {
+      //refreshPage();
+    });
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -222,7 +214,7 @@ class _OverviewPageState extends State<OverviewPage> {
                   padding: const EdgeInsets.all(24.0),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0, vertical: 23),
+                        horizontal: 22.0, vertical: 10),
                     height: 212,
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -232,44 +224,50 @@ class _OverviewPageState extends State<OverviewPage> {
                       children: [
                         //walletStatus == true
                         !isLock
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AppFontsStyle.getAppTextViewBold(
-                                    "1 DHR = \$${rateData?.equivalentInDhoro ?? 0.0}",
-                                    weight: FontWeight.w600,
-                                    size: AppFontsStyle.textFontSize12,
-                                  ),
-                                  Spacer(),
-                                  SvgPicture.asset(AppImages.triangleUp),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  AppFontsStyle.getAppTextViewBold(
-                                    "$percentage%",
-                                    color: Pallet.colorDeepGreen,
-                                    weight: FontWeight.w600,
-                                    size: AppFontsStyle.textFontSize12,
-                                  ),
-                                ],
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(AppImages.triangleUp),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  AppFontsStyle.getAppTextViewBold(
-                                    "${context.read(overviewProvider).walletPercentage}%",
-                                    color: Pallet.colorDeepGreen,
-                                    weight: FontWeight.w600,
-                                    size: AppFontsStyle.textFontSize12,
-                                  ),
-                                ],
-                              ),
+                            ? Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AppFontsStyle.getAppTextViewBold(
+                                      "1 DHR = \$${rateData?.equivalentInDhoro ?? 0.0}",
+                                      weight: FontWeight.w600,
+                                      size: AppFontsStyle.textFontSize12,
+                                    ),
+                                    Spacer(),
+                                    SvgPicture.asset(AppImages.triangleUp),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    AppFontsStyle.getAppTextViewBold(
+                                      "$percentage%",
+                                      color: Pallet.colorDeepGreen,
+                                      weight: FontWeight.w600,
+                                      size: AppFontsStyle.textFontSize12,
+                                    ),
+                                  ],
+                                ),
+                            )
+                            : Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(AppImages.triangleUp),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    AppFontsStyle.getAppTextViewBold(
+                                      "${context.read(overviewProvider).walletPercentage}%",
+                                      color: Pallet.colorDeepGreen,
+                                      weight: FontWeight.w600,
+                                      size: AppFontsStyle.textFontSize12,
+                                    ),
+                                  ],
+                                ),
+                            ),
                         SizedBox(
                           height: 23,
                         ),
@@ -314,14 +312,14 @@ class _OverviewPageState extends State<OverviewPage> {
                           ],
                         ),
                         SizedBox(
-                          height: 18,
+                          height: 10,
                         ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              GestureDetector(
-                                onTap: () {
+                              CupertinoButton(
+                                onPressed: (){
                                   Navigator.pushNamed(context, AppRoutes.send);
                                 },
                                 child: Column(
@@ -341,9 +339,9 @@ class _OverviewPageState extends State<OverviewPage> {
                                   ],
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  showDepositBottomSheet(
+                              CupertinoButton(
+                                onPressed: (){
+                                  showReceiveBottomSheet(
                                       context,
                                       "${userData?.qrCode?.code}",
                                       "${userData?.wid}");
@@ -364,50 +362,52 @@ class _OverviewPageState extends State<OverviewPage> {
                                   ],
                                 ),
                               ),
-                              GestureDetector(
-                                  onTap: () {
-                                    observeLockAndUnlockState(context);
-                                    setState(() {
-                                      isLock = !isLock;
-                                    });
-                                  },
-                                  child: isLock //walletStatus == true
-                                      ? Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                              SvgPicture.asset(
-                                                  AppImages.icUnlock),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                              AppFontsStyle.getAppTextViewBold(
-                                                "Unlock Wallet",
-                                                weight: FontWeight.w500,
-                                                size: AppFontsStyle
-                                                    .textFontSize10,
-                                              ),
-                                            ])
-                                      : Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(AppImages.icLock),
+                              CupertinoButton(
+                                onPressed: (){
+                                  //print("print");
+                                  observeLockAndUnlockState(context);
+                                  setState(() {
+                                    isLock = !isLock;
+                                  });
+                                },
+                                child: isLock //walletStatus == true
+                                    ? Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                            SvgPicture.asset(
+                                                AppImages.icUnlock),
                                             SizedBox(
                                               height: 8,
                                             ),
                                             AppFontsStyle.getAppTextViewBold(
-                                              "Lock Wallet",
+                                              "Unlock Wallet",
                                               weight: FontWeight.w500,
-                                              size:
-                                                  AppFontsStyle.textFontSize10,
+                                              size: AppFontsStyle
+                                                  .textFontSize10,
                                             ),
-                                          ],
-                                        ))
+                                          ])
+                                    : Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(AppImages.icLock),
+                                          SizedBox(
+                                            height: 8,
+                                          ),
+                                          AppFontsStyle.getAppTextViewBold(
+                                            "Lock Wallet",
+                                            weight: FontWeight.w500,
+                                            size:
+                                                AppFontsStyle.textFontSize10,
+                                          ),
+                                        ],
+                                      ),
+                              )
                             ])
                       ],
                     ),
@@ -427,7 +427,10 @@ class _OverviewPageState extends State<OverviewPage> {
                 TransactionHeader(),
                 userTransactions.isNotEmpty == true
                     ? viewState == ViewState.Loading
-                        ? Center(child: CircularProgressIndicator())
+                        ? Center(child: Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: AppProgressBar(),
+                        ))
                         : Padding(
                             padding: const EdgeInsets.only(
                                 left: 24.0, right: 24, bottom: 24),
@@ -711,10 +714,11 @@ class _OverviewPageState extends State<OverviewPage> {
     );
   }
 
-  showDepositBottomSheet(
+  showReceiveBottomSheet(
       BuildContext context, String qrcode, String walletAddress) {
     showModalBottomSheet(
         elevation: 10,
+        isScrollControlled: true,
         backgroundColor: Colors.white,
         context: context,
         shape: RoundedRectangleBorder(
@@ -722,135 +726,152 @@ class _OverviewPageState extends State<OverviewPage> {
               topLeft: Radius.circular(24), topRight: Radius.circular(24)),
         ),
         builder: (context) => Container(
-              height: 425,
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  color: Colors.white),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 8,
-                  ),
-                  SvgPicture.asset("assets/images/top_indicator.svg"),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  AppFontsStyle.getAppTextViewBold("Deposit Dhoro",
-                      color: Pallet.colorRed,
-                      weight: FontWeight.w700,
-                      size: AppFontsStyle.textFontSize16),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: CachedNetworkImage(
+          height: 435,
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              color: Colors.white),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 8,
+              ),
+              SvgPicture.asset("assets/images/top_indicator.svg"),
+              SizedBox(
+                height: 24,
+              ),
+              AppFontsStyle.getAppTextViewBold("Deposit Dhoro",
+                  color: Pallet.colorRed,
+                  weight: FontWeight.w700,
+                  size: AppFontsStyle.textFontSize16),
+              SizedBox(
+                height: 22,
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.network(
+                  'https://api.dhoro.io$qrcode',
+                  height: 116,
+                  width: 116,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return SvgPicture.asset(
+                      "assets/images/ic_error_qrcode.svg",
                       height: 116,
                       width: 116,
                       fit: BoxFit.contain,
-                      imageUrl: "https://api.dhoro.io$qrcode",
-                      placeholder: (context, url) => SvgPicture.asset(
-                        "assets/images/ic_qrcode.svg",
-                        height: 116,
-                        width: 116,
-                        fit: BoxFit.contain,
+                    );
+                  },
+                ),
+
+
+
+                // CachedNetworkImage(
+                //   height: 116,
+                //   width: 116,
+                //   fit: BoxFit.contain,
+                //   imageUrl: "https://api.dhoro.io$qrcode",
+                //   placeholder: (context, url) => SvgPicture.asset(
+                //     "assets/images/ic_qrcode.svg",
+                //     height: 116,
+                //     width: 116,
+                //     fit: BoxFit.contain,
+                //   ),
+                //   errorWidget: (context, url, error) => SvgPicture.asset(
+                //     "assets/images/ic_error_qrcode.svg",
+                //     height: 116,
+                //     width: 116,
+                //     fit: BoxFit.contain,
+                //   ),
+                // ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: AppFontsStyle.getAppTextViewBold(
+                  "The sender can scan the QR code to send DHR or Dhoro tokens to this DHR wallet.",
+                  weight: FontWeight.w400,
+                  textAlign: TextAlign.center,
+                  size: AppFontsStyle.textFontSize12,
+                ),
+              ),
+              SizedBox(
+                height: 38,
+              ),
+              Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Pallet.colorWhite,
+                  border: Border.all(width: 1.0, color: Pallet.colorBlue),
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: AppFontsStyle.getAppTextViewBold(
+                        walletAddress,
+                        weight: FontWeight.w400,
+                        size: AppFontsStyle.textFontSize12,
                       ),
-                      errorWidget: (context, url, error) => SvgPicture.asset(
-                        "assets/images/ic_error_qrcode.svg",
-                        height: 116,
-                        width: 116,
-                        fit: BoxFit.contain,
-                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                    child: AppFontsStyle.getAppTextViewBold(
-                      "The sender can scan the QR code to send DHR or Dhoro tokens to this DHR wallet.",
-                      weight: FontWeight.w400,
-                      textAlign: TextAlign.center,
-                      size: AppFontsStyle.textFontSize12,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Pallet.colorWhite,
-                      border: Border.all(width: 1.0, color: Pallet.colorBlue),
-                      borderRadius: BorderRadius.all(Radius.circular(2)),
-                    ),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: AppFontsStyle.getAppTextViewBold(
-                            walletAddress,
-                            weight: FontWeight.w400,
-                            size: AppFontsStyle.textFontSize12,
-                          ),
-                        ),
-                        Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Clipboard.setData(
-                                  ClipboardData(text: walletAddress));
-                              Fluttertoast.showToast(
-                                  msg: "Wallet ID copied to clipboard");
-                              walletAddress.isNotEmpty
-                                  ? Fluttertoast.showToast(
-                                      msg: "Wallet ID copied to clipboard")
-                                  : Fluttertoast.showToast(
-                                      msg: "Nothing to copied to clipboard");
-                            },
-                            child: Container(
-                              height: 25,
-                              decoration: BoxDecoration(
-                                  color: Pallet.buttonColor,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(2))),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
-                                child: Center(
-                                  child: AppFontsStyle.getAppTextViewBold(
-                                      "Copy",
-                                      weight: FontWeight.w400,
-                                      textAlign: TextAlign.center,
-                                      size: AppFontsStyle.textFontSize10),
-                                ),
-                              ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Clipboard.setData(
+                              ClipboardData(text: walletAddress));
+                          Fluttertoast.showToast(
+                              msg: "Wallet ID copied to clipboard");
+                          walletAddress.isNotEmpty
+                              ? Fluttertoast.showToast(
+                              msg: "Wallet ID copied to clipboard")
+                              : Fluttertoast.showToast(
+                              msg: "Nothing to copied to clipboard");
+                        },
+                        child: Container(
+                          height: 25,
+                          decoration: BoxDecoration(
+                              color: Pallet.buttonColor,
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(2))),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold(
+                                  "Copy",
+                                  weight: FontWeight.w400,
+                                  textAlign: TextAlign.center,
+                                  size: AppFontsStyle.textFontSize10),
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                    child: AppFontsStyle.getAppTextViewBold(
-                      "This address can only be used to receive DHR or Dhoro tokens on the Dhoro network.",
-                      weight: FontWeight.w400,
-                      textAlign: TextAlign.center,
-                      size: AppFontsStyle.textFontSize12,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ));
+              SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16),
+                child: AppFontsStyle.getAppTextViewBold(
+                  "This address can only be used to receive DHR or Dhoro tokens on the Dhoro network.",
+                  weight: FontWeight.w400,
+                  textAlign: TextAlign.center,
+                  size: AppFontsStyle.textFontSize12,
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
@@ -180,7 +181,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         height: 24,
                       ),
                       signUpViewState == ViewState.Loading
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(child: AppProgressBar())
                           : AppButton(
                               onPressed: () {
                                 isValidSignUp

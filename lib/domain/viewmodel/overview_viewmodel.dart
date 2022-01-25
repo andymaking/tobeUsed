@@ -289,6 +289,9 @@ class OverviewViewModel extends BaseViewModel {
       var response = await userRepository.sendDhoro(amount, currency, wid);
       sendDhoroStatus = response;
       setViewState(ViewState.Success);
+      getTransferHistory();
+      getWalletStatus();
+      walletBalance();
       Navigator.pop(context);
       print("Showing sendDhoro response::: $response");
       showSuccessBottomSheet(context, "$amount $currency", wid);

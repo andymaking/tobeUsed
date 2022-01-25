@@ -10,6 +10,9 @@ import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/viewmodel/base/base_view_model.dart';
 import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
+import 'package:dhoro_mobile/ui/buy_dhoro/buy_amount.dart';
+import 'package:dhoro_mobile/ui/buy_dhoro/buy_checkout.dart';
+import 'package:dhoro_mobile/ui/buy_dhoro/buy_payment.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_account_details.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_amount.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_summary.dart';
@@ -24,7 +27,9 @@ class RequestViewModel extends BaseViewModel {
   PageController controller = PageController(
     initialPage: 0,
   );
-
+  PageController buyController = PageController(
+    initialPage: 0,
+  );
   List<RequestData> requestList = [];
   ViewState _state = ViewState.Idle;
   ConvertData? convertData;
@@ -46,6 +51,7 @@ class RequestViewModel extends BaseViewModel {
   String accountNumber = "";
   bool isWithdrawAmount = true;
   bool isBankDetails = true;
+  bool isBuyAmount = true;
   String amount = "";
   String agentId = "";
   String paymentId = "";
@@ -60,18 +66,26 @@ class RequestViewModel extends BaseViewModel {
   TextEditingController genderControllerId = new TextEditingController();
 
   int currentPage = 0;
+  int buyCurrentPage = 0;
 
   void disposeSellDhoroControllers(){
     print("dispose Buy Dhoro");
     pagesAnswers = _initSetupAnswers();
     pages = _initWidgetPages();
+    buyPagesAnswers = _initSetupAnswers();
+    buyPages = _initWidgetPages();
     amount = "";
     agentId = "";
     currencyType = "";
     paymentId = "";
     isWithdrawAmount = false;
+    isBuyAmount = false;
     currentPage = 0;
+    buyCurrentPage = 0;
     controller = PageController(
+      initialPage: 0,
+    );
+    buyController = PageController(
       initialPage: 0,
     );
   }
@@ -83,12 +97,25 @@ class RequestViewModel extends BaseViewModel {
         padding: EdgeInsets.only(bottom: 40), child: WithdrawAccountDetailsPage()),
     Container(
         padding: EdgeInsets.only(bottom: 40), child: WithdrawSummaryPage()),
+  ];
 
+  final buyWidgetPages = [
+    Container(
+        padding: EdgeInsets.only(bottom: 20), child: BuyAmountPage()),
+    Container(
+        padding: EdgeInsets.only(bottom: 20), child: BuyCheckoutPage()),
+    Container(
+        padding: EdgeInsets.only(bottom: 20), child: BuyPaymentPage()),
   ];
   late var pages = _initWidgetPages();
   late var pagesAnswers = _initSetupAnswers();
+  late var buyPages = _initBuyWidgetPages();
+  late var buyPagesAnswers = _initSetupBuyAnswers();
 
   List<bool> _initWidgetPages() {
+    return List<bool>.filled(widgetPages.length, false, growable: false);
+  }
+  List<bool> _initBuyWidgetPages() {
     return List<bool>.filled(widgetPages.length, false, growable: false);
   }
 
@@ -99,9 +126,19 @@ class RequestViewModel extends BaseViewModel {
   void moveToPreviousPage() {
     controller.jumpToPage(currentPage - 1);
   }
+  void moveBuyToNextPage() {
+    buyController.jumpToPage(buyCurrentPage + 1);
+  }
+
+  void moveBuyToPreviousPage() {
+    buyController.jumpToPage(buyCurrentPage - 1);
+  }
 
   List<dynamic> _initSetupAnswers() {
     return List<dynamic>.filled(widgetPages.length, null, growable: false);
+  }
+  List<dynamic> _initSetupBuyAnswers() {
+    return List<dynamic>.filled(buyWidgetPages.length, null, growable: false);
   }
 
   void setViewState(ViewState state) {
@@ -134,8 +171,32 @@ class RequestViewModel extends BaseViewModel {
     return pagesAnswers[index];
   }
 
+  void pageBuyChanged(int position) {
+    buyCurrentPage = position;
+    notifyListeners();
+  }
+
+  void pageBuyValidated(bool validated) {
+    buyPages[buyCurrentPage] = validated;
+    notifyListeners();
+  }
+
+  void updateBuyPageAnswers(dynamic answer) {
+    buyPagesAnswers[buyCurrentPage] = answer;
+    notifyListeners();
+  }
+
+  dynamic getBuyCurrentPageAnswer() {
+    final index = buyCurrentPage;
+    return buyPagesAnswers[index];
+  }
+
   void validateWithdrawAmount() {
     isWithdrawAmount = isValidAmount();
+    notifyListeners();
+  }
+  void validateBuyAmount() {
+    isBuyAmount = isValidAmount();
     notifyListeners();
   }
 
@@ -152,6 +213,53 @@ class RequestViewModel extends BaseViewModel {
     return amount.isNotEmpty && amount.length >= 1;
   }
 
+  bool isValidBuyAmount() {
+    return amount.isNotEmpty && amount.length >= 1;
+  }
+
+  void validateBuyBankDetails() {
+    isBankDetails = isValidAmount();
+    notifyListeners();
+  }
+
+  bool isValidBuyBankDetails() {
+    return amount.isNotEmpty && amount.length >= 1;
+  }
+
+  /// purchase/buy dhoro
+  Future<WithdrawData?> buyDhoro(BuildContext context) async {
+    try {
+      var value = amount;
+      var agent = agentId;
+      var currency = currencyType;
+      var proofOfPayment = paymentId.isEmpty ? paymentProcessor.first.pk : paymentId;
+
+      setViewState(ViewState.Loading);
+      var response = await userRepository.buyDhoro(value, agent, proofOfPayment!, currency);
+      purchase = response;
+      print("Showing buyDhoro response::: $response");
+
+      setViewState(ViewState.Success);
+      getRequest();
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
+      showToast("Successfully bought Dhoro");
+      //return response;
+    } catch (error) {
+      print("Showing buyDhoro error::: $error");
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: error.toString(),
+            isError: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ));
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
   Future<RequestData?> getRequest() async {
     try {
       setViewState(ViewState.Loading);
@@ -161,6 +269,7 @@ class RequestViewModel extends BaseViewModel {
       requestList = response ?? [];
       currentPaginationPage = await sharedPreference.getRequestCurrentPage();
       lastPage = await sharedPreference.getRequestLastPage();
+      print("currentPaginationPage: $currentPaginationPage, lastPage: $lastPage");
       print("Success viewModel getRequest $requestList");
     } catch (error) {
       setViewState(ViewState.Error);
@@ -173,6 +282,9 @@ class RequestViewModel extends BaseViewModel {
       var response = await userRepository.getRequests(page);
       print("getRequest $requestList");
       setViewState(ViewState.Success);
+      currentPaginationPage = await sharedPreference.getRequestCurrentPage();
+      lastPage = await sharedPreference.getRequestLastPage();
+      print("currentPaginationPage: $currentPaginationPage, lastPage: $lastPage");
       requestList = response ?? [];
       print("Success viewModel getRequest $requestList");
     } catch (error) {
@@ -188,6 +300,9 @@ class RequestViewModel extends BaseViewModel {
       var response = await userRepository.getRequestsQuery(query);
       print("getRequestQuery $requestList");
       setViewState(ViewState.Success);
+      currentPaginationPage = await sharedPreference.getRequestCurrentPage();
+      lastPage = await sharedPreference.getRequestLastPage();
+      print("currentPaginationPage: $currentPaginationPage, lastPage: $lastPage");
       requestList = response ?? [];
       print("Success viewModel getRequestQuery $requestList");
     } catch (error) {
@@ -317,6 +432,22 @@ class RequestViewModel extends BaseViewModel {
       walletData = walletBalanceResponse;
       return walletBalanceResponse;
     } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// Convert currency
+  Future<ConvertData?> convertBuyCurrency(String query) async {
+    try {
+      setViewState(ViewState.Loading);
+      var loginResponse = await userRepository.convertBuyCurrency(query);
+      setViewState(ViewState.Success);
+      convertData = loginResponse;
+      print("Showing convertCurrency response::: $loginResponse");
+      return loginResponse;
+    } catch (error) {
+      print("Showing error response::: $error");
       setViewState(ViewState.Error);
       setError(error.toString());
     }

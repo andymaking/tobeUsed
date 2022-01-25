@@ -68,12 +68,7 @@ class BuyViewModel extends BaseViewModel {
   }
 
   final widgetPages = [
-    Container(
-        padding: EdgeInsets.only(bottom: 20), child: BuyAmountPage()),
-    Container(
-        padding: EdgeInsets.only(bottom: 20), child: BuyCheckoutPage()),
-    Container(
-        padding: EdgeInsets.only(bottom: 20), child: BuyPaymentPage()),
+
 
   ];
 
@@ -237,38 +232,7 @@ class BuyViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  /// purchase/buy dhoro
-  Future<WithdrawData?> buyDhoro(BuildContext context) async {
-    try {
-      var value = amount;
-      var agent = agentId;
-      var currency = currencyType;
-      var proofOfPayment = paymentId.isEmpty ? paymentProcessor.first.pk : paymentId;
 
-      setViewState(ViewState.Loading);
-      var response = await userRepository.buyDhoro(value, agent, proofOfPayment!, currency);
-      purchase = response;
-      print("Showing buyDhoro response::: $response");
-
-      setViewState(ViewState.Success);
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
-      showToast("Successfully bought Dhoro");
-      //return response;
-    } catch (error) {
-      print("Showing buyDhoro error::: $error");
-      await showTopModalSheet<String>(
-          context: context,
-          child: ShowDialog(
-            title: error.toString(),
-            isError: true,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ));
-      setViewState(ViewState.Error);
-      setError(error.toString());
-    }
-  }
 
 
 }

@@ -10,6 +10,7 @@ import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
@@ -79,7 +80,7 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   OverViewToolBar(
-                    AppString.settings,
+                  "Password and Security",
                     userData?.avatar ?? "",
                     trailingIconClicked: () => null,
                     initials: initials,
@@ -101,7 +102,7 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 16,
+                    height: 10,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
@@ -115,12 +116,6 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              AppFontsStyle.getAppTextViewBold(
-                                "Password and Security",
-                                weight: FontWeight.w700,
-                                size: AppFontsStyle.textFontSize14,
-                              ),
-                              SizedBox(height: 32.0,),
                               AppFontsStyle.getAppTextViewBold(
                                 "Change Password",
                                 weight: FontWeight.w700,
@@ -246,7 +241,7 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
                               // ),
                               SizedBox(height: 32.0,),
                               viewState == ViewState.Loading
-                                  ? Center(child: CircularProgressIndicator())
+                                  ? Center(child: AppProgressBar())
                                   : AppButton(
                                   onPressed: (){
                                     observeChangePasswordState(context);

@@ -13,7 +13,7 @@ class SharedPreference extends ChangeNotifier {
   final String forgotPassConfirmPassKey = 'forgotPassConfirmPassKey';
   final String lastTransactionHistoryPage = 'lastTransactionHistoryPage';
   final String requestTotalPages = 'requestTotalPages';
-  final String lastTransactionHistoryCurrentPage = 'lastTransactionHistoryCurrentPage';
+  final String currentPage = 'currentPage';
   final String requestCurrentPages = 'requestCurrentPages';
 
   // clear shared preferences
@@ -61,13 +61,13 @@ class SharedPreference extends ChangeNotifier {
   /// cache device id
   void saveTransCurrentPage(int id) async {
     prefs = await SharedPreferences.getInstance();
-    prefs!.setInt(lastTransactionHistoryCurrentPage, id);
+    prefs!.setInt(currentPage, id);
     notifyListeners();
   }
   /// get user token
   Future<int> getTransCurrentPage() async {
     prefs = await SharedPreferences.getInstance();
-    return prefs!.getInt(lastTransactionHistoryCurrentPage) ?? 0;
+    return prefs!.getInt(currentPage) ?? 0;
   }
   /// cache device id
   void saveRequestCurrentPage(int id) async {

@@ -71,19 +71,26 @@ class _SendPageState extends State<SendPage> {
       body: SafeArea(
         child: ListView(
           children: [
-            SizedBox(
-              height: 200,
-            ),
-            GestureDetector(
-              onTap: (){
-                print("Clicked");
-                Navigator.of(context).pop();
-              },
-              child: SvgPicture.asset(
-                "assets/images/back_arrow.svg",
-                width: 40,
-                height: 40,
-              ),
+            // SizedBox(
+            //   height: 200,
+            // ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: (){
+                      print("Clicked");
+                      Navigator.of(context).pop();
+                    },
+                    child: SvgPicture.asset(
+                      "assets/images/back_arrow.svg",
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),

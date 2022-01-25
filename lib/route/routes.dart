@@ -3,19 +3,15 @@ import 'package:dhoro_mobile/ui/buy_dhoro/select_payment_processor.dart';
 import 'package:dhoro_mobile/ui/changePassword/change_password.dart';
 import 'package:dhoro_mobile/ui/createAccount/signup.dart';
 import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
-import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/ui/overview/send.dart';
-import 'package:dhoro_mobile/ui/overview/send_dhoro.dart';
 import 'package:dhoro_mobile/ui/password_and_security/password_and_security.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor_list.dart';
 import 'package:dhoro_mobile/ui/personal_info/edit_profile_image_options.dart';
 import 'package:dhoro_mobile/ui/personal_info/personal_info.dart';
-import 'package:dhoro_mobile/ui/request/requests.dart';
 import 'package:dhoro_mobile/route/route_error_page.dart';
-import 'package:dhoro_mobile/ui/settings/settings.dart';
 import 'package:dhoro_mobile/ui/transactions/transactions.dart';
 import 'package:dhoro_mobile/ui/verify_your_email/verify_your_email.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/select_withdraw_payment_processor.dart';
@@ -163,12 +159,6 @@ class AppRouter {
       case AppRoutes.buy:
         return MaterialPageRoute<dynamic>(
           builder: (_) => BuySetupPagerContainer(),
-          settings: settings,
-          fullscreenDialog: true,
-        );
-      case AppRoutes.sendDhoro:
-        return MaterialPageRoute<dynamic>(
-          builder: (_) => SendDhoroPage(),
           settings: settings,
           fullscreenDialog: true,
         );

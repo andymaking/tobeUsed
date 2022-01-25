@@ -116,7 +116,6 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                               print("recieved... ${pushData?.paymentId}, ${pushData?.userName}");
                               setState(() {
 
-
                               });
                             },
                             child: Container(
@@ -191,7 +190,7 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            context.read(sharedProvider.userBuyProvider).moveToPreviousPage();
+                            context.read(sharedProvider.userBuyProvider).moveBuyToPreviousPage();
                           },
                           child: Container(
                             height: 50,

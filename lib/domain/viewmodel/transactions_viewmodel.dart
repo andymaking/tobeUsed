@@ -59,6 +59,7 @@ class TransactionsViewModel extends BaseViewModel {
       setViewState(ViewState.Success);
       lastPage = await sharedPreference.getTransLastPage();
       currentPaginationPage = await sharedPreference.getTransCurrentPage();
+      print("lastPage: $lastPage, currentPaginationPage $currentPaginationPage");
       print("Success transferHistory $transferHistory");
     } catch (error) {
       setViewState(ViewState.Error);
@@ -73,6 +74,9 @@ class TransactionsViewModel extends BaseViewModel {
       transferHistory = response ?? [];
       print("transferHistory $transferHistory");
       setViewState(ViewState.Success);
+      lastPage = await sharedPreference.getTransLastPage();
+      currentPaginationPage = await sharedPreference.getTransCurrentPage();
+      print("lastPage: $lastPage, currentPaginationPage $currentPaginationPage");
       print("transaction getTransferHistory");
       print("Success transferHistory $transferHistory");
     } catch (error) {
@@ -88,6 +92,9 @@ class TransactionsViewModel extends BaseViewModel {
       transferHistory = response ?? [];
       print("getTransferHistoryQuery $transferHistory");
       setViewState(ViewState.Success);
+      lastPage = await sharedPreference.getTransLastPage();
+      currentPaginationPage = await sharedPreference.getTransCurrentPage();
+      print("lastPage: $lastPage, currentPaginationPage $currentPaginationPage");
       print("Success getTransferHistoryQuery $transferHistory");
     } catch (error) {
       setViewState(ViewState.Error);

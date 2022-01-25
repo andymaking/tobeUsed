@@ -42,7 +42,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
   Future<void> initialiseAnswer() async {
     await Future.delayed(Duration(milliseconds: 300));
     setState(() {
-      _amountController.text = context.read(sharedProvider.userBuyProvider).getCurrentPageAnswer() ?? "";
+      _amountController.text = context.read(sharedProvider.userBuyProvider).getBuyCurrentPageAnswer() ?? "";
     });
   }
 
@@ -55,12 +55,12 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
   @override
   Widget build(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);
-    ConvertData? convert = useProvider(sharedProvider.userBuyProvider).convertCurrency;
+    ConvertData? convert = useProvider(sharedProvider.userBuyProvider).convertData;
     print("convert +++= $convert");
-    final currentPage = useProvider(sharedProvider.userBuyProvider).currentPage;
+    final currentPage = useProvider(sharedProvider.userBuyProvider).buyCurrentPage;
 
-    final isPageValidated = useProvider(sharedProvider.userBuyProvider).pages[currentPage];
-    final totalPages = context.read(sharedProvider.userBuyProvider).pages.length - 1;
+    final isPageValidated = useProvider(sharedProvider.userBuyProvider).buyPages[currentPage];
+    final totalPages = context.read(sharedProvider.userBuyProvider).buyPages.length - 1;
     final progress =
     (currentPage / totalPages == 0) ? 0.05 : currentPage / totalPages;
     final isValidAmount = useProvider(validAmountProvider);
@@ -107,13 +107,13 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                         context.read(sharedProvider.userBuyProvider).validateBuyAmount();
                         context
                             .read(sharedProvider.userBuyProvider)
-                            .pageValidated(true);
+                            .pageBuyValidated(true);
                         context
                             .read(sharedProvider.userBuyProvider)
-                            .updatePageAnswers(value);
+                            .updateBuyPageAnswers(value);
                       },
                       validator: (value) {
-                        if (context.read(sharedProvider.userBuyProvider).isValidAmount()) {
+                        if (context.read(sharedProvider.userBuyProvider).isValidBuyAmount()) {
                           return "Enter a valid amount";
                         }
                         return null;
@@ -187,7 +187,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                     AppButton(
                         onPressed: (){
                           currentFocus.unfocus();
-                          context.read(sharedProvider.userBuyProvider).moveToNextPage();
+                          context.read(sharedProvider.userBuyProvider).moveBuyToNextPage();
                           setState(() {
                             context.read(sharedProvider.userBuyProvider).currencyType = selectedOption;
                             context.read(sharedProvider.userBuyProvider).amount = "${_amountController.text.trim()}";

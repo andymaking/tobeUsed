@@ -1,6 +1,6 @@
 
 import 'package:dhoro_mobile/data/core/view_state.dart';
-import 'package:dhoro_mobile/domain/viewmodel/buy_viewmodel.dart';
+import 'package:dhoro_mobile/domain/viewmodel/request_viewmodel.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +10,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../main.dart';
 
 final userBuyProvider =
-ChangeNotifierProvider.autoDispose<BuyViewModel>((ref) {
+ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
   ref.onDispose(() {});
-  final viewmodel = locator.get<BuyViewModel>();
+  final viewmodel = locator.get<RequestViewModel>();
   //Load all setup questions here
   viewmodel.getRequest();
   viewmodel.getPaymentProcessor();
@@ -41,12 +41,12 @@ class _BuySetupPagerContainerState extends State<BuySetupPagerContainer> {
 
   @override
   void initState() {
-    context.read(userBuyProvider).disposeBuyDhoroControllers();
+    context.read(userBuyProvider).disposeSellDhoroControllers();
     super.initState();
   }
 
   void navigate() {
-    final currentPage = useProvider(userBuyProvider).currentPage;
+    final currentPage = useProvider(userBuyProvider).buyCurrentPage;
     if(currentPage > 0) {
       _controller.jumpToPage(currentPage - 1);
     } else {
@@ -56,18 +56,18 @@ class _BuySetupPagerContainerState extends State<BuySetupPagerContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final currentPage = useProvider(userBuyProvider).currentPage;
-    final totalPages = context.read(userBuyProvider).pages.length - 1;
+    final currentPage = useProvider(userBuyProvider).buyCurrentPage;
+    final totalPages = context.read(userBuyProvider).buyPages.length - 1;
     final progress =
     (currentPage / totalPages == 0) ? 0.05 : currentPage / totalPages;
 
     final pageview = PageView(
-        controller: context.read(userBuyProvider).controller,
+        controller: context.read(userBuyProvider).buyController,
         onPageChanged: (position) {
-          context.read(userBuyProvider).pageChanged(position);
+          context.read(userBuyProvider).pageBuyChanged(position);
         },
         physics: new NeverScrollableScrollPhysics(),
-        children: context.read(userBuyProvider).widgetPages);
+        children: context.read(userBuyProvider).buyWidgetPages);
 
     return Scaffold(
       body: SafeArea(
@@ -109,7 +109,7 @@ class _BuySetupPagerContainerState extends State<BuySetupPagerContainer> {
 
   @override
   void dispose() {
-    context.read(userBuyProvider).disposeBuyDhoroControllers();
+    context.read(userBuyProvider).disposeSellDhoroControllers();
     super.dispose();
   }
 
