@@ -17,6 +17,7 @@ ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
   viewmodel.getRequest();
   viewmodel.getPaymentProcessor();
   viewmodel.getAgents();
+  viewmodel.validateBuyDhoro("1000000000000", "USD");
   return viewmodel;
 });
 

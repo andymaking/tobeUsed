@@ -1,3 +1,4 @@
+import 'package:dhoro_mobile/data/remote/model/validate/validate.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
@@ -5,7 +6,6 @@ import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
-import 'package:dhoro_mobile/widgets/size_24_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -60,7 +60,7 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
 
     FocusScopeNode currentFocus = FocusScope.of(context);
     final currentPage = useProvider(sharedProvider.userRequestProvider).currentPage;
-
+    ValidateWithdrawResponse? validateWithdrawResponse = useProvider(sharedProvider.userRequestProvider).validateWithdrawResponse;
     final isPageValidated = useProvider(sharedProvider.userRequestProvider).pages[currentPage];
     final totalPages = context.read(sharedProvider.userRequestProvider).pages.length - 1;
     final progress =
@@ -97,7 +97,16 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 250.0,),
+                    SizedBox(height: 180.0,),
+                    validateWithdrawResponse?.data == true ? Container()
+                        : Row(
+                      children: [
+                        AppFontsStyle.getAppTextViewBold("${validateWithdrawResponse?.message}",
+                            weight: FontWeight.w500,
+                            size: AppFontsStyle.textFontSize12),
+                      ],
+                    ),
+                    SizedBox(height: 8.0,),
                     AmountFormField(
                       label: AppString.amount,
                       controller: _amountController,
@@ -105,6 +114,11 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                         value.length >7 ? currentFocus.unfocus() : currentFocus.requestFocus();
                         context.read(sharedProvider.userRequestProvider)
                             .convertCurrency("$selectedOption=${_amountController.text.trim()}");
+                        _amountController.text.isNotEmpty
+                            ? context.read(sharedProvider.userRequestProvider)
+                            .validateWithdrawDhoro("${_amountController.text.trim()}", selectedOption)
+                        : context.read(sharedProvider.userRequestProvider)
+                            .validateWithdrawDhoro("0", selectedOption);
                         context.read(sharedProvider.userRequestProvider).amount = value.trim();
                         context.read(sharedProvider.userRequestProvider).validateWithdrawAmount();
                         context
@@ -197,8 +211,12 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                         title: "PROCEED",
                         disabledColor: Pallet.colorBlue.withOpacity(0.2),
                         titleColor: Pallet.colorWhite,
-                        enabledColor: isValidAmount ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
-                        enabled: isValidAmount ? true : false),
+                        enabledColor: validateWithdrawResponse?.data != null &&
+                            validateWithdrawResponse?.data == true &&
+                            isValidAmount ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
+                        enabled: validateWithdrawResponse?.data != null &&
+                            validateWithdrawResponse?.data == true &&
+                            isValidAmount ? true : false),
                     SizedBox(
                       height: 16,
                     ),

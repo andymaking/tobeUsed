@@ -90,6 +90,7 @@ class _OverviewPageState extends State<OverviewPage> {
   @override
   void initState() {
     setState(() {
+      context.read(overviewProvider).getRate();
       context.read(overviewProvider).getWalletPercentage();
       context.read(overviewProvider).walletBalance();
       context.read(overviewProvider).getTransferHistory();
@@ -126,6 +127,7 @@ class _OverviewPageState extends State<OverviewPage> {
     print("Showing walletStatus:: $walletStatus");
     print("Showing percent:: $percent");
     var dhrBalance = walletBalance?.dhrBalance?.toStringAsFixed(3);
+    //var priceInDollar = double.parse("${rateData?.priceInDollar}");
 
     setState(() {
       //refreshPage();
@@ -231,7 +233,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     AppFontsStyle.getAppTextViewBold(
-                                      "1 DHR = \$${rateData?.equivalentInDhoro ?? 0.0}",
+                                      "${rateData?.equivalentInDhoro ?? 0} DHR = \$${rateData?.priceInDollar?.substring(0,4)}",
                                       weight: FontWeight.w600,
                                       size: AppFontsStyle.textFontSize12,
                                     ),

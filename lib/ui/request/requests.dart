@@ -29,6 +29,8 @@ ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
   viewModel.getRequest();
   viewModel.getPaymentProcessor();
   viewModel.getUser();
+  viewModel.validateWithdrawDhoro("1000000000000", "USD");
+  viewModel.validateBuyDhoro("1000000000000", "USD");
   return viewModel;
 });
 
@@ -75,7 +77,7 @@ class _RequestsPageState extends State<RequestsPage> {
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
 
     setState(() {
-      page = context.read(requestProvider).currentPaginationPage!;
+      page = context.read(requestProvider).currentPaginationPage ?? 1;
     });
 
     return Scaffold(

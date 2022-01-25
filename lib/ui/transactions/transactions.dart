@@ -92,7 +92,7 @@ class _TransactionsPageState extends State<TransactionsPage>
     print("Transaction pageSige ${userTransactions?.length}");
 
     setState(() {
-      page = context.read(transactionsProvider).currentPaginationPage!;
+      page = context.read(transactionsProvider).currentPaginationPage ?? 1;
     });
 
     return Scaffold(

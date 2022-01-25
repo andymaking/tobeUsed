@@ -12,6 +12,7 @@ import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/validate/validate.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
@@ -57,5 +58,7 @@ abstract class UserRepository {
   Future<ClaimAirdropResponse?> claimAirdrop(String wid);
   Future<AirdropInfoData?> getAirdropInfo();
   Future<AvatarResponse?> getAvatar();
+  Future<ValidateBuyResponse?> validateBuyDhoro(String amount, String currencyType);
+  Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType);
 
 }
