@@ -91,7 +91,7 @@ class _SetupPagerContainerState extends State<SetupPagerContainer> {
                   SizedBox(
                     height: 70,
                   ),
-                  AppFontsStyle.getAppTextViewBold("Withdraw Dhoro",
+                  AppFontsStyle.getAppTextViewBold("Sell Dhoro",
                       weight: FontWeight.w700,
                       size: AppFontsStyle.textFontSize16),
                   SizedBox(

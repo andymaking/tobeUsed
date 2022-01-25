@@ -8,6 +8,7 @@ import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart' as sharedProvider;
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -105,7 +106,7 @@ class _SelectPaymentProcessorPageState extends State<SelectPaymentProcessorPage>
                               SizedBox(height: 24.0,),
                               userTransactions.isNotEmpty == true
                                ? viewState == ViewState.Loading
-                                  ? Center(child: CircularProgressIndicator())
+                                  ? Center(child: AppProgressBar())
                                   : Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(Radius.circular(2)),

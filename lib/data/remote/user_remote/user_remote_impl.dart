@@ -120,6 +120,7 @@ class UserRemoteImpl extends UserRemote {
       final responseData = TransferHistoryDataResponse.fromJson(response.data);
       print("TransferHistory from Remote layer:: $responseData");
       sharedPreference.saveTransLastPage(responseData.totalPages!);
+      sharedPreference.saveTransCurrentPage(responseData.page!);
       return responseData.results?.data;
     } catch (error) {
       handleError(error);
@@ -260,6 +261,7 @@ class UserRemoteImpl extends UserRemote {
       final responseData = RequestResponse.fromJson(response.data);
       print("getRequests from Remote layer:: ${responseData.results?.data} response:$response");
       sharedPreference.saveRequestLastPage(responseData.totalPages!);
+      sharedPreference..saveRequestCurrentPage(responseData.page!);
       return responseData.results?.data;
     } catch (error) {
       handleError(error);

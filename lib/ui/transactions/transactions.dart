@@ -92,7 +92,7 @@ class _TransactionsPageState extends State<TransactionsPage>
     print("Transaction pageSige ${userTransactions?.length}");
 
     setState(() {
-      //page = 1;
+      page = context.read(transactionsProvider).currentPaginationPage!;
     });
 
     return Scaffold(
@@ -226,13 +226,15 @@ class _TransactionsPageState extends State<TransactionsPage>
                         )
                       : buildEmptyView(),
                   viewState == ViewState.Loading ? Container()
-                  : Row(
+                  : context.read(transactionsProvider).lastPage != null &&
+                      context.read(transactionsProvider).lastPage! > 1
+                  ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            page = 1;
+                            ///page = 1;
                             print("Pressed one");
                             context
                                 .read(transactionsProvider)
@@ -289,7 +291,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                               ),
                               child: Center(
                                 child: AppFontsStyle.getAppTextViewBold(
-                                    "$page of ${context.read(transactionsProvider).lastPage}",
+                                    "${context.read(transactionsProvider).currentPaginationPage} of ${context.read(transactionsProvider).lastPage}",
                                     size: AppFontsStyle.textFontSize12,
                                     color: Pallet.colorBlue),
                               ),
@@ -350,7 +352,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                         ),
                       ),
                     ],
-                  ),
+                  ) : Container(),
                   SizedBox(
                     height: 16,
                   ),
@@ -513,7 +515,7 @@ class _TransactionsPageState extends State<TransactionsPage>
               onPressed: onPressedSentTo,
             ),
             context.read(transactionsProvider).viewState == ViewState.Loading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: AppProgressBar())
                 : GestureDetector(
                     onTap: () {
                       setState(() {

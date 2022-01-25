@@ -12,6 +12,7 @@ import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,6 +58,11 @@ class _RequestsPageState extends State<RequestsPage> {
   String inputValue = "";
   int page = 1;
 
+  @override
+  void initState() {
+    context.read(requestProvider).getRequest();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +74,9 @@ class _RequestsPageState extends State<RequestsPage> {
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
 
+    setState(() {
+      page = context.read(requestProvider).currentPaginationPage!;
+    });
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
@@ -119,7 +128,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                             height: 18,
                                           ),
                                           AppFontsStyle.getAppTextViewBold(
-                                            "Purchase Request",
+                                            "Buy Request",
                                             color: Pallet.colorBlue,
                                             weight: FontWeight.w600,
                                             size: AppFontsStyle.textFontSize10,
@@ -205,7 +214,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                             height: 18,
                                           ),
                                           AppFontsStyle.getAppTextViewBold(
-                                            "Withdrawal Request",
+                                            "Sell Request",
                                             color: Pallet.colorBlue,
                                             weight: FontWeight.w600,
                                             size: AppFontsStyle.textFontSize10,
@@ -312,8 +321,8 @@ class _RequestsPageState extends State<RequestsPage> {
                     requestList.isNotEmpty == true
                         ? viewState == ViewState.Loading
                         ? Padding(
-                          padding: const EdgeInsets.only(top: 60.0),
-                          child: Center(child: CircularProgressIndicator()),
+                          padding: const EdgeInsets.only(top: 40.0),
+                          child: Center(child: AppProgressBar()),
                         )
                         : Padding(
                       padding:
@@ -369,7 +378,9 @@ class _RequestsPageState extends State<RequestsPage> {
                         : buildEmptyView(),
                     viewState == ViewState.Loading
                         ? Container()
-                    : Row(
+                    : context.read(requestProvider).lastPage != null &&
+                        context.read(requestProvider).lastPage! > 1
+                    ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
@@ -421,7 +432,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                   color: Pallet.colorWhite,
                                 ),
                                 child: Center(
-                                  child: AppFontsStyle.getAppTextViewBold("$page of ${context.read(requestProvider).lastPage}",
+                                  child: AppFontsStyle.getAppTextViewBold("${context.read(requestProvider).currentPaginationPage} of ${context.read(requestProvider).lastPage}",
                                       size: AppFontsStyle.textFontSize12,
                                       color: Pallet.colorBlue),
                                 ),
@@ -436,15 +447,20 @@ class _RequestsPageState extends State<RequestsPage> {
 
                         ),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             setState(() {
                               page += 1;
                               print("Pressed:: $page");
-                              context.read(overviewProvider).getTransferHistoryWithPaging(page);
+                              context
+                                  .read(requestProvider)
+                                  .getRequestWithPaging(page);
                             });
                           },
-                          child: SvgPicture.asset("assets/images/arrow_forward.svg",
-                            width: 40, height: 40,),
+                          child: SvgPicture.asset(
+                            "assets/images/arrow_forward.svg",
+                            width: 40,
+                            height: 40,
+                          ),
                         ),
                         SizedBox(width: 8,),
                         GestureDetector(
@@ -472,7 +488,8 @@ class _RequestsPageState extends State<RequestsPage> {
                           ),
                         ),
                       ],
-                    ),
+                    )
+                    : Container(),
                     SizedBox(height: 16,),
                   ],
                 ),
@@ -661,7 +678,7 @@ class _RequestsPageState extends State<RequestsPage> {
               title: "Total",
               onPressed: onPressedTotal,
             ),
-            context.read(requestProvider).viewState == ViewState.Loading ? Center(child: CircularProgressIndicator())
+            context.read(requestProvider).viewState == ViewState.Loading ? Center(child: AppProgressBar())
                 :GestureDetector(
               onTap: (){
                 setState(() {

@@ -39,7 +39,7 @@ class BuyStepNumbers extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentPage = useProvider(sharedBuyProvider.userBuyProvider).currentPage;
+    final currentPage = useProvider(sharedBuyProvider.userBuyProvider).buyCurrentPage;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40.0),
@@ -85,7 +85,7 @@ class BuyStepNames extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentPage = useProvider(sharedBuyProvider.userBuyProvider).currentPage;
+    final currentPage = useProvider(sharedBuyProvider.userBuyProvider).buyCurrentPage;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Row(

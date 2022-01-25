@@ -6,6 +6,7 @@ import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
@@ -132,7 +133,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                         height: 24,
                       ),
                       verifyViewState == ViewState.Loading
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(child: AppProgressBar())
                           : AppButton(
                           onPressed: (){
                             // isValidVerify

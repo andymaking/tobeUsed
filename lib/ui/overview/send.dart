@@ -34,11 +34,11 @@ class SendPage extends StatefulHookWidget {
 
 class _SendPageState extends State<SendPage> {
   List<String> options = [
-    "DHR",
     "USD",
+    "DHR",
     "NGN",
   ];
-  String selectedOption = "DHR";
+  String selectedOption = "USD";
   TextEditingController _walletIdController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
 
@@ -71,19 +71,26 @@ class _SendPageState extends State<SendPage> {
       body: SafeArea(
         child: ListView(
           children: [
-            SizedBox(
-              height: 200,
-            ),
-            GestureDetector(
-              onTap: (){
-                print("Clicked");
-                Navigator.of(context).pop();
-              },
-              child: SvgPicture.asset(
-                "assets/images/back_arrow.svg",
-                width: 40,
-                height: 40,
-              ),
+            // SizedBox(
+            //   height: 200,
+            // ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: (){
+                      print("Clicked");
+                      Navigator.of(context).pop();
+                    },
+                    child: SvgPicture.asset(
+                      "assets/images/back_arrow.svg",
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -101,12 +108,12 @@ class _SendPageState extends State<SendPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
-                        height: 7,
-                      ),
-                      SvgPicture.asset(
-                        "assets/images/top_indicator.svg",
-                      ),
+                      // SizedBox(
+                      //   height: 7,
+                      // ),
+                      // SvgPicture.asset(
+                      //   "assets/images/top_indicator.svg",
+                      // ),
                       SizedBox(
                         height: 19,
                       ),
@@ -239,8 +246,8 @@ class _SendPageState extends State<SendPage> {
                             });
                           },
                           items: <String>[
-                            'DHR',
                             'USD',
+                            'DHR',
                             'NGN',
                           ].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(

@@ -3,6 +3,7 @@ import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart'
     as sharedProvider;
@@ -25,13 +26,6 @@ Provider.autoDispose<List<AgentsData>>((ref) {
 final agentsProvider =
 Provider.autoDispose<List<AgentsData>>((ref) {
   return ref.watch(_agentsProvider);
-});
-
-final _userSelectedAgentProvider = Provider.autoDispose<Set<String>>((ref) {
-  return ref.watch(sharedProvider.userBuyProvider).currentUserAgent;
-});
-final userSelectedAgentProvider = Provider.autoDispose<Set<String>>((ref) {
-  return ref.watch(_userSelectedAgentProvider);
 });
 
 
@@ -75,81 +69,88 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
             padding: const EdgeInsets.all(24.0),
             child: Stack(
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 160.0,
-                    ),
-                    agents.isNotEmpty == true
-                        ? viewState == ViewState.Loading
-                        ? Center(child: CircularProgressIndicator())
-                        : Container(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List.generate(agents.length, (index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 16.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selected = index;
-                                  });
-                                },
-                                child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1.0,
-                                      color: Pallet.colorBlue),
-                                  borderRadius: BorderRadius.all(Radius.circular(2)),
-                                ),
-                                  child: Row(
-                                    children: [
-                                      Checkbox(
-                                          checkColor: Colors.white,
-                                          fillColor: MaterialStateProperty
-                                              .resolveWith(getColor),
-                                          value: selected == index,
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              context.read(sharedProvider.userBuyProvider).agentId = agents[index].pk!;
-                                              print("Show clicked INDEX... ${agents[index].pk}");
-                                            });
-                                          }),
-                                      AppFontsStyle.getAppTextViewBold(
-                                          "${agents[index].accountName!.toTitleCase()!}",
-                                          weight: FontWeight.w500,
-                                          size:
-                                          AppFontsStyle.textFontSize12),
-                                      Spacer(),
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 16.0),
-                                        child: Container(
-                                          child: AppFontsStyle.getAppTextViewBold(
-                                              "${agents[index].bankName!.toTitleCase()!}",
+                ListView(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 160.0,
+                        ),
+                        agents.isNotEmpty == true
+                            ? viewState == ViewState.Loading
+                            ? Padding(
+                          padding: const EdgeInsets.only(top: 40.0),
+                          child: Center(child: AppProgressBar()),
+                        )
+                            : Container(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(agents.length, (index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        selected = index;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1.0,
+                                            color: Pallet.colorBlue),
+                                        borderRadius: BorderRadius.all(Radius.circular(2)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Checkbox(
+                                              checkColor: Colors.white,
+                                              fillColor: MaterialStateProperty
+                                                  .resolveWith(getColor),
+                                              value: selected == index,
+                                              onChanged: (bool? value) {
+                                                setState(() {
+                                                  context.read(sharedProvider.userBuyProvider).agentId = agents[index].pk!;
+                                                  print("Show clicked INDEX... ${agents[index].pk}");
+                                                });
+                                              }),
+                                          AppFontsStyle.getAppTextViewBold(
+                                              "${agents[index].accountName!.toTitleCase()!}",
                                               weight: FontWeight.w500,
-                                              color: Pallet.colorGrey,
                                               size:
                                               AppFontsStyle.textFontSize12),
-                                        ),
+                                          Spacer(),
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 16.0),
+                                            child: Container(
+                                              child: AppFontsStyle.getAppTextViewBold(
+                                                  "${agents[index].bankName!.toTitleCase()!}",
+                                                  weight: FontWeight.w500,
+                                                  color: Pallet.colorGrey,
+                                                  size:
+                                                  AppFontsStyle.textFontSize12),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 12.0,
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(
-                                        height: 12.0,
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            );
-                          })
-                      ),
-                    )
-                        :buildEmptyView(),
+                                );
+                              })
+                          ),
+                        )
+                            :buildEmptyView(),
 
-                    SizedBox(
-                      height: 16,
+                        SizedBox(
+                          height: 16,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -161,7 +162,7 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            context.read(sharedProvider.userBuyProvider).moveToPreviousPage();
+                            context.read(sharedProvider.userBuyProvider).moveBuyToPreviousPage();
                           },
                           child: Container(
                             height: 50,
@@ -183,7 +184,7 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                         GestureDetector(
                           onTap: () {
                             context
-                                .read(sharedProvider.userBuyProvider).moveToNextPage();
+                                .read(sharedProvider.userBuyProvider).moveBuyToNextPage();
                             setState(() {
                               context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[selected].pk}");
                             });

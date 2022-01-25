@@ -10,6 +10,7 @@ import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
@@ -24,6 +25,7 @@ final processorProvider =
 ChangeNotifierProvider.autoDispose<PaymentProcessorViewModel>((ref) {
   ref.onDispose(() {});
   final viewModel = locator.get<PaymentProcessorViewModel>();
+  viewModel.getUser();
   viewModel.getPaymentProcessor();
   return viewModel;
 });
@@ -48,6 +50,7 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
   @override
   void initState() {
     setState(() {
+      context.read(processorProvider).getUser();
       context.read(processorProvider).getPaymentProcessor();
     });
     super.initState();
@@ -100,7 +103,7 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 16,
+                    height: 10,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
@@ -131,8 +134,8 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                               userTransactions.isNotEmpty == true
                                ? viewState == ViewState.Loading
                                   ? Padding(
-                                    padding: const EdgeInsets.only(top: 80.0),
-                                    child: Center(child: CircularProgressIndicator()),
+                                    padding: const EdgeInsets.only(top: 60.0),
+                                    child: Center(child: AppProgressBar()),
                                   )
                                   : Container(
                                 decoration: BoxDecoration(
