@@ -2,6 +2,7 @@ import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/ui/request/requests.dart';
 import 'package:dhoro_mobile/ui/settings/settings.dart';
 import 'package:dhoro_mobile/ui/transactions/transactions.dart';
+import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
@@ -39,8 +40,11 @@ class _DashboardPageState extends State<DashboardPage> {
     AppString.requests,
     AppString.settings,
   ];
+
   @override
   Widget build(BuildContext context) {
+    changeStatusAndNavBarColor(
+        Pallet.colorWhite, Pallet.colorWhite, false, false);
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(

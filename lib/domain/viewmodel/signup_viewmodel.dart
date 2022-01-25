@@ -56,7 +56,6 @@ class SignUpViewModel extends BaseViewModel {
   Future<bool?> register(
       String firstname, String lastname, String email, String password,
       ) async {
-
     try {
       setViewState(ViewState.Loading);
       var signUpResponse =

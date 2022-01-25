@@ -11,6 +11,10 @@ class SharedPreference extends ChangeNotifier {
   final String forgotPassWKey = 'forgotPassW';
   final String forgotPassPassKey = 'forgotPassPassKey';
   final String forgotPassConfirmPassKey = 'forgotPassConfirmPassKey';
+  final String lastTransactionHistoryPage = 'lastTransactionHistoryPage';
+  final String requestTotalPages = 'requestTotalPages';
+  final String currentPage = 'currentPage';
+  final String requestCurrentPages = 'requestCurrentPages';
 
   // clear shared preferences
   Future<void> clear() async {
@@ -31,6 +35,52 @@ class SharedPreference extends ChangeNotifier {
     prefs!.setString(tokenKey, id);
     notifyListeners();
   }
+  /// cache device id
+  void saveTransLastPage(int id) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs!.setInt(lastTransactionHistoryPage, id);
+    notifyListeners();
+  }
+  /// get user token
+  Future<int> getTransLastPage() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs!.getInt(lastTransactionHistoryPage) ?? 0;
+  }
+  /// cache device id
+  void saveRequestLastPage(int id) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs!.setInt(requestTotalPages, id);
+    notifyListeners();
+  }
+  /// get user token
+  Future<int> getRequestLastPage() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs!.getInt(requestTotalPages) ?? 0;
+  }
+
+  /// cache device id
+  void saveTransCurrentPage(int id) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs!.setInt(currentPage, id);
+    notifyListeners();
+  }
+  /// get user token
+  Future<int> getTransCurrentPage() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs!.getInt(currentPage) ?? 0;
+  }
+  /// cache device id
+  void saveRequestCurrentPage(int id) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs!.setInt(requestCurrentPages, id);
+    notifyListeners();
+  }
+  /// get user token
+  Future<int> getRequestCurrentPage() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs!.getInt(requestCurrentPages) ?? 0;
+  }
+
   /// get user token
   Future<String> getToken() async {
     prefs = await SharedPreferences.getInstance();

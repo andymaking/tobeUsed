@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
@@ -12,7 +13,8 @@ import 'base/base_view_model.dart';
 
 class LoginViewModel extends BaseViewModel {
   final userRepository = locator<UserRepository>();
-  LoggedInUser? user;
+  //LoggedInUser? user;
+  GetUserData? user;
 
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
@@ -65,20 +67,23 @@ class LoginViewModel extends BaseViewModel {
       setViewState(ViewState.Loading);
       var loginResponse = await userRepository.login(email, password);
       setViewState(ViewState.Success);
+      //getUser();
       print("Showing Login response::: $loginResponse");
       return loginResponse;
     } catch (error) {
+      print("Showing error response::: $error");
       setViewState(ViewState.Error);
       setError(error.toString());
     }
   }
 
-  Future<void> getLoggedInUser() async {
+  Future<GetUserData?> getUser() async {
     try {
       setViewState(ViewState.Loading);
       var response = 
-      await userRepository.getLoggedInUser();
+      await userRepository.getUser();
       user = response;
+      //print("User Info::: $user");
       setViewState(ViewState.Success);
     } catch (error) {
       setViewState(ViewState.Error);

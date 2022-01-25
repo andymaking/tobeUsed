@@ -1,18 +1,20 @@
+import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart';
+import 'package:dhoro_mobile/ui/buy_dhoro/select_payment_processor.dart';
 import 'package:dhoro_mobile/ui/changePassword/change_password.dart';
 import 'package:dhoro_mobile/ui/createAccount/signup.dart';
 import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
-import 'package:dhoro_mobile/ui/email_verification/email_verification.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
+import 'package:dhoro_mobile/ui/overview/send.dart';
 import 'package:dhoro_mobile/ui/password_and_security/password_and_security.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor.dart';
 import 'package:dhoro_mobile/ui/payment_processor/payment_processor_list.dart';
+import 'package:dhoro_mobile/ui/personal_info/edit_profile_image_options.dart';
 import 'package:dhoro_mobile/ui/personal_info/personal_info.dart';
-import 'package:dhoro_mobile/ui/request/requests.dart';
 import 'package:dhoro_mobile/route/route_error_page.dart';
-import 'package:dhoro_mobile/ui/settings/settings.dart';
 import 'package:dhoro_mobile/ui/transactions/transactions.dart';
 import 'package:dhoro_mobile/ui/verify_your_email/verify_your_email.dart';
+import 'package:dhoro_mobile/ui/withdraw_dhoro/select_withdraw_payment_processor.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart';
 import 'package:flutter/material.dart';
 
@@ -38,6 +40,14 @@ class AppRoutes {
   static const paymentProcessor = '/paymentProcessor';
   static const paymentProcessorList = '/paymentProcessorList';
   static const withdraw = '/stepper';
+  static const buy = '/buyStepper';
+  static const uploadPhotosOptions = '/uploadPhotosOptions';
+  static const selectBuyPaymentProcessor = '/selectBuyPaymentProcessor';
+  static const selectWithdrawPaymentProcessor = '/selectWithdrawPaymentProcessor';
+  static const sendDhoro = '/sendDhoro';
+  static const send = '/send';
+  static const request = '/request';
+
 }
 
 class AppRouter {
@@ -62,12 +72,6 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-      case AppRoutes.requests:
-        return MaterialPageRoute<dynamic>(
-          builder: (_) => RequestsPage(),
-          settings: settings,
-          fullscreenDialog: true,
-        );
       case AppRoutes.login:
         return MaterialPageRoute<dynamic>(
           builder: (_) => LoginPage(),
@@ -86,15 +90,27 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-      case AppRoutes.emailVerification:
+      case AppRoutes.uploadPhotosOptions:
         return MaterialPageRoute<dynamic>(
-          builder: (_) => EmailVerificationPage(),
+          builder: (_) => EditProfileImageOptionsPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.selectWithdrawPaymentProcessor:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => SelectWithdrawPaymentProcessorPage(),
           settings: settings,
           fullscreenDialog: true,
         );
       case AppRoutes.settings:
         return MaterialPageRoute<dynamic>(
-          builder: (_) => SettingsPage(),
+          builder: (_) => DashboardPage(selectedIndex: 3,),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.request:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => DashboardPage(selectedIndex: 2,),
           settings: settings,
           fullscreenDialog: true,
         );
@@ -104,9 +120,9 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-      case AppRoutes.settings:
+      case AppRoutes.selectBuyPaymentProcessor:
         return MaterialPageRoute<dynamic>(
-          builder: (_) => SettingsPage(),
+          builder: (_) => SelectPaymentProcessorPage(),
           settings: settings,
           fullscreenDialog: true,
         );
@@ -140,7 +156,18 @@ class AppRouter {
           settings: settings,
           fullscreenDialog: true,
         );
-
+      case AppRoutes.buy:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => BuySetupPagerContainer(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.send:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => SendPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
       default:
         return MaterialPageRoute<dynamic>(
           builder: (_) => ErrorPage(),

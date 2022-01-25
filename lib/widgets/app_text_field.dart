@@ -12,25 +12,29 @@ class AppFormField extends StatefulWidget {
    */
   InputDecoration? decorator;
   double? height;
+  double? width;
   String label;
-  Widget? icon;
+  Widget? suffixIcon;
   Function()? onTap;
   FormFieldValidator<String>? validator;
   Function(String)? onChanged;
   bool? enabled = true;
   TextInputType? keyboardType;
+  bool isHidden = true;
 
   AppFormField(
       {this.controller,
         this.decorator,
         this.height,
+        this.width,
         required this.label,
-        this.icon,
+        this.suffixIcon,
         this.onTap,
         this.enabled,
         this.validator,
         this.onChanged,
-        this.keyboardType
+        this.keyboardType,
+        required this.isHidden
       });
 
   @override
@@ -54,6 +58,7 @@ class _AppFormFieldState extends State<AppFormField> {
     return Container(
       padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
       height: widget.height ?? null,
+      width: widget.width ?? null,
       decoration: BoxDecoration(
         border: widget.focus == true
             ? Border.all(width: 1.0, color: Pallet.colorBlue)
@@ -73,16 +78,17 @@ class _AppFormFieldState extends State<AppFormField> {
                 keyboardType: widget.keyboardType ?? TextInputType.text,
                 onChanged: widget.onChanged,
                 validator: widget.validator,
-                maxLines: null,
+                maxLines: 1,
                 style: GoogleFonts.manrope(
                   color: Pallet.colorBlue,
                   fontSize: AppFontsStyle.textFontSize14,
                   fontWeight: FontWeight.w500,
                   fontStyle: FontStyle.normal,
                 ),
+                obscureText: widget.isHidden,
                 decoration: widget.decorator ??
                     InputDecoration(
-                      suffixIcon: widget.icon,
+                      suffixIcon: widget.suffixIcon,
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       labelText: widget.label,
                       contentPadding: EdgeInsets.symmetric(vertical: 4.0),
@@ -98,6 +104,7 @@ class _AppFormFieldState extends State<AppFormField> {
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
                     ),
+
               ))),
     );
   }
@@ -120,6 +127,7 @@ class AmountFormField extends StatefulWidget {
   FormFieldValidator<String>? validator;
   Function(String)? onChanged;
   bool? enabled = true;
+  Widget? dropdown;
 
   AmountFormField(
       {this.controller,
@@ -130,7 +138,8 @@ class AmountFormField extends StatefulWidget {
         this.onTap,
         this.enabled,
         this.validator,
-        this.onChanged});
+        this.onChanged,
+        this.dropdown});
 
   @override
   _AmountFormFieldState createState() => _AmountFormFieldState();
@@ -175,6 +184,7 @@ class _AmountFormFieldState extends State<AmountFormField> {
                       onChanged: widget.onChanged,
                       validator: widget.validator,
                       maxLines: null,
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
                       style: GoogleFonts.manrope(
                         color: Pallet.colorBlue,
                         fontSize: AppFontsStyle.textFontSize14,
@@ -201,24 +211,27 @@ class _AmountFormFieldState extends State<AmountFormField> {
                           ),
                     ))),
           ),
-          AppFontsStyle.getAppTextViewBold("DHR",
-              weight: FontWeight.w500,
-              size: AppFontsStyle.textFontSize12),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Pallet.colorBackground,
-                borderRadius: BorderRadius.all(Radius.circular(2)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                child: AppFontsStyle.getAppTextViewBold("Max",
-                    weight: FontWeight.w400,
-                    size: AppFontsStyle.textFontSize10),
-              ),
-            ),
-          )
+          Container(
+            //height: 60,
+            width: 40,
+            child: widget.dropdown,
+          ),
+          SizedBox(width: 16,)
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 8.0, right: 16.0),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       color: Pallet.colorBackground,
+          //       borderRadius: BorderRadius.all(Radius.circular(2)),
+          //     ),
+          //     child: Padding(
+          //       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+          //       child: AppFontsStyle.getAppTextViewBold("Max",
+          //           weight: FontWeight.w400,
+          //           size: AppFontsStyle.textFontSize10),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

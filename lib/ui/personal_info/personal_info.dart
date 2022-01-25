@@ -1,18 +1,51 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
+import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
+import 'package:dhoro_mobile/domain/viewmodel/profile_viewmodel.dart';
+import 'package:dhoro_mobile/main.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PersonalInformationPage extends StatefulWidget {
+final profileProvider =
+ChangeNotifierProvider.autoDispose<ProfileViewModel>((ref) {
+  ref.onDispose(() {});
+  final viewModel = locator.get<ProfileViewModel>();
+  //viewModel.getTransferHistory();
+  viewModel.getUser();
+  viewModel.getAvatar();
+  return viewModel;
+});
+
+final _validProfileProvider = Provider.autoDispose<bool>((ref) {
+  return ref.watch(profileProvider).isValidProfile;
+});
+
+final validProfileProvider = Provider.autoDispose<bool>((ref) {
+  return ref.watch(_validProfileProvider);
+});
+
+final _profileStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(profileProvider).viewState;
+});
+final profileStateProvider = Provider.autoDispose<ViewState>((ref) {
+  return ref.watch(_profileStateProvider);
+});
+
+class PersonalInformationPage extends StatefulHookWidget {
   const PersonalInformationPage({Key? key}) : super(key: key);
 
   @override
@@ -24,10 +57,28 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _imageController = TextEditingController();
-  final isValidLogin = true;
 
+  // @override
+  // void initState() {
+  //   context.read(profileProvider).getUser();
+  //   context.read(profileProvider).getAvatar();
+  //   super.initState();
+  // }
   @override
   Widget build(BuildContext context) {
+    final viewState = useProvider(profileStateProvider);
+    final isValidLogin = useProvider(validProfileProvider);
+    GetUserData? userData;
+    AvatarResponse? avatar = useProvider(profileProvider).avatarResponse;
+    setState(() {
+      userData = useProvider(profileProvider).user;
+      //context.read(profileProvider).getUser();
+    });
+
+    final initials =
+        "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
+    
+
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
       body: SafeArea(
@@ -38,9 +89,30 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  OverViewToolBar(AppString.settings, ""),
+                  OverViewToolBar(
+                    "Personal Information",
+                    avatar?.data ?? "",
+                    trailingIconClicked: () => null,
+                    initials: initials,
+                  ),
                   SizedBox(
-                    height: 24,
+                    height: 8,
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.settings, (route) => false);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: SvgPicture.asset(
+                        "assets/images/back_arrow.svg",
+                        width: 40,
+                        height: 40,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
@@ -54,12 +126,6 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            AppFontsStyle.getAppTextViewBold(
-                              "Personal Information",
-                              weight: FontWeight.w700,
-                              size: AppFontsStyle.textFontSize14,
-                            ),
-                            SizedBox(height: 32.0,),
                             AppFontsStyle.getAppTextViewBold(
                               "Name",
                               weight: FontWeight.w500,
@@ -77,8 +143,16 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               label: AppString.firstName,
                               controller: _firstNameController,
                               onChanged: (value) {
-
+                                context.read(profileProvider).firstName = value.trim();
+                                context.read(profileProvider).validateProfile();
                               },
+                              validator: (value) {
+                                if (context.read(profileProvider).isValidFirstName()) {
+                                  return "Enter a valid first name.";
+                                }
+                                return null;
+                              },
+                              isHidden: false,
                             ),
                             SizedBox(
                               height: 16,
@@ -87,8 +161,16 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               label: AppString.lastName,
                               controller: _lastNameController,
                               onChanged: (value) {
-
+                                context.read(profileProvider).lastName = value.trim();
+                                context.read(profileProvider).validateProfile();
                               },
+                              validator: (value) {
+                                if (context.read(profileProvider).isValidLastName()) {
+                                  return "Enter a valid last name.";
+                                }
+                                return null;
+                              },
+                              isHidden: false,
                             ),
                             SizedBox(height: 32.0,),
                             AppFontsStyle.getAppTextViewBold(
@@ -111,12 +193,39 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                // for (var index = 0;
-                                // index < uploadTwoImages.length;
-                                // index++)
-                                Container(
-                                  child: Image.asset(
-                                    AppImages.icDefaultImage,
+                                viewState == ViewState.Loading ? AppProgressBar()
+                                : Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 24.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                      },
+                                      child: avatar?.data == null
+                                          ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: Center(
+                                          child: AppFontsStyle.getAppTextViewBold(initials,
+                                              color: Pallet.colorWhite, size: 20.0),
+                                        ),
+                                      )
+                                          : ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: Image.network(
+                                          'https://api.dhoro.io${avatar?.data}',
+                                          height: 50,
+                                          width: 50,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return SvgPicture.asset(
+                                              "assets/images/ic_avatar.svg",
+                                              height: 50,
+                                              width: 50,
+                                              fit: BoxFit.contain,
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 24.0,),
@@ -128,9 +237,12 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                                       child: ImageToDisplay(
                                         "",
                                         MediaQuery.of(context).size.width,
-                                        //MediaQuery.of(context).size.width,
                                         onClick: () async {
-
+                                          final result = await Navigator.of(context)
+                                              .pushNamed(AppRoutes.uploadPhotosOptions);
+                                          final path = result.toString();
+                                          if(path == "null") return;
+                                          context.read(profileProvider).addAvatar(context,path);
                                         },
                                       )
                                   ),
@@ -157,16 +269,32 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                               label: "Enter phone number",
                               controller: _phoneController,
                               onChanged: (value) {
-
+                                context.read(profileProvider).phoneNumber = value.trim();
+                                context.read(profileProvider).validateProfile();
                               },
+                              validator: (value) {
+                                if (context.read(profileProvider).isValidPhoneNumber()) {
+                                  return "Enter a valid phone bumber.";
+                                }
+                                return null;
+                              },
+                              isHidden: false,
                             ),
                             SizedBox(height: 32.0,),
-                            AppButton(
+                            viewState == ViewState.Loading
+                                ? Center(child: AppProgressBar())
+                                : AppButton(
                                 onPressed: (){
-                                  Navigator.of(context).pushNamed(AppRoutes.dashboard);
+                                  final viewModel = context.read(profileProvider);
+                                  context.read(profileProvider).updateUserProfile(
+                                    context,
+                                      viewModel.firstName,
+                                      viewModel.lastName,
+                                      viewModel.phoneNumber
+                                  );
                                 },
                                 title: "SAVE CHANGES",
-                                disabledColor: Pallet.colorYellow.withOpacity(0.2),
+                                disabledColor: Pallet.colorBlue.withOpacity(0.2),
                                 titleColor: Pallet.colorWhite,
                                 icon: SvgPicture.asset(
                                   AppImages.icSave,
@@ -299,7 +427,7 @@ class ImageToDisplay extends StatelessWidget {
                 ),
               ),
               placeholder: (context, url) =>
-                  Center(child: CircularProgressIndicator()),
+                  Center(child: AppProgressBar()),
               errorWidget: (context, url, error) => Image.asset(
                 "assets/images/ic_avatar.svg",
                 fit: BoxFit.cover,

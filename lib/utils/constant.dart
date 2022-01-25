@@ -1,6 +1,7 @@
 
 
 import 'package:dhoro_mobile/utils/sharedpreferences.dart';
+import 'package:intl/intl.dart';
 
 /// create global instance of sharedPreferences global service
 final SharedPreference sharedPreference = SharedPreference();
@@ -26,4 +27,17 @@ class Constant {
 extension StingExtentions on String {
  String get svg => 'assets/images/svg/$this.svg';
  String get png => 'assets/images/png/$this.png';
+}
+
+extension DateExtension on String {
+  String? getFormattedDate(_date) {
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse(_date);
+    var outputFormat = DateFormat('dd/MM/yyyy');
+    return outputFormat.format(inputDate);
+  }
+
+  String? toConvertedDate() {
+    return getFormattedDate(this);
+  }
 }

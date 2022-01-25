@@ -1,6 +1,7 @@
 
 import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
+import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/domain/viewmodel/login_viewmodel.dart';
 import 'package:dhoro_mobile/main.dart';
@@ -8,6 +9,7 @@ import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:dhoro_mobile/widgets/app_text_field.dart';
 import 'package:dhoro_mobile/widgets/app_toolbar.dart';
 import 'package:dhoro_mobile/widgets/button.dart';
@@ -22,7 +24,7 @@ final signInProvider =
 ChangeNotifierProvider.autoDispose<LoginViewModel>((ref) {
   ref.onDispose(() {});
   final viewModel = locator.get<LoginViewModel>();
-  viewModel.getLoggedInUser();
+  //viewModel.getUser();
   return viewModel;
 });
 
@@ -50,10 +52,10 @@ final togglePasswordProvider = Provider.autoDispose<bool>((ref) {
   return ref.watch(_togglePasswordProvider);
 });
 
-final _loggedInUserProvider = Provider.autoDispose<LoggedInUser?>((ref) {
+final _loggedInUserProvider = Provider.autoDispose<GetUserData?>((ref) {
   return ref.watch(signInProvider).user;
 });
-final loggedInUserProvider = Provider.autoDispose<LoggedInUser?>((ref) {
+final loggedInUserProvider = Provider.autoDispose<GetUserData?>((ref) {
   return ref.watch(_loggedInUserProvider);
 });
 
@@ -74,7 +76,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final isValidSignIn = useProvider(validSignInProvider);
     final signInViewState = useProvider(signInStateProvider);
-    LoggedInUser? loggedInUser = useProvider(loggedInUserProvider);
+    GetUserData? loggedInUser = useProvider(loggedInUserProvider);
+    final isHidden = useProvider(togglePasswordProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -125,6 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
+                        isHidden: false,
                       ),
                       SizedBox(
                         height: 16,
@@ -143,12 +147,24 @@ class _LoginPageState extends State<LoginPage> {
                           return null;
                         },
                         keyboardType: TextInputType.visiblePassword,
+                        suffixIcon: IconButton(
+                          iconSize: 18,
+                          color: Pallet.colorWhite,
+                          onPressed: () => context.read(signInProvider).togglePassword(),
+                          icon: isHidden
+                              ? const Icon(
+                            Icons.visibility_off,
+                            color: Colors.black,
+                          )
+                              : const Icon(Icons.visibility, color: Colors.black),
+                        ),
+                        isHidden: isHidden,
                       ),
                       SizedBox(
                         height: 24,
                       ),
                       signInViewState == ViewState.Loading
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(child: AppProgressBar())
                           : AppButton(
                           onPressed: (){
                             isValidSignIn
