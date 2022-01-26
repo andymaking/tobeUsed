@@ -5,6 +5,7 @@ import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
+import 'package:dhoro_mobile/widgets/app_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -27,14 +28,22 @@ class WithdrawAccountDetailsPage extends StatefulHookWidget {
 class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage> {
   int selected = 0;
 
+  // @override
+  // void initState() {
+  //   setState(() {
+  //     context.read(sharedProvider.userRequestProvider).getAgents();
+  //   });
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     changeStatusAndNavBarColor(
         Pallet.colorWhite, Pallet.colorWhite, false, false);
-
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     List<AgentsData>? agents = useProvider(sharedProvider.userRequestProvider).agents;
     context.read(sharedProvider.userRequestProvider).agentId = "${agents.first.pk}";
-    ValidateWithdrawResponse? validateWithdrawResponse = useProvider(sharedProvider.userRequestProvider).validateWithdrawResponse;
+    //ValidateWithdrawResponse? validateWithdrawResponse = useProvider(sharedProvider.userRequestProvider).validateWithdrawResponse;
 
     ViewState viewState = useProvider(agentStateProvider);
     print("Showing agents length: ${agents.length}");
@@ -52,6 +61,7 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
     }
 
     return Scaffold(
+      key: _scaffoldKey,
       body: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height,
@@ -71,7 +81,7 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                           ),
                           agents.isNotEmpty == true
                               ? viewState == ViewState.Loading
-                              ? Center(child: CircularProgressIndicator())
+                              ? Center(child: AppProgressBar())
                               : Container(
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -83,6 +93,8 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                                       onTap: () {
                                         setState(() {
                                           selected = index;
+                                          context.read(sharedProvider.userRequestProvider).agentId = agents[index].pk!;
+                                          //context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[index].pk}");
                                         });
                                       },
                                       child: Container(
@@ -177,6 +189,7 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                           context
                               .read(sharedProvider.userRequestProvider).moveToNextPage();
                           setState(() {
+                            print("Showing selected index:: $selected");
                             context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[selected].pk}");
                           });
                         },

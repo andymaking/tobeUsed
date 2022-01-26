@@ -33,6 +33,7 @@ final overviewProvider =
   ref.onDispose(() {});
   final viewModel = locator.get<OverviewViewModel>();
   viewModel.getUser();
+  viewModel.getAirdropStatus();
   viewModel.getRate();
   viewModel.getAirdropInfo();
   viewModel.walletBalance();
@@ -82,6 +83,7 @@ class OverviewPage extends StatefulHookWidget {
 class _OverviewPageState extends State<OverviewPage> {
   bool isLock = false;
   bool claimedAirdrop = false;
+  bool airdropStatus = false;
 
   TransferHistoryDataResponse? transferHistoryDataResponse;
   int page = 1;
@@ -90,11 +92,13 @@ class _OverviewPageState extends State<OverviewPage> {
   @override
   void initState() {
     setState(() {
+      context.read(overviewProvider).getAirdropInfo();
       context.read(overviewProvider).getRate();
       context.read(overviewProvider).getWalletPercentage();
       context.read(overviewProvider).walletBalance();
       context.read(overviewProvider).getTransferHistory();
       context.read(overviewProvider).getUser();
+      context.read(overviewProvider).getAirdropStatus();
     });
     super.initState();
   }
@@ -111,7 +115,8 @@ class _OverviewPageState extends State<OverviewPage> {
     GetUserData? userData = useProvider(overviewProvider).user;
     RateData? rateData = useProvider(overviewProvider).rateData;
     AirdropInfoData? airdropInfoData = useProvider(overviewProvider).airdropInfoData;
-    claimedAirdrop = airdropInfoData?.claimed ?? true;
+    AirdropStatusData? airdropStatusData = useProvider(overviewProvider).airdropStatusData;
+
     print("Showing airdropInfoData : ${airdropInfoData?.amount}");
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
@@ -130,7 +135,10 @@ class _OverviewPageState extends State<OverviewPage> {
     //var priceInDollar = double.parse("${rateData?.priceInDollar}");
 
     setState(() {
-      //refreshPage();
+      print("airdropStatus :: $airdropStatus");
+      claimedAirdrop = airdropInfoData?.claimed ?? true;
+      airdropStatus = airdropStatusData?.status ?? true;
+
     });
 
     return Scaffold(
@@ -142,6 +150,7 @@ class _OverviewPageState extends State<OverviewPage> {
               Duration(seconds: 1),
                   () {
                 setState(() {
+                  context.read(overviewProvider).getAirdropInfo();
                   context.read(overviewProvider).getRate();
                   context.read(overviewProvider).getUser();
                   context.read(overviewProvider).getWalletPercentage();
@@ -165,7 +174,7 @@ class _OverviewPageState extends State<OverviewPage> {
                     initials: initials,
                   ),
                   Visibility(
-                    visible: claimedAirdrop == false,
+                    visible: claimedAirdrop == false && airdropStatus == true,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 24.0, left: 24.0, right: 24.0),
                       child: Container(
@@ -337,19 +346,21 @@ class _OverviewPageState extends State<OverviewPage> {
                               children: [
                                 CupertinoButton(
                                   onPressed: (){
-                                    Navigator.pushNamed(context, AppRoutes.send);
+                                    !isLock ? Navigator.pushNamed(context, AppRoutes.send) : null;
                                   },
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       SvgPicture.asset(
-                                          AppImages.iconGreenArrowUp),
+                                          AppImages.iconGreenArrowUp,
+                                      color: isLock ? Pallet.colorGreen.withOpacity(0.5) : null),
                                       SizedBox(
                                         height: 8,
                                       ),
                                       AppFontsStyle.getAppTextViewBold(
                                         "Send DHR",
+                                        color: isLock ? Pallet.colorBlue.withOpacity(0.4) : null,
                                         weight: FontWeight.w500,
                                         size: AppFontsStyle.textFontSize10,
                                       ),

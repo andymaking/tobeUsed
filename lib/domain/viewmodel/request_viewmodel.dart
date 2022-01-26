@@ -57,9 +57,12 @@ class RequestViewModel extends BaseViewModel {
   bool isBuyAmount = true;
   String amount = "";
   String buyAmount = "";
+  String usdConvert = "";
+  String ngnConvert = "";
   String agentId = "";
   String buyAgentId = "";
   String paymentId = "";
+  String defaultPaymentId = "";
   String buyPaymentId = "";
   String currencyType = "";
   String buyCurrencyType = "";
@@ -89,6 +92,8 @@ class RequestViewModel extends BaseViewModel {
     buyCurrencyType = "";
     paymentId = "";
     buyPaymentId = "";
+    defaultPaymentId = "";
+    ngnConvert = "";
     isWithdrawAmount = false;
     isBuyAmount = false;
     currentPage = 0;
@@ -340,11 +345,11 @@ class RequestViewModel extends BaseViewModel {
   Future<WithdrawData?> withdrawDhoro(BuildContext context) async {
     try {
       var value = amount;
-      var agent = agentId;
+      var agent = anAgents?.pk;
       var currency = currencyType;
-      var proofOfPayment = paymentId.isEmpty ? paymentProcessor.first.pk : paymentId;
+      var proofOfPayment = paymentId.isEmpty ? defaultPaymentId : paymentId;
       setViewState(ViewState.Loading);
-      var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment!, agent);
+      var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment, agent!);
       setViewState(ViewState.Success);
       getRequest();
       walletBalance();
@@ -434,20 +439,14 @@ class RequestViewModel extends BaseViewModel {
   Future<WithdrawData?> buyDhoro(BuildContext context) async {
     try {
       var value = buyAmount;
-      var agent = buyAgentId;
+      var agent = anAgents?.pk;
       var currency = buyCurrencyType;
-      var proofOfPayment = buyPaymentId.isEmpty ? paymentProcessor.first.pk : buyPaymentId;
+      var proofOfPayment = buyPaymentId.isEmpty ? defaultPaymentId : buyPaymentId;
       print("Showing posted items:: value: $value, agent: $agent, currency: $currency, proofOfPayment: $proofOfPayment");
       setViewState(ViewState.Loading);
       var response = await userRepository.buyDhoro("$value", "$agent", "$proofOfPayment", "$currency");
       purchase = response;
       print("Showing buyDhoro response::: $response");
-
-      //paymentId ... cf1d0265-ac6d-43bb-93de-62d3276e9cf9
-      //agent: d400cecc-6b4e-4d6d-a0ed-946ca88ab692,
-      //proof_of_payment: cf1d0265-ac6d-43bb-93de-62d3276e9cf9
-      //currency_type: USD
-      //value: 800
 
       setViewState(ViewState.Success);
       getRequest();

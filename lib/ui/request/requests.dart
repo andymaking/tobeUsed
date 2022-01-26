@@ -62,7 +62,9 @@ class _RequestsPageState extends State<RequestsPage> {
 
   @override
   void initState() {
-    context.read(requestProvider).getRequest();
+    Future.delayed(Duration(milliseconds: 100), () {
+      context.read(requestProvider).getRequest();
+    });
     super.initState();
   }
 
@@ -78,7 +80,9 @@ class _RequestsPageState extends State<RequestsPage> {
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
 
     setState(() {
-      page = context.read(requestProvider).currentPaginationPage ?? 1;
+      Future.delayed(Duration(milliseconds: 100), () {
+        page = context.read(requestProvider).currentPaginationPage ?? 1;
+      });
     });
 
     return Scaffold(

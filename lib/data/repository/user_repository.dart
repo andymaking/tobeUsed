@@ -60,5 +60,6 @@ abstract class UserRepository {
   Future<AvatarResponse?> getAvatar();
   Future<ValidateBuyResponse?> validateBuyDhoro(String amount, String currencyType);
   Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType);
+  Future<AirdropStatusData?> getAirdropStatus();
 
 }

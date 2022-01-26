@@ -38,6 +38,7 @@ class OverviewViewModel extends BaseViewModel {
   ClaimAirdropResponse? messageResponse;
   AirdropInfoData? airdropInfoData;
   AvatarResponse? avatarResponse;
+  AirdropStatusData? airdropStatusData;
   bool? walletStatus;
   //WalletPercentage? walletPercentage;
   String? walletPercentage;
@@ -346,6 +347,20 @@ class OverviewViewModel extends BaseViewModel {
       var response =
       await userRepository.getAvatar();
       avatarResponse = response;
+      setViewState(ViewState.Success);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+    notifyListeners();
+  }
+
+  Future<AirdropStatusData?> getAirdropStatus() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.getAirdropStatus();
+      airdropStatusData = response;
       setViewState(ViewState.Success);
     } catch (error) {
       setViewState(ViewState.Error);

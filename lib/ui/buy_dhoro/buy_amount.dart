@@ -100,7 +100,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                     validateBuyResponse?.data == true ? Container()
                     : Row(
                       children: [
-                        AppFontsStyle.getAppTextViewBold("${validateBuyResponse?.message}",
+                        AppFontsStyle.getAppTextViewBold("${validateBuyResponse?.message ?? ""}",
                             weight: FontWeight.w500,
                             size: AppFontsStyle.textFontSize12),
                       ],
@@ -205,6 +205,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                           setState(() {
                             context.read(sharedProvider.userBuyProvider).buyCurrencyType = selectedOption;
                             context.read(sharedProvider.userBuyProvider).buyAmount = "${_amountController.text.trim()}";
+                            context.read(sharedProvider.userBuyProvider).ngnConvert = "${convert?.ngn ?? 0.0}";
                           });
                         },
                         title: "PROCEED",
