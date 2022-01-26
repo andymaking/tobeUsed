@@ -32,7 +32,7 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
     context.read(sharedProvider.userBuyProvider).buyPaymentId = "${userTransactions.first.pk}";
     GetUserData? userData = useProvider(sharedProvider.userBuyProvider).user;
     AgentsData? agent = useProvider(sharedProvider.userBuyProvider).anAgents;
-
+    context.read(sharedProvider.userBuyProvider).defaultPaymentId = "${userTransactions.first.pk}";
     PushData? pushData;
 
 

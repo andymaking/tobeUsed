@@ -95,8 +95,9 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                                     setState(() {
                                       selected = index;
                                       context.read(sharedProvider.userBuyProvider).buyAgentId = agents[index].pk!;
-                                      context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[index].pk}");
+                                      //context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[index].pk}");
                                       print("Showing agent selected ID:: ${agents[index].pk!}");
+                                      print("Showing selected index:: $selected");
                                     });
                                   },
                                   child: Container(
@@ -188,7 +189,8 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                             context
                                 .read(sharedProvider.userBuyProvider).moveBuyToNextPage();
                             setState(() {
-                              //context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[selected].pk}");
+                              print("Showing selected index:: $selected");
+                              context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[selected].pk}");
                             });
                           },
                           child: Container(

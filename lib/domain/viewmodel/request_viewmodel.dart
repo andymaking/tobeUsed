@@ -62,6 +62,7 @@ class RequestViewModel extends BaseViewModel {
   String agentId = "";
   String buyAgentId = "";
   String paymentId = "";
+  String defaultPaymentId = "";
   String buyPaymentId = "";
   String currencyType = "";
   String buyCurrencyType = "";
@@ -91,6 +92,7 @@ class RequestViewModel extends BaseViewModel {
     buyCurrencyType = "";
     paymentId = "";
     buyPaymentId = "";
+    defaultPaymentId = "";
     ngnConvert = "";
     isWithdrawAmount = false;
     isBuyAmount = false;
@@ -343,11 +345,11 @@ class RequestViewModel extends BaseViewModel {
   Future<WithdrawData?> withdrawDhoro(BuildContext context) async {
     try {
       var value = amount;
-      var agent = agentId;
+      var agent = anAgents?.pk;
       var currency = currencyType;
-      var proofOfPayment = anAgents?.pk;
+      var proofOfPayment = paymentId.isEmpty ? defaultPaymentId : paymentId;
       setViewState(ViewState.Loading);
-      var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment!, agent);
+      var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment, agent!);
       setViewState(ViewState.Success);
       getRequest();
       walletBalance();
@@ -437,9 +439,9 @@ class RequestViewModel extends BaseViewModel {
   Future<WithdrawData?> buyDhoro(BuildContext context) async {
     try {
       var value = buyAmount;
-      var agent = buyAgentId;
+      var agent = anAgents?.pk;
       var currency = buyCurrencyType;
-      var proofOfPayment = anAgents?.pk;
+      var proofOfPayment = buyPaymentId.isEmpty ? defaultPaymentId : buyPaymentId;
       print("Showing posted items:: value: $value, agent: $agent, currency: $currency, proofOfPayment: $proofOfPayment");
       setViewState(ViewState.Loading);
       var response = await userRepository.buyDhoro("$value", "$agent", "$proofOfPayment", "$currency");

@@ -46,7 +46,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
     List<PaymentProcessorData>? userTransactions =
         useProvider(sharedProvider.userRequestProvider).paymentProcessor;
     PushData? pushData;
-
+    context.read(sharedProvider.userRequestProvider).defaultPaymentId = "${userTransactions.first.pk}";
 
     String paymentId = "";
     String userName = "";
@@ -270,8 +270,23 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                           ),
                           Spacer(),
                           AppButton(
-                              onPressed: (){
-                                context.read(sharedProvider.userRequestProvider).withdrawDhoro(context);
+                              onPressed: () async{
+                                // var amount = await context.read(sharedProvider.userRequestProvider).amount;
+                                // var currency = await context.read(sharedProvider.userRequestProvider).currencyType;
+                                // var agentId = await context.read(sharedProvider.userRequestProvider).agentId;
+                                //
+                                // print("amount : $amount");
+                                // print("currency : $currency");
+                                // print("agentId : $agentId");
+                                // print("firstPayId : $firstPayId");
+
+
+                                context.read(sharedProvider.userRequestProvider).withdrawDhoro(context,
+                                  //   "${context.read(sharedProvider.userRequestProvider).amount}",
+                                  //   "${context.read(sharedProvider.userRequestProvider).currencyType}",
+                                  //   "$firstPayId",
+                                  // "${context.read(sharedProvider.userRequestProvider).agentId}",
+                                );
                               },
                               title: "COMPLETE REQUEST",
                               disabledColor: Pallet.colorYellow.withOpacity(0.2),
