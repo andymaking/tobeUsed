@@ -68,6 +68,7 @@ class _RequestsPageState extends State<RequestsPage> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<ScaffoldState>? _scaffoldKey;
     print("Request view");
     ViewState viewState = useProvider(requestStateProvider);
     List<RequestData>? requestList =
@@ -82,563 +83,578 @@ class _RequestsPageState extends State<RequestsPage> {
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height,
-              child: ListView(children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    OverViewToolBar(
-                      AppString.requests,
-                      userData?.avatar.toString() ?? "",
-                      trailingIconClicked: () => null,
-                      initials: initials,
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 23),
-                        height: 220,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            color: const Color(0xfffffffff)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 18,
-                                          ),
-                                          AppFontsStyle.getAppTextViewBold(
-                                            "Buy Request",
-                                            color: Pallet.colorBlue,
-                                            weight: FontWeight.w600,
-                                            size: AppFontsStyle.textFontSize10,
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 22,
-                                      ),
-                                      AppFontsStyle.getAppTextViewBold(
-                                        "Buy Dhoro tokens with ease and join the Dhoro community.",
-                                        weight: FontWeight.w700,
-                                        size: AppFontsStyle.textFontSize16,
-                                      ),
-                                      SizedBox(
-                                        height: 18,
-                                      ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          Navigator.of(context).pushNamed(AppRoutes.buy);
-                                        },
-                                        child: Container(
-                                            height: 50,
-                                            width: 137,
-                                            child: Center(
-                                              child: AppFontsStyle.getAppTextViewBold(
-                                                  'BUY DHORO',
-                                                  size: AppFontsStyle.textFontSize12,
-                                                  color: Pallet.colorWhite,
-                                                  textAlign: TextAlign.center),
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(2)),
-                                              color: Pallet.colorBlue,
-                                            )
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(AppImages.icBuyer),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 23),
-                        height: 220,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(2)),
-                            color: const Color(0xfffffffff)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 18,
-                                          ),
-                                          AppFontsStyle.getAppTextViewBold(
-                                            "Sell Request",
-                                            color: Pallet.colorBlue,
-                                            weight: FontWeight.w600,
-                                            size: AppFontsStyle.textFontSize10,
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 22,
-                                      ),
-                                      AppFontsStyle.getAppTextViewBold(
-                                        "Seamlessly convert your Dhoro tokens to fiat at current rates.",
-                                        weight: FontWeight.w700,
-                                        size: AppFontsStyle.textFontSize16,
-                                      ),
-                                      SizedBox(
-                                        height: 18,
-                                      ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          Navigator.of(context).pushNamed(AppRoutes.withdraw);
-                                        },
-                                        child: Container(
-                                            height: 50,
-                                            width: 137,
-                                            child: Center(
-                                              child: AppFontsStyle.getAppTextViewBold(
-                                                  'SELL DHORO',
-                                                  size: AppFontsStyle.textFontSize12,
-                                                  color: Pallet.colorBlue,
-                                                  textAlign: TextAlign.center),
-                                            ),
-                                            decoration: BoxDecoration(
-                                              border:  Border.all(width: 1.0, color: Pallet.colorBlue),
-                                              borderRadius: BorderRadius.all(Radius.circular(2)),)
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(AppImages.icWithdraw),
-                                  ],
-                                ),
-                              ],
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: AppFontsStyle.getAppTextViewBold(
+      key: _scaffoldKey,
+      body: RefreshIndicator(
+        color: Pallet.colorBlue,
+        onRefresh: () {
+          return Future.delayed(
+              Duration(seconds: 1),
+              () {
+                setState(() {
+                  context.read(requestProvider).getUser();
+                  context.read(requestProvider).getRequest();
+                });
+          });
+        },
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height,
+                child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      OverViewToolBar(
                         AppString.requests,
-                        weight: FontWeight.w700,
-                        size: AppFontsStyle.textFontSize16,
+                        userData?.avatar.toString() ?? "",
+                        trailingIconClicked: () => null,
+                        initials: initials,
                       ),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(AppImages.icFilter),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            AppFontsStyle.getAppTextViewBold(
-                              "Latest 5 from a total of ${requestList.length} transactions",
-                              weight: FontWeight.w500,
-                              size: AppFontsStyle.textFontSize10,
-                            ),
-                            Spacer(),
-                            GestureDetector(
-                                onTap:() {
-                                  setState(() {
-                                    print("view clicked");
-                                    focus = !focus;
-                                    focusPopInput = false;
-                                    focusPopStatus = false;
-                                    focusPopType = false;
-                                    _inputController.text = "";
-                                  });
-                                },
-                                child: SvgPicture.asset(AppImages.iconMenu)),
-                          ],
-                        )
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    TransactionHeader(),
-                    requestList.isNotEmpty == true
-                        ? viewState == ViewState.Loading
-                        ? Padding(
-                          padding: const EdgeInsets.only(top: 40.0),
-                          child: Center(child: AppProgressBar()),
-                        )
-                        : Padding(
-                      padding:
-                      const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(2)),
-                            color: const Color(0xfffffffff)),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24.0, vertical: 23),
+                          height: 220,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              color: const Color(0xfffffffff)),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: List.generate(requestList.length, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 2.0),
-                                child: Container(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 18,
+                                            ),
+                                            AppFontsStyle.getAppTextViewBold(
+                                              "Buy Request",
+                                              color: Pallet.colorBlue,
+                                              weight: FontWeight.w600,
+                                              size: AppFontsStyle.textFontSize10,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 22,
+                                        ),
+                                        AppFontsStyle.getAppTextViewBold(
+                                          "Buy Dhoro tokens with ease and join the Dhoro community.",
+                                          weight: FontWeight.w700,
+                                          size: AppFontsStyle.textFontSize16,
+                                        ),
+                                        SizedBox(
+                                          height: 18,
+                                        ),
+                                        GestureDetector(
+                                          onTap: (){
+                                            Navigator.of(context).pushNamed(AppRoutes.buy);
+                                          },
+                                          child: Container(
+                                              height: 50,
+                                              width: 137,
+                                              child: Center(
+                                                child: AppFontsStyle.getAppTextViewBold(
+                                                    'BUY DHORO',
+                                                    size: AppFontsStyle.textFontSize12,
+                                                    color: Pallet.colorWhite,
+                                                    textAlign: TextAlign.center),
+                                              ),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(Radius.circular(2)),
+                                                color: Pallet.colorBlue,
+                                              )
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      TransactionList(
-                                              (){
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => RequestTransactionsDetailsPage(data : requestList[index]),
-                                                  ),
-                                                );
-                                              },
-                                          requestList[index]
-                                              .pk ?? "",
-                                          requestList[index]
-                                              .status ?? "",
-                                          requestList[index]
-                                              .amount
-                                              .toString(),
-                                          requestList[index].type.toString()
-                                      ),
-                                      Divider(
-                                        height: 1,
-                                        color: Pallet.colorBlue.withOpacity(0.3),
-                                      )
+                                      SvgPicture.asset(AppImages.icBuyer),
                                     ],
                                   ),
-                                ),
-                              );
-                            }),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    )
-                        : buildEmptyView(),
-                    viewState == ViewState.Loading
-                        ? Container()
-                    : context.read(requestProvider).lastPage != null &&
-                        context.read(requestProvider).lastPage! > 1
-                    ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              print("Pressed one");
-                              context.read(requestProvider).getRequestWithPaging(1);
-                            });
-                          },
-                          child: Container(
-                            height: 40,
-                            padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(2),
-                              color: Pallet.colorWhite,
-                            ),
-                            child: Center(
-                              child: AppFontsStyle.getAppTextViewBold("First",
-                                  size: AppFontsStyle.textFontSize16,
-                                  color: Pallet.colorBlue),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              page -= 1;
-                              print("Pressed:: $page");
-                              context.read(requestProvider).getRequestWithPaging(page);
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Center(
-                              child: SvgPicture.asset("assets/images/back_arrow.svg",
-                                width: 40, height: 40,),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: CupertinoButton(
-                              padding: EdgeInsets.zero,
-                              child: Container(
-                                height: 40,
-                                padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(2),
-                                  color: Pallet.colorWhite,
-                                ),
-                                child: Center(
-                                  child: AppFontsStyle.getAppTextViewBold("${context.read(requestProvider).currentPaginationPage} of ${context.read(requestProvider).lastPage}",
-                                      size: AppFontsStyle.textFontSize12,
-                                      color: Pallet.colorBlue),
-                                ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24.0, vertical: 23),
+                          height: 220,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(2)),
+                              color: const Color(0xfffffffff)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 18,
+                                            ),
+                                            AppFontsStyle.getAppTextViewBold(
+                                              "Sell Request",
+                                              color: Pallet.colorBlue,
+                                              weight: FontWeight.w600,
+                                              size: AppFontsStyle.textFontSize10,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 22,
+                                        ),
+                                        AppFontsStyle.getAppTextViewBold(
+                                          "Seamlessly convert your Dhoro tokens to fiat at current rates.",
+                                          weight: FontWeight.w700,
+                                          size: AppFontsStyle.textFontSize16,
+                                        ),
+                                        SizedBox(
+                                          height: 18,
+                                        ),
+                                        GestureDetector(
+                                          onTap: (){
+                                            Navigator.of(context).pushNamed(AppRoutes.withdraw);
+                                          },
+                                          child: Container(
+                                              height: 50,
+                                              width: 137,
+                                              child: Center(
+                                                child: AppFontsStyle.getAppTextViewBold(
+                                                    'SELL DHORO',
+                                                    size: AppFontsStyle.textFontSize12,
+                                                    color: Pallet.colorBlue,
+                                                    textAlign: TextAlign.center),
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border:  Border.all(width: 1.0, color: Pallet.colorBlue),
+                                                borderRadius: BorderRadius.all(Radius.circular(2)),)
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(AppImages.icWithdraw),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              onPressed: (){
-                                setState(() {
-                                  page += 1;
-                                  print("Pressed:: $page");
-                                  context.read(requestProvider).getRequestWithPaging(page);
-                                });
+
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: AppFontsStyle.getAppTextViewBold(
+                          AppString.requests,
+                          weight: FontWeight.w700,
+                          size: AppFontsStyle.textFontSize16,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(AppImages.icFilter),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              AppFontsStyle.getAppTextViewBold(
+                                "Latest 5 from a total of ${requestList.length} transactions",
+                                weight: FontWeight.w500,
+                                size: AppFontsStyle.textFontSize10,
+                              ),
+                              Spacer(),
+                              GestureDetector(
+                                  onTap:() {
+                                    setState(() {
+                                      print("view clicked");
+                                      focus = !focus;
+                                      focusPopInput = false;
+                                      focusPopStatus = false;
+                                      focusPopType = false;
+                                      _inputController.text = "";
+                                    });
+                                  },
+                                  child: SvgPicture.asset(AppImages.iconMenu)),
+                            ],
+                          )
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      TransactionHeader(),
+                      requestList.isNotEmpty == true
+                          ? viewState == ViewState.Loading
+                          ? Padding(
+                            padding: const EdgeInsets.only(top: 40.0),
+                            child: Center(child: AppProgressBar()),
+                          )
+                          : Padding(
+                        padding:
+                        const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(2)),
+                              color: const Color(0xfffffffff)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: List.generate(requestList.length, (index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 2.0),
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        TransactionList(
+                                                (){
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => RequestTransactionsDetailsPage(data : requestList[index]),
+                                                    ),
+                                                  );
+                                                },
+                                            requestList[index]
+                                                .pk ?? "",
+                                            requestList[index]
+                                                .status ?? "",
+                                            requestList[index]
+                                                .amount
+                                                .toString(),
+                                            requestList[index].type.toString()
+                                        ),
+                                        Divider(
+                                          height: 1,
+                                          color: Pallet.colorBlue.withOpacity(0.3),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
                               }),
-
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              page += 1;
-                              print("Pressed:: $page");
-                              context
-                                  .read(requestProvider)
-                                  .getRequestWithPaging(page);
-                            });
-                          },
-                          child: SvgPicture.asset(
-                            "assets/images/arrow_forward.svg",
-                            width: 40,
-                            height: 40,
-                          ),
-                        ),
-                        SizedBox(width: 8,),
-                        GestureDetector(
-                          onTap: () async {
-                            var last = await sharedPreference.getRequestLastPage();
-                            page = last;
-                            setState(() {
-
-                              print("Pressed:: $last");
-                              context.read(requestProvider).getRequestWithPaging(last);
-                            });
-                          },
-                          child: Container(
-                            height: 40,
-                            padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(2),
-                              color: Pallet.colorWhite,
-                            ),
-                            child: Center(
-                              child: AppFontsStyle.getAppTextViewBold("Last",
-                                  size: AppFontsStyle.textFontSize16,
-                                  color: Pallet.colorBlue),
                             ),
                           ),
                         ),
-                      ],
-                    )
-                    : Container(),
-                    SizedBox(height: 16,),
-                  ],
-                ),
-              ]),
-            ),
-
-            Visibility(
-              visible: focus == true,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 110.0, right: 24),
-                child: Align(
-                    alignment: Alignment.topRight,
-                    child: popView(
-                          (){
-                        setState(() {
-                          print("pressed status");
-                          focus = false;
-                          focusPopInput = false;
-                          focusPopType = false;
-                          selectedOption = "status";
-                          focusPopStatus = !focusPopStatus;
-                        });
-                      },
-                          (){
-                        setState(() {
-                          print("pressed Type");
-                          focus = false;
-                          focusPopStatus = false;
-                          focusPopInput = false;
-                          selectedOption = "type";
-                          focusPopType = !focusPopType;
-                        });
-                      },
-                          () {
-                        setState(() {
-                          print("pressed WID");
-                          focus = false;
-                          focusPopStatus = false;
-                          focusPopType = false;
-                          focusPopInput = !focusPopInput;
-                          selectedOption = "wid";
-                        });
-                      },
-                          () {
-                        setState(() {
-                          print("pressed Total");
-                          focus = false;
-                          focusPopStatus = false;
-                          focusPopType = false;
-                          focusPopInput = !focusPopInput;
-                          selectedOption = "total";
-                        });
-                      },
-                    )),
-              ),
-            ),
-            Visibility(
-              visible: focusPopStatus == true,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 210.0, right: 24),
-                child: Align(
-                    alignment: Alignment.topRight,
-                    child: statusPopView(
-                          () {
-                        setState(() {
-                          print("pressed PENDING");
-                          selectedStatus = "PENDING";
-                          focusPopStatus = false;
-                          context.read(requestProvider).getRequestQuery("$selectedOption=$selectedStatus");
-                        });
-                      },
-                          () {
-                        setState(() {
-                          print("pressed APPROVED");
-                          selectedStatus = "APPROVED";
-                          focusPopStatus = false;
-                          context.read(requestProvider).getRequestQuery("$selectedOption=$selectedStatus");
-                        });
-                        },
-                              () {
-                            setState(() {
-                              print("pressed DECLINED");
-                              selectedStatus = "DECLINED";
-                              focusPopStatus = false;
-                              context.read(requestProvider).getRequestQuery("$selectedOption=$selectedStatus");
-                            });
+                      )
+                          : buildEmptyView(),
+                      viewState == ViewState.Loading
+                          ? Container()
+                      : context.read(requestProvider).lastPage != null &&
+                          context.read(requestProvider).lastPage! > 1
+                      ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                print("Pressed one");
+                                context.read(requestProvider).getRequestWithPaging(1);
+                              });
                             },
-                    )
+                            child: Container(
+                              height: 40,
+                              padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(2),
+                                color: Pallet.colorWhite,
+                              ),
+                              child: Center(
+                                child: AppFontsStyle.getAppTextViewBold("First",
+                                    size: AppFontsStyle.textFontSize16,
+                                    color: Pallet.colorBlue),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                page -= 1;
+                                print("Pressed:: $page");
+                                context.read(requestProvider).getRequestWithPaging(page);
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Center(
+                                child: SvgPicture.asset("assets/images/back_arrow.svg",
+                                  width: 40, height: 40,),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0, right: 8),
+                            child: CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                child: Container(
+                                  height: 40,
+                                  padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                    color: Pallet.colorWhite,
+                                  ),
+                                  child: Center(
+                                    child: AppFontsStyle.getAppTextViewBold("${context.read(requestProvider).currentPaginationPage} of ${context.read(requestProvider).lastPage}",
+                                        size: AppFontsStyle.textFontSize12,
+                                        color: Pallet.colorBlue),
+                                  ),
+                                ),
+                                onPressed: (){
+                                  setState(() {
+                                    page += 1;
+                                    print("Pressed:: $page");
+                                    context.read(requestProvider).getRequestWithPaging(page);
+                                  });
+                                }),
+
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                page += 1;
+                                print("Pressed:: $page");
+                                context
+                                    .read(requestProvider)
+                                    .getRequestWithPaging(page);
+                              });
+                            },
+                            child: SvgPicture.asset(
+                              "assets/images/arrow_forward.svg",
+                              width: 40,
+                              height: 40,
+                            ),
+                          ),
+                          SizedBox(width: 8,),
+                          GestureDetector(
+                            onTap: () async {
+                              var last = await sharedPreference.getRequestLastPage();
+                              page = last;
+                              setState(() {
+                                print("Pressed:: $last");
+                                context.read(requestProvider).getRequestWithPaging(last);
+                              });
+                            },
+                            child: Container(
+                              height: 40,
+                              padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(2),
+                                color: Pallet.colorWhite,
+                              ),
+                              child: Center(
+                                child: AppFontsStyle.getAppTextViewBold("Last",
+                                    size: AppFontsStyle.textFontSize16,
+                                    color: Pallet.colorBlue),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                      : Container(),
+                      SizedBox(height: 16,),
+                    ],
+                  ),
+                ]),
+              ),
+
+              Visibility(
+                visible: focus == true,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 110.0, right: 24),
+                  child: Align(
+                      alignment: Alignment.topRight,
+                      child: popView(
+                            (){
+                          setState(() {
+                            print("pressed status");
+                            focus = false;
+                            focusPopInput = false;
+                            focusPopType = false;
+                            selectedOption = "status";
+                            focusPopStatus = !focusPopStatus;
+                          });
+                        },
+                            (){
+                          setState(() {
+                            print("pressed Type");
+                            focus = false;
+                            focusPopStatus = false;
+                            focusPopInput = false;
+                            selectedOption = "type";
+                            focusPopType = !focusPopType;
+                          });
+                        },
+                            () {
+                          setState(() {
+                            print("pressed WID");
+                            focus = false;
+                            focusPopStatus = false;
+                            focusPopType = false;
+                            focusPopInput = !focusPopInput;
+                            selectedOption = "wid";
+                          });
+                        },
+                            () {
+                          setState(() {
+                            print("pressed Total");
+                            focus = false;
+                            focusPopStatus = false;
+                            focusPopType = false;
+                            focusPopInput = !focusPopInput;
+                            selectedOption = "total";
+                          });
+                        },
+                      )),
                 ),
               ),
-            ),
-            Visibility(
-              visible: focusPopType == true,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 210.0, right: 24),
-                child: Align(
-                    alignment: Alignment.topRight,
-                    child: typePopView(
-                          () {
-                        setState(() {
-                          print("pressed WITHDRAW");
-                          selectedType = "WITHDRAW";
-                          focusPopType = false;
-                          context.read(requestProvider).getRequestQuery("$selectedOption=$selectedType");
-                        });
-                      },
-                          () {
-                        setState(() {
-                          print("pressed PURCHASE");
-                          selectedType = "PURCHASE";
-                          focusPopType = false;
-                          context.read(requestProvider).getRequestQuery("$selectedOption=$selectedType");
-                        });
-                      },
-                    )
-                ),
-              ),
-            ),
-            Visibility(
-                visible: focusPopInput,
+              Visibility(
+                visible: focusPopStatus == true,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 210.0, right: 24),
                   child: Align(
-                    alignment: Alignment.centerRight,
-                    child: inputPopView(
-                        selectedOption.contains("wid") ? "Enter Wallet ID"
-                            : "Enter Total",
-                            (value){
+                      alignment: Alignment.topRight,
+                      child: statusPopView(
+                            () {
                           setState(() {
-                            inputValue = value.trim();
-                            context.read(requestProvider).getRequestQuery("$selectedOption=$inputValue");
+                            print("pressed PENDING");
+                            selectedStatus = "PENDING";
+                            focusPopStatus = false;
+                            context.read(requestProvider).getRequestQuery("$selectedOption=$selectedStatus");
                           });
                         },
-                            (value) {
-                          if (inputValue.isEmpty) {
-                            return "Field can not be empty";
-                          }
-                          return null;
-                        },
-                        _inputController,
-                        selectedOption.contains("total")
-                            ? TextInputType.numberWithOptions(decimal: true)
-                            : TextInputType.text),
+                            () {
+                          setState(() {
+                            print("pressed APPROVED");
+                            selectedStatus = "APPROVED";
+                            focusPopStatus = false;
+                            context.read(requestProvider).getRequestQuery("$selectedOption=$selectedStatus");
+                          });
+                          },
+                                () {
+                              setState(() {
+                                print("pressed DECLINED");
+                                selectedStatus = "DECLINED";
+                                focusPopStatus = false;
+                                context.read(requestProvider).getRequestQuery("$selectedOption=$selectedStatus");
+                              });
+                              },
+                      )
                   ),
-                )),
-          ],
+                ),
+              ),
+              Visibility(
+                visible: focusPopType == true,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 210.0, right: 24),
+                  child: Align(
+                      alignment: Alignment.topRight,
+                      child: typePopView(
+                            () {
+                          setState(() {
+                            print("pressed WITHDRAW");
+                            selectedType = "WITHDRAW";
+                            focusPopType = false;
+                            context.read(requestProvider).getRequestQuery("$selectedOption=$selectedType");
+                          });
+                        },
+                            () {
+                          setState(() {
+                            print("pressed PURCHASE");
+                            selectedType = "PURCHASE";
+                            focusPopType = false;
+                            context.read(requestProvider).getRequestQuery("$selectedOption=$selectedType");
+                          });
+                        },
+                      )
+                  ),
+                ),
+              ),
+              Visibility(
+                  visible: focusPopInput,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 210.0, right: 24),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: inputPopView(
+                          selectedOption.contains("wid") ? "Enter Wallet ID"
+                              : "Enter Total",
+                              (value){
+                            setState(() {
+                              inputValue = value.trim();
+                              context.read(requestProvider).getRequestQuery("$selectedOption=$inputValue");
+                            });
+                          },
+                              (value) {
+                            if (inputValue.isEmpty) {
+                              return "Field can not be empty";
+                            }
+                            return null;
+                          },
+                          _inputController,
+                          selectedOption.contains("total")
+                              ? TextInputType.numberWithOptions(decimal: true)
+                              : TextInputType.text),
+                    ),
+                  )),
+            ],
 
+          ),
         ),
       ),
     );
