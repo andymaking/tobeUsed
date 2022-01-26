@@ -577,6 +577,21 @@ class UserRemoteImpl extends UserRemote {
     }
   }
 
+  @override
+  Future<AirdropStatusData?> getAirdropStatus(TokenMetaData tokenMetaData) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/airdrop/status",
+      );
+      final responseData = AirdropStatusResponse.fromJson(response.data);
+      print("getAirdropStatus from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
 
 
 }

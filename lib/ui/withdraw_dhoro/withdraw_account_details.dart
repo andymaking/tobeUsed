@@ -83,6 +83,8 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                                       onTap: () {
                                         setState(() {
                                           selected = index;
+                                          context.read(sharedProvider.userRequestProvider).buyAgentId = agents[index].pk!;
+                                          context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[index].pk}");
                                         });
                                       },
                                       child: Container(
@@ -177,7 +179,7 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
                           context
                               .read(sharedProvider.userRequestProvider).moveToNextPage();
                           setState(() {
-                            context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[selected].pk}");
+                            //context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[selected].pk}");
                           });
                         },
                         child: Container(

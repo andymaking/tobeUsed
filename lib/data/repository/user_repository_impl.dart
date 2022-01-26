@@ -243,4 +243,10 @@ class UserRepositoryImpl extends UserRepository {
     return userRemote.validateWithdrawDhoro(amount, currencyType);
   }
 
+  @override
+  Future<AirdropStatusData?> getAirdropStatus() async {
+    final token = await getToken();
+    return userRemote.getAirdropStatus(token);
+  }
+
 }

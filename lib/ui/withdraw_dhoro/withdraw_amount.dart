@@ -101,7 +101,7 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                     validateWithdrawResponse?.data == true ? Container()
                         : Row(
                       children: [
-                        AppFontsStyle.getAppTextViewBold("${validateWithdrawResponse?.message}",
+                        AppFontsStyle.getAppTextViewBold("${validateWithdrawResponse?.message ?? ""}",
                             weight: FontWeight.w500,
                             size: AppFontsStyle.textFontSize12),
                       ],
@@ -206,6 +206,7 @@ class _WithdrawAmountPageState extends State<WithdrawAmountPage> {
                           setState(() {
                             context.read(sharedProvider.userRequestProvider).currencyType = selectedOption;
                             context.read(sharedProvider.userRequestProvider).amount = "${_amountController.text.trim()}";
+                            context.read(sharedProvider.userRequestProvider).ngnConvert = "${convert?.ngn ?? 0.0}";
                           });
                         },
                         title: "PROCEED",

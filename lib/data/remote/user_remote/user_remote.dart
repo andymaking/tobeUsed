@@ -60,7 +60,7 @@ abstract class UserRemote {
   Future<AvatarResponse?> getAvatar(TokenMetaData tokenMetaData);
   Future<ValidateBuyResponse?> validateBuyDhoro(String amount, String currencyType);
   Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType);
-
+  Future<AirdropStatusData?> getAirdropStatus(TokenMetaData tokenMetaData);
 
 }
 
