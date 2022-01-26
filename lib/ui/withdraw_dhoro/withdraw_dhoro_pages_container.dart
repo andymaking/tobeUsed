@@ -22,6 +22,7 @@ ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
   viewmodel.walletBalance();
   viewmodel.getRequest();
   viewmodel.getPaymentProcessor();
+  viewmodel.validateWithdrawDhoro("1000000000000", "USD");
   return viewmodel;
 });
 

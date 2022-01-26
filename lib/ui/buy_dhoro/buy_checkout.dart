@@ -44,7 +44,7 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
   Widget build(BuildContext context) {
 
     List<AgentsData>? agents = useProvider(sharedProvider.userBuyProvider).agents;
-    context.read(sharedProvider.userBuyProvider).agentId = "${agents.first.pk}";
+    context.read(sharedProvider.userBuyProvider).buyAgentId = "${agents.first.pk}";
 
     ViewState viewState = useProvider(agentStateProvider);
     print("Showing agents length: ${agents.length}");
@@ -113,7 +113,7 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                                               value: selected == index,
                                               onChanged: (bool? value) {
                                                 setState(() {
-                                                  context.read(sharedProvider.userBuyProvider).agentId = agents[index].pk!;
+                                                  context.read(sharedProvider.userBuyProvider).buyAgentId = agents[index].pk!;
                                                   print("Show clicked INDEX... ${agents[index].pk}");
                                                 });
                                               }),

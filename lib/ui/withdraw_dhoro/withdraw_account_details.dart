@@ -1,5 +1,6 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
+import 'package:dhoro_mobile/data/remote/model/validate/validate.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/change_statusbar_color.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -33,6 +34,7 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
 
     List<AgentsData>? agents = useProvider(sharedProvider.userRequestProvider).agents;
     context.read(sharedProvider.userRequestProvider).agentId = "${agents.first.pk}";
+    ValidateWithdrawResponse? validateWithdrawResponse = useProvider(sharedProvider.userRequestProvider).validateWithdrawResponse;
 
     ViewState viewState = useProvider(agentStateProvider);
     print("Showing agents length: ${agents.length}");

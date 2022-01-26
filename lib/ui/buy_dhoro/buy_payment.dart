@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:dhoro_mobile/ui/buy_dhoro/buy_dhoro_pages_container.dart' as sharedProvider;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/src/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
@@ -28,9 +29,10 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
     final isValidLogin = true;
     List<PaymentProcessorData>? userTransactions =
         useProvider(sharedProvider.userBuyProvider).paymentProcessor;
-    context.read(sharedProvider.userBuyProvider).paymentId = "${userTransactions.first.pk}";
+    context.read(sharedProvider.userBuyProvider).buyPaymentId = "${userTransactions.first.pk}";
     GetUserData? userData = useProvider(sharedProvider.userBuyProvider).user;
     AgentsData? agent = useProvider(sharedProvider.userBuyProvider).anAgents;
+
     PushData? pushData;
 
 
@@ -38,20 +40,27 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
     String userName = "";
     String bankName = "";
     String accountNumber = "";
+    String currency = "";
+    String amount = "";
+
     setState(() {
       print("pushData paymentId ... ${pushData?.paymentId}");
       print("pushData userName ... ${pushData?.userName}");
       print("pushData bankName ... ${pushData?.bankName}");
       print("pushData accountNumber ... ${pushData?.accountNumber}");
 
-      paymentId = context.read(sharedProvider.userBuyProvider).paymentId;
+      paymentId = context.read(sharedProvider.userBuyProvider).buyPaymentId;
       userName = context.read(sharedProvider.userBuyProvider).userName;
       bankName = context.read(sharedProvider.userBuyProvider).bankName;
       accountNumber = context.read(sharedProvider.userBuyProvider).accountNumber;
+      currency = useProvider(sharedProvider.userBuyProvider).buyCurrencyType;
+      amount = useProvider(sharedProvider.userBuyProvider).buyAmount;
       print("paymentId ... $paymentId");
       print("userName ... $userName");
       print("bankName ... $bankName");
       print("accountNumber ... $accountNumber");
+      print("currency ... $currency");
+      print("amount ... $amount");
     });
 
     return Scaffold(
@@ -142,25 +151,48 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
             Container(
               child: Column(
                 children: [
-                  AppFontsStyle.getAppTextViewBold("Kindly make a transfer to the administrator account below:",
+                  AppFontsStyle.getAppTextViewBold("Kindly make a transfer of $currency$amount to the administrator account below:",
                       color: Pallet.colorGrey,
                       weight: FontWeight.w500,
                       size: AppFontsStyle.textFontSize12),
                   SizedBox(height: 16.0,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AppFontsStyle.getAppTextViewBold("${agent?.accountName?.toTitleCase()!}",
-                          weight: FontWeight.w400,
-                          size: AppFontsStyle.textFontSize14),
-                      AppFontsStyle.getAppTextViewBold("${agent?.accountNumber?.toTitleCase()!}",
-                          weight: FontWeight.w400,
-                          size: AppFontsStyle.textFontSize14),
-                      AppFontsStyle.getAppTextViewBold("${agent?.bankName?.toTitleCase()!}",
-                          weight: FontWeight.w400,
-                          size: AppFontsStyle.textFontSize14),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 26.0, right: 26),
+                    child: Center(
+                      child: Text.rich(
+                        TextSpan(
+                            text: "${agent?.accountName?.toTitleCase()!}",
+                            style: GoogleFonts.manrope(
+                              fontSize: AppFontsStyle.textFontSize14,
+                              height: 1.5,
+                              color: Pallet.colorBlue,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: "      ${agent?.accountNumber?.toTitleCase()!}",
+                                style: GoogleFonts.manrope(
+                                  fontSize: AppFontsStyle.textFontSize14,
+                                  height: 1.2,
+                                  color: Pallet.colorBlue,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w400,),
+                              ),
+                              TextSpan(
+                                text: "       ${agent?.bankName?.toTitleCase()!}",
+                                style: GoogleFonts.manrope(
+                                  fontSize: AppFontsStyle.textFontSize14,
+                                  height: 1.2,
+                                  color: Pallet.colorBlue,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w400,),
+                              ),
+                            ]
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 ],
               ),

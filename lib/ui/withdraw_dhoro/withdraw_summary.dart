@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.dart' as sharedProvider;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/src/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'select_withdraw_payment_processor.dart';
@@ -18,12 +17,7 @@ import 'select_withdraw_payment_processor.dart';
 
 class WithdrawSummaryPage extends StatefulHookWidget {
 
-  //PushData? pushData;
-
-  WithdrawSummaryPage(
-      {Key? key,
-        //this.pushData,
-      }) : super(key: key);
+  WithdrawSummaryPage({Key? key,}) : super(key: key);
 
   @override
   _WithdrawSummaryPageState createState() => _WithdrawSummaryPageState();
@@ -33,9 +27,6 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
 
   @override
   void initState() {
-    //Future.delayed(Duration(milliseconds: 200));
-
-
     super.initState();
   }
 
