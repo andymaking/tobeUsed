@@ -13,6 +13,7 @@ import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/validate/validate.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
@@ -230,6 +231,22 @@ class UserRepositoryImpl extends UserRepository {
   Future<AvatarResponse?> getAvatar() async {
     final token = await getToken();
     return await userRemote.getAvatar(token);
+  }
+
+  @override
+  Future<ValidateBuyResponse?> validateBuyDhoro(String amount, String currencyType) async {
+    return userRemote.validateBuyDhoro(amount, currencyType);
+  }
+
+  @override
+  Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType) async {
+    return userRemote.validateWithdrawDhoro(amount, currencyType);
+  }
+
+  @override
+  Future<AirdropStatusData?> getAirdropStatus() async {
+    final token = await getToken();
+    return userRemote.getAirdropStatus(token);
   }
 
 }

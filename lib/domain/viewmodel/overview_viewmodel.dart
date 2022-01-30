@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/airdrop/airdrop_info.dart';
 import 'package:dhoro_mobile/data/remote/model/airdrop/claim_airdrop.dart';
@@ -10,14 +9,11 @@ import 'package:dhoro_mobile/data/remote/model/send_dhoro/send_dhoro.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_data.dart';
 import 'package:dhoro_mobile/data/remote/model/transfer_history/transfer_history_response.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
-import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
-import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
-import 'package:dhoro_mobile/domain/model/user/user.dart';
 import 'package:dhoro_mobile/ui/overview/send.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -25,8 +21,6 @@ import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 
 import '../../main.dart';
 import 'base/base_view_model.dart';
@@ -44,6 +38,7 @@ class OverviewViewModel extends BaseViewModel {
   ClaimAirdropResponse? messageResponse;
   AirdropInfoData? airdropInfoData;
   AvatarResponse? avatarResponse;
+  AirdropStatusData? airdropStatusData;
   bool? walletStatus;
   //WalletPercentage? walletPercentage;
   String? walletPercentage;
@@ -289,9 +284,12 @@ class OverviewViewModel extends BaseViewModel {
       var response = await userRepository.sendDhoro(amount, currency, wid);
       sendDhoroStatus = response;
       setViewState(ViewState.Success);
-      getTransferHistory();
-      getWalletStatus();
+      getAirdropInfo();
+      getRate();
       walletBalance();
+      getWalletStatus();
+      getTransferHistory();
+      getWalletPercentage();
       Navigator.pop(context);
       print("Showing sendDhoro response::: $response");
       showSuccessBottomSheet(context, "$amount $currency", wid);
@@ -311,7 +309,13 @@ class OverviewViewModel extends BaseViewModel {
       var response = await userRepository.claimAirdrop(wid);
       messageResponse = response;
       setViewState(ViewState.Success);
-      Navigator.pop(context);
+      getAirdropInfo();
+      getRate();
+      walletBalance();
+      getWalletStatus();
+      getTransferHistory();
+      getWalletPercentage();
+      //Navigator.pop(context);
       print("Showing sendDhoro response::: $response");
       showClaimSuccessBottomSheet(context, "${messageResponse?.message}");
       return response;
@@ -343,6 +347,20 @@ class OverviewViewModel extends BaseViewModel {
       var response =
       await userRepository.getAvatar();
       avatarResponse = response;
+      setViewState(ViewState.Success);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+    notifyListeners();
+  }
+
+  Future<AirdropStatusData?> getAirdropStatus() async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.getAirdropStatus();
+      airdropStatusData = response;
       setViewState(ViewState.Success);
     } catch (error) {
       setViewState(ViewState.Error);
@@ -403,6 +421,7 @@ showClaimSuccessBottomSheet(BuildContext context, String message) {
                       child: AppFontsStyle.getAppTextViewBold(message,
                           color: Pallet.colorBlue,
                           weight: FontWeight.w500,
+                          textAlign: TextAlign.center,
                           size: AppFontsStyle.textFontSize18),
                     ),
                   ),
@@ -468,6 +487,7 @@ showClaimFailedBottomSheet(
                           child: AppFontsStyle.getAppTextViewBold(message,
                               color: Pallet.colorBlue,
                               weight: FontWeight.w500,
+                              textAlign: TextAlign.center,
                               size: AppFontsStyle.textFontSize18),
                         ),
                       ),

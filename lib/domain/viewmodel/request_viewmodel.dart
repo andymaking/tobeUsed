@@ -5,6 +5,7 @@ import 'package:dhoro_mobile/data/remote/model/payment_processor/payment_process
 import 'package:dhoro_mobile/data/remote/model/request/request_data.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/validate/validate.dart';
 import 'package:dhoro_mobile/data/remote/model/withdraw/withdraw.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/viewmodel/base/base_view_model.dart';
@@ -39,6 +40,8 @@ class RequestViewModel extends BaseViewModel {
   AgentsData? anAgents;
   GetUserData? user;
   WalletData? walletData;
+  ValidateWithdrawResponse? validateWithdrawResponse;
+  ValidateBuyResponse? validateBuyResponse;
   ViewState get viewState => _state;
   Set<String> currentUserGender = Set();
   Set<String> currentUserInterest = Set();
@@ -53,9 +56,16 @@ class RequestViewModel extends BaseViewModel {
   bool isBankDetails = true;
   bool isBuyAmount = true;
   String amount = "";
+  String buyAmount = "";
+  String usdConvert = "";
+  String ngnConvert = "";
   String agentId = "";
+  String buyAgentId = "";
   String paymentId = "";
+  String defaultPaymentId = "";
+  String buyPaymentId = "";
   String currencyType = "";
+  String buyCurrencyType = "";
   int? lastPage;
   int? currentPaginationPage;
 
@@ -75,9 +85,15 @@ class RequestViewModel extends BaseViewModel {
     buyPagesAnswers = _initSetupAnswers();
     buyPages = _initWidgetPages();
     amount = "";
+    buyAmount = "";
     agentId = "";
+    buyAgentId = "";
     currencyType = "";
+    buyCurrencyType = "";
     paymentId = "";
+    buyPaymentId = "";
+    defaultPaymentId = "";
+    ngnConvert = "";
     isWithdrawAmount = false;
     isBuyAmount = false;
     currentPage = 0;
@@ -196,7 +212,7 @@ class RequestViewModel extends BaseViewModel {
     notifyListeners();
   }
   void validateBuyAmount() {
-    isBuyAmount = isValidAmount();
+    isBuyAmount = isValidBuyAmount();
     notifyListeners();
   }
 
@@ -214,50 +230,16 @@ class RequestViewModel extends BaseViewModel {
   }
 
   bool isValidBuyAmount() {
-    return amount.isNotEmpty && amount.length >= 1;
+    return buyAmount.isNotEmpty && buyAmount.length >= 1;
   }
 
   void validateBuyBankDetails() {
-    isBankDetails = isValidAmount();
+    isBankDetails = isValidBuyAmount();
     notifyListeners();
   }
 
   bool isValidBuyBankDetails() {
-    return amount.isNotEmpty && amount.length >= 1;
-  }
-
-  /// purchase/buy dhoro
-  Future<WithdrawData?> buyDhoro(BuildContext context) async {
-    try {
-      var value = amount;
-      var agent = agentId;
-      var currency = currencyType;
-      var proofOfPayment = paymentId.isEmpty ? paymentProcessor.first.pk : paymentId;
-
-      setViewState(ViewState.Loading);
-      var response = await userRepository.buyDhoro(value, agent, proofOfPayment!, currency);
-      purchase = response;
-      print("Showing buyDhoro response::: $response");
-
-      setViewState(ViewState.Success);
-      getRequest();
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
-      showToast("Successfully bought Dhoro");
-      //return response;
-    } catch (error) {
-      print("Showing buyDhoro error::: $error");
-      await showTopModalSheet<String>(
-          context: context,
-          child: ShowDialog(
-            title: error.toString(),
-            isError: true,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ));
-      setViewState(ViewState.Error);
-      setError(error.toString());
-    }
+    return buyAmount.isNotEmpty && buyAmount.length >= 1;
   }
 
   Future<RequestData?> getRequest() async {
@@ -363,11 +345,11 @@ class RequestViewModel extends BaseViewModel {
   Future<WithdrawData?> withdrawDhoro(BuildContext context) async {
     try {
       var value = amount;
-      var agent = agentId;
+      var agent = anAgents?.pk;
       var currency = currencyType;
-      var proofOfPayment = paymentId.isEmpty ? paymentProcessor.first.pk : paymentId;
+      var proofOfPayment = paymentId.isEmpty ? defaultPaymentId : paymentId;
       setViewState(ViewState.Loading);
-      var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment!, agent);
+      var response = await userRepository.withdrawDhoro(double.parse(value), currency, proofOfPayment, agent!);
       setViewState(ViewState.Success);
       getRequest();
       walletBalance();
@@ -451,6 +433,68 @@ class RequestViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+  }
+
+  /// purchase/buy dhoro
+  Future<WithdrawData?> buyDhoro(BuildContext context) async {
+    try {
+      var value = buyAmount;
+      var agent = anAgents?.pk;
+      var currency = buyCurrencyType;
+      var proofOfPayment = buyPaymentId.isEmpty ? defaultPaymentId : buyPaymentId;
+      print("Showing posted items:: value: $value, agent: $agent, currency: $currency, proofOfPayment: $proofOfPayment");
+      setViewState(ViewState.Loading);
+      var response = await userRepository.buyDhoro("$value", "$agent", "$proofOfPayment", "$currency");
+      purchase = response;
+      print("Showing buyDhoro response::: $response");
+
+      setViewState(ViewState.Success);
+      getRequest();
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
+      showToast("Successfully bought Dhoro");
+      //return response;
+    } catch (error) {
+      print("Showing buyDhoro error::: $error");
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: error.toString(),
+            isError: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ));
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  Future<ValidateBuyResponse?> validateBuyDhoro(String amount, String currencyType) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.validateBuyDhoro(amount, currencyType);
+      validateBuyResponse = response;
+      setViewState(ViewState.Success);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+    notifyListeners();
+  }
+
+  Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType) async {
+    try {
+      setViewState(ViewState.Loading);
+      var response =
+      await userRepository.validateWithdrawDhoro(amount, currencyType);
+      validateWithdrawResponse = response;
+      setViewState(ViewState.Success);
+    } catch (error) {
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+    notifyListeners();
   }
 
 }

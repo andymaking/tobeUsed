@@ -27,6 +27,35 @@ class AirdropInfoResponse {
 
 }
 
+class AirdropStatusResponse {
+  int? status;
+  String? message;
+  AirdropStatusData? data;
+
+  AirdropStatusResponse({
+    this.status,
+    this.message,
+    this.data,
+  });
+
+  AirdropStatusResponse.fromJson(dynamic json) {
+    status = json['status'];
+    message = json['message'];
+    data = json['data'] != null ? AirdropStatusData.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+    map['status'] = status;
+    map['message'] = message;
+    if (data != null) {
+      map['data'] = data?.toJson();
+    }
+    return map;
+  }
+
+}
+
 class AirdropInfoData {
   double? amount;
   double? amountPerAddress;
@@ -49,6 +78,25 @@ class AirdropInfoData {
     map['amount'] = amount;
     map['amount_per_address'] = amountPerAddress;
     map['claimed'] = claimed;
+    return map;
+  }
+
+}
+
+class AirdropStatusData {
+  bool? status;
+
+  AirdropStatusData({
+    this.status,
+  });
+
+  AirdropStatusData.fromJson(dynamic json) {
+    status = json['status'];
+  }
+
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+    map['status'] = status;
     return map;
   }
 

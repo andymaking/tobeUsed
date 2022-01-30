@@ -44,7 +44,7 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
   Widget build(BuildContext context) {
 
     List<AgentsData>? agents = useProvider(sharedProvider.userBuyProvider).agents;
-    context.read(sharedProvider.userBuyProvider).agentId = "${agents.first.pk}";
+    context.read(sharedProvider.userBuyProvider).buyAgentId = "${agents.first.pk}";
 
     ViewState viewState = useProvider(agentStateProvider);
     print("Showing agents length: ${agents.length}");
@@ -69,90 +69,93 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
             padding: const EdgeInsets.all(24.0),
             child: Stack(
               children: [
-                ListView(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 160.0,
-                        ),
-                        agents.isNotEmpty == true
-                            ? viewState == ViewState.Loading
-                            ? Padding(
-                          padding: const EdgeInsets.only(top: 40.0),
-                          child: Center(child: AppProgressBar()),
-                        )
-                            : Container(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(agents.length, (index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        selected = index;
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1.0,
-                                            color: Pallet.colorBlue),
-                                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Checkbox(
-                                              checkColor: Colors.white,
-                                              fillColor: MaterialStateProperty
-                                                  .resolveWith(getColor),
-                                              value: selected == index,
-                                              onChanged: (bool? value) {
-                                                setState(() {
-                                                  context.read(sharedProvider.userBuyProvider).agentId = agents[index].pk!;
-                                                  print("Show clicked INDEX... ${agents[index].pk}");
-                                                });
-                                              }),
-                                          AppFontsStyle.getAppTextViewBold(
-                                              "${agents[index].accountName!.toTitleCase()!}",
-                                              weight: FontWeight.w500,
-                                              size:
-                                              AppFontsStyle.textFontSize12),
-                                          Spacer(),
-                                          Padding(
-                                            padding: const EdgeInsets.only(right: 16.0),
-                                            child: Container(
-                                              child: AppFontsStyle.getAppTextViewBold(
-                                                  "${agents[index].bankName!.toTitleCase()!}",
-                                                  weight: FontWeight.w500,
-                                                  color: Pallet.colorGrey,
-                                                  size:
-                                                  AppFontsStyle.textFontSize12),
-                                            ),
+                SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 160.0,
+                      ),
+                      agents.isNotEmpty == true
+                          ? viewState == ViewState.Loading
+                          ? Padding(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Center(child: AppProgressBar()),
+                      )
+                          : Container(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(agents.length, (index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 16.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selected = index;
+                                      context.read(sharedProvider.userBuyProvider).buyAgentId = agents[index].pk!;
+                                      //context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[index].pk}");
+                                      print("Showing agent selected ID:: ${agents[index].pk!}");
+                                      print("Showing selected index:: $selected");
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1.0,
+                                          color: Pallet.colorBlue),
+                                      borderRadius: BorderRadius.all(Radius.circular(2)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Checkbox(
+                                            checkColor: Colors.white,
+                                            fillColor: MaterialStateProperty
+                                                .resolveWith(getColor),
+                                            value: selected == index,
+                                            onChanged: (bool? value) {
+                                              setState(() {
+                                                context.read(sharedProvider.userBuyProvider).buyAgentId = agents[index].pk!;
+
+                                                print("Show clicked INDEX... ${agents[index].pk}");
+                                              });
+                                            }),
+                                        AppFontsStyle.getAppTextViewBold(
+                                            "${agents[index].accountName!.toTitleCase()!}",
+                                            weight: FontWeight.w500,
+                                            size:
+                                            AppFontsStyle.textFontSize12),
+                                        Spacer(),
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 16.0),
+                                          child: Container(
+                                            child: AppFontsStyle.getAppTextViewBold(
+                                                "${agents[index].bankName!.toTitleCase()!}",
+                                                weight: FontWeight.w500,
+                                                color: Pallet.colorGrey,
+                                                size:
+                                                AppFontsStyle.textFontSize12),
                                           ),
-                                          SizedBox(
-                                            height: 12.0,
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                        SizedBox(
+                                          height: 12.0,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                );
-                              })
-                          ),
-                        )
-                            :buildEmptyView(),
-
-                        SizedBox(
-                          height: 16,
+                                ),
+                              );
+                            })
                         ),
-                      ],
-                    ),
-                  ],
+                      )
+                          :buildEmptyView(),
+
+                      SizedBox(
+                        height: 16,
+                      ),
+                    ],
+                  ),
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -186,6 +189,7 @@ class _BuyCheckoutPageState extends State<BuyCheckoutPage> {
                             context
                                 .read(sharedProvider.userBuyProvider).moveBuyToNextPage();
                             setState(() {
+                              print("Showing selected index:: $selected");
                               context.read(sharedProvider.userBuyProvider).getSingleAgents("${agents[selected].pk}");
                             });
                           },

@@ -33,6 +33,7 @@ final overviewProvider =
   ref.onDispose(() {});
   final viewModel = locator.get<OverviewViewModel>();
   viewModel.getUser();
+  viewModel.getAirdropStatus();
   viewModel.getRate();
   viewModel.getAirdropInfo();
   viewModel.walletBalance();
@@ -82,6 +83,7 @@ class OverviewPage extends StatefulHookWidget {
 class _OverviewPageState extends State<OverviewPage> {
   bool isLock = false;
   bool claimedAirdrop = false;
+  bool airdropStatus = false;
 
   TransferHistoryDataResponse? transferHistoryDataResponse;
   int page = 1;
@@ -90,10 +92,13 @@ class _OverviewPageState extends State<OverviewPage> {
   @override
   void initState() {
     setState(() {
+      context.read(overviewProvider).getAirdropInfo();
+      context.read(overviewProvider).getRate();
       context.read(overviewProvider).getWalletPercentage();
       context.read(overviewProvider).walletBalance();
       context.read(overviewProvider).getTransferHistory();
       context.read(overviewProvider).getUser();
+      context.read(overviewProvider).getAirdropStatus();
     });
     super.initState();
   }
@@ -110,7 +115,8 @@ class _OverviewPageState extends State<OverviewPage> {
     GetUserData? userData = useProvider(overviewProvider).user;
     RateData? rateData = useProvider(overviewProvider).rateData;
     AirdropInfoData? airdropInfoData = useProvider(overviewProvider).airdropInfoData;
-    claimedAirdrop = airdropInfoData?.claimed ?? true;
+    AirdropStatusData? airdropStatusData = useProvider(overviewProvider).airdropStatusData;
+
     print("Showing airdropInfoData : ${airdropInfoData?.amount}");
     final initials =
         "${userData?.firstName?[0] ?? ""}${userData?.lastName?[0] ?? ""}";
@@ -126,504 +132,527 @@ class _OverviewPageState extends State<OverviewPage> {
     print("Showing walletStatus:: $walletStatus");
     print("Showing percent:: $percent");
     var dhrBalance = walletBalance?.dhrBalance?.toStringAsFixed(3);
+    //var priceInDollar = double.parse("${rateData?.priceInDollar}");
 
     setState(() {
-      //refreshPage();
+      print("airdropStatus :: $airdropStatus");
+      claimedAirdrop = airdropInfoData?.claimed ?? true;
+      airdropStatus = airdropStatusData?.status ?? true;
+
     });
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
-      body: SafeArea(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: ListView(children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                OverViewToolBar(
-                  AppString.overView,
-                  userData?.avatar.toString() ?? "",
-                  trailingIconClicked: () => null,
-                  initials: initials,
-                ),
-                Visibility(
-                  visible: claimedAirdrop == false,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 24.0, left: 24.0, right: 24.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0, vertical: 23),
-                      //height: 220,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          color: Pallet.colorBlue),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                        child: Column(
-                          children: [
-                            //$DHR Airdrop is live
-                            AppFontsStyle.getAppTextViewBold(
-                              "\$${airdropInfoData?.amount ?? 0} Airdrop is live",
-                              weight: FontWeight.w600,
-                              color: Pallet.colorWhite,
-                              textAlign: TextAlign.center,
-                              size: AppFontsStyle.textFontSize24,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-                              child: AppFontsStyle.getAppTextViewBold(
-                                "Take part in the \$${airdropInfoData?.amount ?? 0} Airdrop and claim free \$${airdropInfoData?.amountPerAddress ?? 0} tokens",
-                                weight: FontWeight.w500,
+      body: RefreshIndicator(
+        color: Pallet.colorBlue,
+        onRefresh: () {
+          return Future.delayed(
+              Duration(seconds: 1),
+                  () {
+                setState(() {
+                  context.read(overviewProvider).getAirdropInfo();
+                  context.read(overviewProvider).getRate();
+                  context.read(overviewProvider).getUser();
+                  context.read(overviewProvider).getWalletPercentage();
+                  context.read(overviewProvider).walletBalance();
+                  context.read(overviewProvider).getTransferHistory();
+                });
+              });
+        },
+        child: SafeArea(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: ListView(children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  OverViewToolBar(
+                    AppString.overView,
+                    userData?.avatar.toString() ?? "",
+                    trailingIconClicked: () => null,
+                    initials: initials,
+                  ),
+                  Visibility(
+                    visible: claimedAirdrop == false && airdropStatus == true,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 24.0, left: 24.0, right: 24.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 23),
+                        //height: 220,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: Pallet.colorBlue),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Column(
+                            children: [
+                              //$DHR Airdrop is live
+                              AppFontsStyle.getAppTextViewBold(
+                                "\$${airdropInfoData?.amount ?? 0} Airdrop is live",
+                                weight: FontWeight.w600,
                                 color: Pallet.colorWhite,
                                 textAlign: TextAlign.center,
-                                size: AppFontsStyle.textFontSize12,
+                                size: AppFontsStyle.textFontSize24,
                               ),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            GestureDetector(
-                              onTap: (){
-                                context.read(overviewProvider).claimAirdrop(context, "${userData?.wid}");
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(2)),
-                                    color: Pallet.colorWhite),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: AppFontsStyle.getAppTextViewBold(
-                                    "CLAIM AIRDROP",
-                                    weight: FontWeight.w600,
-                                    color: Pallet.colorBlue,
-                                    textAlign: TextAlign.center,
-                                    size: AppFontsStyle.textFontSize12,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                                child: AppFontsStyle.getAppTextViewBold(
+                                  "Take part in the \$${airdropInfoData?.amount ?? 0} Airdrop and claim free \$${airdropInfoData?.amountPerAddress ?? 0} tokens",
+                                  weight: FontWeight.w500,
+                                  color: Pallet.colorWhite,
+                                  textAlign: TextAlign.center,
+                                  size: AppFontsStyle.textFontSize12,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  context.read(overviewProvider).claimAirdrop(context, "${userData?.wid}");
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(2)),
+                                      color: Pallet.colorWhite),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: AppFontsStyle.getAppTextViewBold(
+                                      "CLAIM AIRDROP",
+                                      weight: FontWeight.w600,
+                                      color: Pallet.colorBlue,
+                                      textAlign: TextAlign.center,
+                                      size: AppFontsStyle.textFontSize12,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 22.0, vertical: 10),
-                    height: 212,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        color: const Color(0xfffffffff)),
-                    child: Column(
-                      children: [
-                        //walletStatus == true
-                        !isLock
-                            ? Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppFontsStyle.getAppTextViewBold(
-                                      "1 DHR = \$${rateData?.equivalentInDhoro ?? 0.0}",
-                                      weight: FontWeight.w600,
-                                      size: AppFontsStyle.textFontSize12,
-                                    ),
-                                    Spacer(),
-                                    SvgPicture.asset(AppImages.triangleUp),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    AppFontsStyle.getAppTextViewBold(
-                                      "$percentage%",
-                                      color: Pallet.colorDeepGreen,
-                                      weight: FontWeight.w600,
-                                      size: AppFontsStyle.textFontSize12,
-                                    ),
-                                  ],
-                                ),
-                            )
-                            : Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(AppImages.triangleUp),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    AppFontsStyle.getAppTextViewBold(
-                                      "${context.read(overviewProvider).walletPercentage}%",
-                                      color: Pallet.colorDeepGreen,
-                                      weight: FontWeight.w600,
-                                      size: AppFontsStyle.textFontSize12,
-                                    ),
-                                  ],
-                                ),
-                            ),
-                        SizedBox(
-                          height: 23,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // wallet!.usdEquivalent != null
-                                // ?
-                                AppFontsStyle.getAppTextViewBold(
-                                  "\$${walletBalance?.usdEquivalent ?? 0}",
-                                  color: isLock //walletStatus != true
-                                      ? Pallet.colorGrey
-                                      : Pallet.colorBlue,
-                                  weight: FontWeight.w600,
-                                  size: AppFontsStyle.textFontSize24,
-                                ),
-                                Visibility(
-                                  visible: isLock == true,
-                                  //walletStatus == true,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 4.0),
-                                    child: SvgPicture.asset(AppImages.icLock),
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 22.0, vertical: 10),
+                      height: 212,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          color: const Color(0xfffffffff)),
+                      child: Column(
+                        children: [
+                          //walletStatus == true
+                          !isLock
+                              ? Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      AppFontsStyle.getAppTextViewBold(
+                                        "${rateData?.equivalentInDhoro ?? 0} DHR = \$${rateData?.priceInDollar?.substring(0,4)}",
+                                        weight: FontWeight.w600,
+                                        size: AppFontsStyle.textFontSize12,
+                                      ),
+                                      Spacer(),
+                                      SvgPicture.asset(AppImages.triangleUp),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      AppFontsStyle.getAppTextViewBold(
+                                        "$percentage%",
+                                        color: Pallet.colorDeepGreen,
+                                        weight: FontWeight.w600,
+                                        size: AppFontsStyle.textFontSize12,
+                                      ),
+                                    ],
                                   ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            AppFontsStyle.getAppTextViewBold(
-                              "${dhrBalance ?? 0} DHR",
-                              color:
-                                  isLock ? Pallet.colorGrey : Pallet.colorBlue,
-                              weight: FontWeight.w700,
-                              size: AppFontsStyle.textFontSize16,
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              )
+                              : Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(AppImages.triangleUp),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      AppFontsStyle.getAppTextViewBold(
+                                        "${context.read(overviewProvider).walletPercentage}%",
+                                        color: Pallet.colorDeepGreen,
+                                        weight: FontWeight.w600,
+                                        size: AppFontsStyle.textFontSize12,
+                                      ),
+                                    ],
+                                  ),
+                              ),
+                          SizedBox(
+                            height: 23,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              CupertinoButton(
-                                onPressed: (){
-                                  Navigator.pushNamed(context, AppRoutes.send);
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                        AppImages.iconGreenArrowUp),
-                                    SizedBox(
-                                      height: 8,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // wallet!.usdEquivalent != null
+                                  // ?
+                                  AppFontsStyle.getAppTextViewBold(
+                                    "\$${walletBalance?.usdEquivalent ?? 0}",
+                                    color: isLock //walletStatus != true
+                                        ? Pallet.colorGrey
+                                        : Pallet.colorBlue,
+                                    weight: FontWeight.w600,
+                                    size: AppFontsStyle.textFontSize24,
+                                  ),
+                                  Visibility(
+                                    visible: isLock == true,
+                                    //walletStatus == true,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 4.0),
+                                      child: SvgPicture.asset(AppImages.icLock),
                                     ),
-                                    AppFontsStyle.getAppTextViewBold(
-                                      "Send DHR",
-                                      weight: FontWeight.w500,
-                                      size: AppFontsStyle.textFontSize10,
-                                    ),
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
-                              CupertinoButton(
-                                onPressed: (){
-                                  showReceiveBottomSheet(
-                                      context,
-                                      "${userData?.qrCode?.code}",
-                                      "${userData?.wid}");
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(AppImages.redArrowDown),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    AppFontsStyle.getAppTextViewBold(
-                                      "Receive DHR",
-                                      weight: FontWeight.w500,
-                                      size: AppFontsStyle.textFontSize10,
-                                    ),
-                                  ],
-                                ),
+                              SizedBox(
+                                height: 8,
                               ),
-                              CupertinoButton(
-                                onPressed: (){
-                                  //print("print");
-                                  observeLockAndUnlockState(context);
-                                  setState(() {
-                                    isLock = !isLock;
-                                  });
-                                },
-                                child: isLock //walletStatus == true
-                                    ? Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                            SvgPicture.asset(
-                                                AppImages.icUnlock),
+                              AppFontsStyle.getAppTextViewBold(
+                                "${dhrBalance ?? 0} DHR",
+                                color:
+                                    isLock ? Pallet.colorGrey : Pallet.colorBlue,
+                                weight: FontWeight.w700,
+                                size: AppFontsStyle.textFontSize16,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                CupertinoButton(
+                                  onPressed: (){
+                                    !isLock ? Navigator.pushNamed(context, AppRoutes.send) : null;
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                          AppImages.iconGreenArrowUp,
+                                      color: isLock ? Pallet.colorGreen.withOpacity(0.5) : null),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                      AppFontsStyle.getAppTextViewBold(
+                                        "Send DHR",
+                                        color: isLock ? Pallet.colorBlue.withOpacity(0.4) : null,
+                                        weight: FontWeight.w500,
+                                        size: AppFontsStyle.textFontSize10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                CupertinoButton(
+                                  onPressed: (){
+                                    showReceiveBottomSheet(
+                                        context,
+                                        "${userData?.qrCode?.code}",
+                                        "${userData?.wid}");
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(AppImages.redArrowDown),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                      AppFontsStyle.getAppTextViewBold(
+                                        "Receive DHR",
+                                        weight: FontWeight.w500,
+                                        size: AppFontsStyle.textFontSize10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                CupertinoButton(
+                                  onPressed: (){
+                                    //print("print");
+                                    observeLockAndUnlockState(context);
+                                    setState(() {
+                                      isLock = !isLock;
+                                    });
+                                  },
+                                  child: isLock //walletStatus == true
+                                      ? Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                              SvgPicture.asset(
+                                                  AppImages.icUnlock),
+                                              SizedBox(
+                                                height: 8,
+                                              ),
+                                              AppFontsStyle.getAppTextViewBold(
+                                                "Unlock Wallet",
+                                                weight: FontWeight.w500,
+                                                size: AppFontsStyle
+                                                    .textFontSize10,
+                                              ),
+                                            ])
+                                      : Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(AppImages.icLock),
                                             SizedBox(
                                               height: 8,
                                             ),
                                             AppFontsStyle.getAppTextViewBold(
-                                              "Unlock Wallet",
+                                              "Lock Wallet",
                                               weight: FontWeight.w500,
-                                              size: AppFontsStyle
-                                                  .textFontSize10,
+                                              size:
+                                                  AppFontsStyle.textFontSize10,
                                             ),
-                                          ])
-                                    : Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          SvgPicture.asset(AppImages.icLock),
-                                          SizedBox(
-                                            height: 8,
-                                          ),
-                                          AppFontsStyle.getAppTextViewBold(
-                                            "Lock Wallet",
-                                            weight: FontWeight.w500,
-                                            size:
-                                                AppFontsStyle.textFontSize10,
-                                          ),
-                                        ],
-                                      ),
-                              )
-                            ])
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: AppFontsStyle.getAppTextViewBold(
-                    AppString.recentTransactions,
-                    weight: FontWeight.w700,
-                    size: AppFontsStyle.textFontSize16,
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                TransactionHeader(),
-                userTransactions.isNotEmpty == true
-                    ? viewState == ViewState.Loading
-                        ? Center(child: Padding(
-                          padding: const EdgeInsets.only(top: 12.0),
-                          child: AppProgressBar(),
-                        ))
-                        : Padding(
-                            padding: const EdgeInsets.only(
-                                left: 24.0, right: 24, bottom: 24),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(2)),
-                                  color: const Color(0xfffffffff)),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 10.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: List.generate(
-                                      userTransactions.length, (index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(top: 2.0),
-                                      child: Container(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            TransactionList(() {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      TransactionsDetailsPage(
-                                                          data:
-                                                              userTransactions[
-                                                                  index]),
-                                                ),
-                                              );
-                                            },
-                                                userTransactions[index]
-                                                    .pk
-                                                    .toString(),
-                                                userTransactions[index]
-                                                    .status
-                                                    .toString(),
-                                                userTransactions[index]
-                                                    .amount
-                                                    .toString(),
-                                                userTransactions[index]
-                                                    .send
-                                                    .toString()),
-                                            Divider(
-                                              height: 1,
-                                              color: Pallet.colorBlue
-                                                  .withOpacity(0.3),
-                                            )
                                           ],
                                         ),
-                                      ),
-                                    );
-                                  }),
+                                )
+                              ])
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: AppFontsStyle.getAppTextViewBold(
+                      AppString.recentTransactions,
+                      weight: FontWeight.w700,
+                      size: AppFontsStyle.textFontSize16,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  TransactionHeader(),
+                  userTransactions.isNotEmpty == true
+                      ? viewState == ViewState.Loading
+                          ? Center(child: Padding(
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: AppProgressBar(),
+                          ))
+                          : Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 24.0, right: 24, bottom: 24),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(2)),
+                                    color: const Color(0xfffffffff)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: List.generate(
+                                        userTransactions.length, (index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(top: 2.0),
+                                        child: Container(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              TransactionList(() {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        TransactionsDetailsPage(
+                                                            data:
+                                                                userTransactions[
+                                                                    index]),
+                                                  ),
+                                                );
+                                              },
+                                                  userTransactions[index]
+                                                      .pk
+                                                      .toString(),
+                                                  userTransactions[index]
+                                                      .status
+                                                      .toString(),
+                                                  userTransactions[index]
+                                                      .amount
+                                                      .toString(),
+                                                  userTransactions[index]
+                                                      .send
+                                                      .toString()),
+                                              Divider(
+                                                height: 1,
+                                                color: Pallet.colorBlue
+                                                    .withOpacity(0.3),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                    : buildEmptyView(),
-                if (context.read(overviewProvider).shouldFetchNextPage == true)
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     GestureDetector(
-                  //       onTap: () {
-                  //         setState(() {
-                  //           print("Pressed one");
-                  //           context
-                  //               .read(overviewProvider)
-                  //               .getTransferHistoryWithPaging(1);
-                  //         });
-                  //       },
-                  //       child: Container(
-                  //         height: 40,
-                  //         padding: EdgeInsets.symmetric(
-                  //             vertical: 2.5, horizontal: 16),
-                  //         decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(2),
-                  //           color: Pallet.colorWhite,
-                  //         ),
-                  //         child: Center(
-                  //           child: AppFontsStyle.getAppTextViewBold("First",
-                  //               size: AppFontsStyle.textFontSize16,
-                  //               color: Pallet.colorBlue),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     GestureDetector(
-                  //       onTap: () {
-                  //         setState(() {
-                  //           page -= 1;
-                  //           print("Pressed:: $page");
-                  //           context
-                  //               .read(overviewProvider)
-                  //               .getTransferHistoryWithPaging(page);
-                  //         });
-                  //       },
-                  //       child: Padding(
-                  //         padding: const EdgeInsets.only(left: 8.0),
-                  //         child: Center(
-                  //           child: SvgPicture.asset(
-                  //             "assets/images/back_arrow.svg",
-                  //             width: 40,
-                  //             height: 40,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     Padding(
-                  //       padding: const EdgeInsets.only(left: 8.0, right: 8),
-                  //       child: CupertinoButton(
-                  //           padding: EdgeInsets.zero,
-                  //           child: Container(
-                  //             height: 40,
-                  //             padding: EdgeInsets.symmetric(
-                  //                 vertical: 2.5, horizontal: 16),
-                  //             decoration: BoxDecoration(
-                  //               borderRadius: BorderRadius.circular(2),
-                  //               color: Pallet.colorWhite,
-                  //             ),
-                  //             child: Center(
-                  //               child: AppFontsStyle.getAppTextViewBold(
-                  //                   "1 of ${context.read(overviewProvider).lastPage}",
-                  //                   size: AppFontsStyle.textFontSize12,
-                  //                   color: Pallet.colorBlue),
-                  //             ),
-                  //           ),
-                  //           onPressed: () {
-                  //             setState(() {
-                  //               page += 1;
-                  //               print("Pressed:: $page");
-                  //               context
-                  //                   .read(overviewProvider)
-                  //                   .getTransferHistoryWithPaging(page);
-                  //             });
-                  //           }),
-                  //     ),
-                  //     GestureDetector(
-                  //       onTap: () {
-                  //         setState(() {
-                  //           page += 1;
-                  //           print("Pressed:: $page");
-                  //           context
-                  //               .read(overviewProvider)
-                  //               .getTransferHistoryWithPaging(page);
-                  //         });
-                  //       },
-                  //       child: SvgPicture.asset(
-                  //         "assets/images/arrow_forward.svg",
-                  //         width: 40,
-                  //         height: 40,
-                  //       ),
-                  //     ),
-                  //     SizedBox(
-                  //       width: 8,
-                  //     ),
-                  //     GestureDetector(
-                  //       onTap: () async {
-                  //         var last = await sharedPreference.getTransLastPage();
-                  //         setState(() {
-                  //           print("Pressed:: $last");
-                  //           context
-                  //               .read(overviewProvider)
-                  //               .getTransferHistoryWithPaging(last);
-                  //         });
-                  //       },
-                  //       child: Container(
-                  //         height: 40,
-                  //         padding: EdgeInsets.symmetric(
-                  //             vertical: 2.5, horizontal: 16),
-                  //         decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(2),
-                  //           color: Pallet.colorWhite,
-                  //         ),
-                  //         child: Center(
-                  //           child: AppFontsStyle.getAppTextViewBold("Last",
-                  //               size: AppFontsStyle.textFontSize16,
-                  //               color: Pallet.colorBlue),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                SizedBox(
-                  height: 16,
-                ),
-              ],
-            ),
-          ]),
+                            )
+                      : buildEmptyView(),
+                  if (context.read(overviewProvider).shouldFetchNextPage == true)
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         setState(() {
+                    //           print("Pressed one");
+                    //           context
+                    //               .read(overviewProvider)
+                    //               .getTransferHistoryWithPaging(1);
+                    //         });
+                    //       },
+                    //       child: Container(
+                    //         height: 40,
+                    //         padding: EdgeInsets.symmetric(
+                    //             vertical: 2.5, horizontal: 16),
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(2),
+                    //           color: Pallet.colorWhite,
+                    //         ),
+                    //         child: Center(
+                    //           child: AppFontsStyle.getAppTextViewBold("First",
+                    //               size: AppFontsStyle.textFontSize16,
+                    //               color: Pallet.colorBlue),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         setState(() {
+                    //           page -= 1;
+                    //           print("Pressed:: $page");
+                    //           context
+                    //               .read(overviewProvider)
+                    //               .getTransferHistoryWithPaging(page);
+                    //         });
+                    //       },
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.only(left: 8.0),
+                    //         child: Center(
+                    //           child: SvgPicture.asset(
+                    //             "assets/images/back_arrow.svg",
+                    //             width: 40,
+                    //             height: 40,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(left: 8.0, right: 8),
+                    //       child: CupertinoButton(
+                    //           padding: EdgeInsets.zero,
+                    //           child: Container(
+                    //             height: 40,
+                    //             padding: EdgeInsets.symmetric(
+                    //                 vertical: 2.5, horizontal: 16),
+                    //             decoration: BoxDecoration(
+                    //               borderRadius: BorderRadius.circular(2),
+                    //               color: Pallet.colorWhite,
+                    //             ),
+                    //             child: Center(
+                    //               child: AppFontsStyle.getAppTextViewBold(
+                    //                   "1 of ${context.read(overviewProvider).lastPage}",
+                    //                   size: AppFontsStyle.textFontSize12,
+                    //                   color: Pallet.colorBlue),
+                    //             ),
+                    //           ),
+                    //           onPressed: () {
+                    //             setState(() {
+                    //               page += 1;
+                    //               print("Pressed:: $page");
+                    //               context
+                    //                   .read(overviewProvider)
+                    //                   .getTransferHistoryWithPaging(page);
+                    //             });
+                    //           }),
+                    //     ),
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         setState(() {
+                    //           page += 1;
+                    //           print("Pressed:: $page");
+                    //           context
+                    //               .read(overviewProvider)
+                    //               .getTransferHistoryWithPaging(page);
+                    //         });
+                    //       },
+                    //       child: SvgPicture.asset(
+                    //         "assets/images/arrow_forward.svg",
+                    //         width: 40,
+                    //         height: 40,
+                    //       ),
+                    //     ),
+                    //     SizedBox(
+                    //       width: 8,
+                    //     ),
+                    //     GestureDetector(
+                    //       onTap: () async {
+                    //         var last = await sharedPreference.getTransLastPage();
+                    //         setState(() {
+                    //           print("Pressed:: $last");
+                    //           context
+                    //               .read(overviewProvider)
+                    //               .getTransferHistoryWithPaging(last);
+                    //         });
+                    //       },
+                    //       child: Container(
+                    //         height: 40,
+                    //         padding: EdgeInsets.symmetric(
+                    //             vertical: 2.5, horizontal: 16),
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(2),
+                    //           color: Pallet.colorWhite,
+                    //         ),
+                    //         child: Center(
+                    //           child: AppFontsStyle.getAppTextViewBold("Last",
+                    //               size: AppFontsStyle.textFontSize16,
+                    //               color: Pallet.colorBlue),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                ],
+              ),
+            ]),
+          ),
         ),
       ),
     );

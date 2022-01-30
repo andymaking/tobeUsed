@@ -92,386 +92,398 @@ class _TransactionsPageState extends State<TransactionsPage>
     print("Transaction pageSige ${userTransactions?.length}");
 
     setState(() {
-      page = context.read(transactionsProvider).currentPaginationPage!;
+      page = context.read(transactionsProvider).currentPaginationPage ?? 1;
     });
 
     return Scaffold(
       backgroundColor: Pallet.colorBackground,
-      body: SafeArea(
-        child: Stack(children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            child: ListView(children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  OverViewToolBar(
-                    AppString.transactions,
-                    userData?.avatar.toString() ?? "",
-                    trailingIconClicked: () => null,
-                    initials: initials,
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(AppImages.icFilter),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          AppFontsStyle.getAppTextViewBold(
-                            "Latest 12 from a total of ${userTransactions?.length} transactions",
-                            weight: FontWeight.w500,
-                            size: AppFontsStyle.textFontSize10,
-                          ),
-                          Spacer(),
-                          GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  focus = !focus;
-                                  focusPopInput = false;
-                                  focusPopStatus = false;
-                                  _inputController.text = "";
-                                });
-                              },
-                              child: Column(
-                                children: [
-                                  SvgPicture.asset(AppImages.iconMenu),
-                                ],
-                              )),
-                        ],
-                      )),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  TransactionHeader(),
-                  userTransactions?.isNotEmpty == true
-                      ? Padding(
-                          padding: const EdgeInsets.only(
-                              left: 24.0, right: 24, bottom: 24),
-                          child: viewState == ViewState.Loading
-                              ? Padding(
-                                padding: const EdgeInsets.only(top: 140.0),
-                                child: Center(child: AppProgressBar()),
-                              )
-                              : Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(2)),
-                                      color: const Color(0xfffffffff)),
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 10.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: List.generate(
-                                          userTransactions!.length, (index) {
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 2.0),
-                                          child: Container(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                TransactionList(() {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          TransactionsDetailsPage(
-                                                              data:
-                                                                  userTransactions[
-                                                                      index]),
-                                                    ),
-                                                  );
-                                                },
-                                                    userTransactions[index]
-                                                        .pk
-                                                        .toString(),
-                                                    userTransactions[index]
-                                                        .status
-                                                        .toString(),
-                                                    userTransactions[index]
-                                                        .amount
-                                                        .toString(),
-                                                    userTransactions[index]
-                                                        .send
-                                                        .toString()),
-                                                // SizedBox(
-                                                //   height: 8,
-                                                // ),
-                                                Divider(
-                                                  height: 1,
-                                                  color: Pallet.colorBlue
-                                                      .withOpacity(0.3),
-                                                )
-                                              ],
+      body: RefreshIndicator(
+        color: Pallet.colorBlue,
+        onRefresh: () {
+          return Future.delayed(
+              Duration(seconds: 1),
+                  () {
+                setState(() {
+                  context.read(transactionsProvider).getTransferHistory();
+                });
+              });
+        },
+        child: SafeArea(
+          child: Stack(children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              child: ListView(children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    OverViewToolBar(
+                      AppString.transactions,
+                      userData?.avatar.toString() ?? "",
+                      trailingIconClicked: () => null,
+                      initials: initials,
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(AppImages.icFilter),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            AppFontsStyle.getAppTextViewBold(
+                              "Latest 12 from a total of ${userTransactions?.length} transactions",
+                              weight: FontWeight.w500,
+                              size: AppFontsStyle.textFontSize10,
+                            ),
+                            Spacer(),
+                            GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    focus = !focus;
+                                    focusPopInput = false;
+                                    focusPopStatus = false;
+                                    _inputController.text = "";
+                                  });
+                                },
+                                child: Column(
+                                  children: [
+                                    SvgPicture.asset(AppImages.iconMenu),
+                                  ],
+                                )),
+                          ],
+                        )),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    TransactionHeader(),
+                    userTransactions?.isNotEmpty == true
+                        ? Padding(
+                            padding: const EdgeInsets.only(
+                                left: 24.0, right: 24, bottom: 24),
+                            child: viewState == ViewState.Loading
+                                ? Padding(
+                                  padding: const EdgeInsets.only(top: 140.0),
+                                  child: Center(child: AppProgressBar()),
+                                )
+                                : Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.all(Radius.circular(2)),
+                                        color: const Color(0xfffffffff)),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: List.generate(
+                                            userTransactions!.length, (index) {
+                                          return Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 2.0),
+                                            child: Container(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  TransactionList(() {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            TransactionsDetailsPage(
+                                                                data:
+                                                                    userTransactions[
+                                                                        index]),
+                                                      ),
+                                                    );
+                                                  },
+                                                      userTransactions[index]
+                                                          .pk
+                                                          .toString(),
+                                                      userTransactions[index]
+                                                          .status
+                                                          .toString(),
+                                                      userTransactions[index]
+                                                          .amount
+                                                          .toString(),
+                                                      userTransactions[index]
+                                                          .send
+                                                          .toString()),
+                                                  // SizedBox(
+                                                  //   height: 8,
+                                                  // ),
+                                                  Divider(
+                                                    height: 1,
+                                                    color: Pallet.colorBlue
+                                                        .withOpacity(0.3),
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      }),
+                                          );
+                                        }),
+                                      ),
                                     ),
                                   ),
+                          )
+                        : buildEmptyView(),
+                    viewState == ViewState.Loading ? Container()
+                    : context.read(transactionsProvider).lastPage != null &&
+                        context.read(transactionsProvider).lastPage! > 1
+                    ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              ///page = 1;
+                              print("Pressed one");
+                              context
+                                  .read(transactionsProvider)
+                                  .getTransferHistoryWithPaging(1);
+                            });
+                          },
+                          child: Container(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 2.5, horizontal: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              color: Pallet.colorWhite,
+                            ),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold("First",
+                                  size: AppFontsStyle.textFontSize16,
+                                  color: Pallet.colorBlue),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              page -= 1;
+                              print("Pressed:: $page");
+                              context
+                                  .read(transactionsProvider)
+                                  .getTransferHistoryWithPaging(page);
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                "assets/images/back_arrow.svg",
+                                width: 40,
+                                height: 40,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                height: 40,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 2.5, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(2),
+                                  color: Pallet.colorWhite,
                                 ),
-                        )
-                      : buildEmptyView(),
-                  viewState == ViewState.Loading ? Container()
-                  : context.read(transactionsProvider).lastPage != null &&
-                      context.read(transactionsProvider).lastPage! > 1
-                  ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            ///page = 1;
-                            print("Pressed one");
-                            context
-                                .read(transactionsProvider)
-                                .getTransferHistoryWithPaging(1);
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 2.5, horizontal: 16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Pallet.colorWhite,
-                          ),
-                          child: Center(
-                            child: AppFontsStyle.getAppTextViewBold("First",
-                                size: AppFontsStyle.textFontSize16,
-                                color: Pallet.colorBlue),
+                                child: Center(
+                                  child: AppFontsStyle.getAppTextViewBold(
+                                      "${context.read(transactionsProvider).currentPaginationPage} of ${context.read(transactionsProvider).lastPage}",
+                                      size: AppFontsStyle.textFontSize12,
+                                      color: Pallet.colorBlue),
+                                ),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  page += 1;
+                                  print("Pressed:: $page");
+                                  context
+                                      .read(transactionsProvider)
+                                      .getTransferHistoryWithPaging(page);
+                                });
+                              }),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              page += 1;
+                              print("Pressed:: $page");
+                              context
+                                  .read(transactionsProvider)
+                                  .getTransferHistoryWithPaging(page);
+                            });
+                          },
+                          child: SvgPicture.asset(
+                            "assets/images/arrow_forward.svg",
+                            width: 40,
+                            height: 40,
                           ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            page -= 1;
-                            print("Pressed:: $page");
-                            context
-                                .read(transactionsProvider)
-                                .getTransferHistoryWithPaging(page);
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Center(
-                            child: SvgPicture.asset(
-                              "assets/images/back_arrow.svg",
-                              width: 40,
-                              height: 40,
+                        SizedBox(
+                          width: 8,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            var last = await sharedPreference.getTransLastPage();
+                            page = last;
+                            setState(() {
+                              print("Pressed:: $last");
+                              context
+                                  .read(transactionsProvider)
+                                  .getTransferHistoryWithPaging(last);
+                            });
+                          },
+                          child: Container(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 2.5, horizontal: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              color: Pallet.colorWhite,
+                            ),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold("Last",
+                                  size: AppFontsStyle.textFontSize16,
+                                  color: Pallet.colorBlue),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8),
-                        child: CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            child: Container(
-                              height: 40,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 2.5, horizontal: 16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(2),
-                                color: Pallet.colorWhite,
-                              ),
-                              child: Center(
-                                child: AppFontsStyle.getAppTextViewBold(
-                                    "${context.read(transactionsProvider).currentPaginationPage} of ${context.read(transactionsProvider).lastPage}",
-                                    size: AppFontsStyle.textFontSize12,
-                                    color: Pallet.colorBlue),
-                              ),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                page += 1;
-                                print("Pressed:: $page");
-                                context
-                                    .read(transactionsProvider)
-                                    .getTransferHistoryWithPaging(page);
-                              });
-                            }),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            page += 1;
-                            print("Pressed:: $page");
-                            context
-                                .read(transactionsProvider)
-                                .getTransferHistoryWithPaging(page);
-                          });
-                        },
-                        child: SvgPicture.asset(
-                          "assets/images/arrow_forward.svg",
-                          width: 40,
-                          height: 40,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          var last = await sharedPreference.getTransLastPage();
-                          page = last;
-                          setState(() {
-                            print("Pressed:: $last");
-                            context
-                                .read(transactionsProvider)
-                                .getTransferHistoryWithPaging(last);
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 2.5, horizontal: 16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Pallet.colorWhite,
-                          ),
-                          child: Center(
-                            child: AppFontsStyle.getAppTextViewBold("Last",
-                                size: AppFontsStyle.textFontSize16,
-                                color: Pallet.colorBlue),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ) : Container(),
-                  SizedBox(
-                    height: 16,
-                  ),
-                ],
-              ),
-            ]),
-          ),
-          Visibility(
-            visible: focus == true,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 110.0, right: 24),
-              child: Align(
-                  alignment: Alignment.topRight,
-                  child: popView(
-                    () {
-                      setState(() {
-                        print("pressed status");
-                        focus = false;
-                        focusPopInput = false;
-                        selectedOption = "status";
-                        focusPopStatus = !focusPopStatus;
-                      });
-                    },
-                    () {
-                      setState(() {
-                        print("pressed Amount");
-                        focus = false;
-                        focusPopStatus = false;
-                        selectedOption = "amount";
-                        focusPopInput = !focusPopInput;
-                      });
-                    },
-                    () {
-                      setState(() {
-                        print("pressed Sent from");
-                        focus = false;
-                        focusPopStatus = false;
-                        focusPopInput = !focusPopInput;
-                        selectedOption = "receive";
-                      });
-                    },
-                    () {
-                      setState(() {
-                        print("pressed Sent to");
-                        focus = false;
-                        focusPopStatus = false;
-                        focusPopInput = !focusPopInput;
-                        selectedOption = "send";
-                      });
-                    },
-                  )),
+                      ],
+                    ) : Container(),
+                    SizedBox(
+                      height: 16,
+                    ),
+                  ],
+                ),
+              ]),
             ),
-          ),
-          Visibility(
-            visible: focusPopStatus == true,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 110.0, right: 24),
-              child: Align(
-                  alignment: Alignment.topRight,
-                  child: statusPopView(
-                    () {
-                      setState(() {
-                        print("pressed DESTROY");
-                        selectedStatus = "DESTROY";
-                        focusPopStatus = false;
-                        context
-                            .read(transactionsProvider)
-                            .getTransferHistoryQuery(
-                                "$selectedOption=$selectedStatus");
-                      });
-                    },
-                    () {
-                      setState(() {
-                        print("pressed Received");
-                        selectedStatus = "RECEIVED";
-                        focusPopStatus = false;
-                        context
-                            .read(transactionsProvider)
-                            .getTransferHistoryQuery(
-                                "$selectedOption=$selectedStatus");
-                      });
-                    },
-                  )),
-            ),
-          ),
-          Visibility(
-              visible: focusPopInput,
+            Visibility(
+              visible: focus == true,
               child: Padding(
                 padding: const EdgeInsets.only(top: 110.0, right: 24),
                 child: Align(
-                  alignment: Alignment.topRight,
-                  child: inputPopView(
-                      selectedOption.contains("amount")
-                          ? "Enter Amount"
-                          : selectedOption.contains("receive")
-                              ? "Sent From Wallet ID"
-                              : selectedOption.contains("send")
-                                  ? "Sent to Wallet ID"
-                                  : "", (value) {
-                    setState(() {
-                      inputValue = value.trim();
-                      context
-                          .read(transactionsProvider)
-                          .getTransferHistoryQuery(
-                              "$selectedOption=$inputValue");
-                    });
-                  }, (value) {
-                    if (inputValue.isEmpty) {
-                      return "Field can not be empty";
-                    }
-                    return null;
-                  },
-                      _inputController,
-                      selectedOption.contains("amount")
-                          ? TextInputType.numberWithOptions(decimal: true)
-                          : TextInputType.text),
-                ),
-              )),
-        ]),
+                    alignment: Alignment.topRight,
+                    child: popView(
+                      () {
+                        setState(() {
+                          print("pressed status");
+                          focus = false;
+                          focusPopInput = false;
+                          selectedOption = "status";
+                          focusPopStatus = !focusPopStatus;
+                        });
+                      },
+                      () {
+                        setState(() {
+                          print("pressed Amount");
+                          focus = false;
+                          focusPopStatus = false;
+                          selectedOption = "amount";
+                          focusPopInput = !focusPopInput;
+                        });
+                      },
+                      () {
+                        setState(() {
+                          print("pressed Sent from");
+                          focus = false;
+                          focusPopStatus = false;
+                          focusPopInput = !focusPopInput;
+                          selectedOption = "receive";
+                        });
+                      },
+                      () {
+                        setState(() {
+                          print("pressed Sent to");
+                          focus = false;
+                          focusPopStatus = false;
+                          focusPopInput = !focusPopInput;
+                          selectedOption = "send";
+                        });
+                      },
+                    )),
+              ),
+            ),
+            Visibility(
+              visible: focusPopStatus == true,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 110.0, right: 24),
+                child: Align(
+                    alignment: Alignment.topRight,
+                    child: statusPopView(
+                      () {
+                        setState(() {
+                          print("pressed DESTROY");
+                          selectedStatus = "DESTROY";
+                          focusPopStatus = false;
+                          context
+                              .read(transactionsProvider)
+                              .getTransferHistoryQuery(
+                                  "$selectedOption=$selectedStatus");
+                        });
+                      },
+                      () {
+                        setState(() {
+                          print("pressed Received");
+                          selectedStatus = "RECEIVED";
+                          focusPopStatus = false;
+                          context
+                              .read(transactionsProvider)
+                              .getTransferHistoryQuery(
+                                  "$selectedOption=$selectedStatus");
+                        });
+                      },
+                    )),
+              ),
+            ),
+            Visibility(
+                visible: focusPopInput,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 110.0, right: 24),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: inputPopView(
+                        selectedOption.contains("amount")
+                            ? "Enter Amount"
+                            : selectedOption.contains("receive")
+                                ? "Sent From Wallet ID"
+                                : selectedOption.contains("send")
+                                    ? "Sent to Wallet ID"
+                                    : "", (value) {
+                      setState(() {
+                        inputValue = value.trim();
+                        context
+                            .read(transactionsProvider)
+                            .getTransferHistoryQuery(
+                                "$selectedOption=$inputValue");
+                      });
+                    }, (value) {
+                      if (inputValue.isEmpty) {
+                        return "Field can not be empty";
+                      }
+                      return null;
+                    },
+                        _inputController,
+                        selectedOption.contains("amount")
+                            ? TextInputType.numberWithOptions(decimal: true)
+                            : TextInputType.text),
+                  ),
+                )),
+          ]),
+        ),
       ),
     );
   }

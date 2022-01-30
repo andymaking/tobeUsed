@@ -1,7 +1,6 @@
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
-import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
 import 'package:dhoro_mobile/utils/strings.dart';
@@ -34,11 +33,11 @@ class SendPage extends StatefulHookWidget {
 
 class _SendPageState extends State<SendPage> {
   List<String> options = [
-    "USD",
     "DHR",
+    "USD",
     "NGN",
   ];
-  String selectedOption = "USD";
+  String selectedOption = "DHR";
   TextEditingController _walletIdController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
 
@@ -71,9 +70,6 @@ class _SendPageState extends State<SendPage> {
       body: SafeArea(
         child: ListView(
           children: [
-            // SizedBox(
-            //   height: 200,
-            // ),
             Row(
               children: [
                 Padding(
@@ -108,12 +104,6 @@ class _SendPageState extends State<SendPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      // SizedBox(
-                      //   height: 7,
-                      // ),
-                      // SvgPicture.asset(
-                      //   "assets/images/top_indicator.svg",
-                      // ),
                       SizedBox(
                         height: 19,
                       ),
@@ -194,9 +184,6 @@ class _SendPageState extends State<SendPage> {
                         label: AppString.amount,
                         controller: _amountController,
                         onChanged: (value) {
-                          // value.length > 2
-                          //     ? currentFocus.unfocus()
-                          //     : currentFocus.requestFocus();
                           context
                               .read(sharedProvider.overviewProvider)
                               .convertCurrency(
@@ -246,8 +233,8 @@ class _SendPageState extends State<SendPage> {
                             });
                           },
                           items: <String>[
-                            'USD',
                             'DHR',
+                            'USD',
                             'NGN',
                           ].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
@@ -262,7 +249,7 @@ class _SendPageState extends State<SendPage> {
                       ),
                       Row(
                         children: [
-                          convert != null
+                          _amountController.text.isNotEmpty && convert != null
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

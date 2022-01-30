@@ -1,4 +1,5 @@
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
+import 'package:dhoro_mobile/data/remote/model/validate/validate.dart';
 import 'package:dhoro_mobile/route/routes.dart';
 import 'package:dhoro_mobile/utils/app_fonts.dart';
 import 'package:dhoro_mobile/utils/color.dart';
@@ -56,6 +57,7 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
   Widget build(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);
     ConvertData? convert = useProvider(sharedProvider.userBuyProvider).convertData;
+    ValidateBuyResponse? validateBuyResponse = useProvider(sharedProvider.userBuyProvider).validateBuyResponse;
     print("convert +++= $convert");
     final currentPage = useProvider(sharedProvider.userBuyProvider).buyCurrentPage;
 
@@ -94,8 +96,16 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 250.0,),
-
+                    SizedBox(height: 180.0,),
+                    validateBuyResponse?.data == true ? Container()
+                    : Row(
+                      children: [
+                        AppFontsStyle.getAppTextViewBold("${validateBuyResponse?.message ?? ""}",
+                            weight: FontWeight.w500,
+                            size: AppFontsStyle.textFontSize12),
+                      ],
+                    ),
+                    SizedBox(height: 8.0,),
                     AmountFormField(
                       label: AppString.amount,
                       controller: _amountController,
@@ -103,7 +113,11 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                         value.length >7 ? currentFocus.unfocus() : currentFocus.requestFocus();
                         context.read(sharedProvider.userBuyProvider)
                             .convertBuyCurrency("$selectedOption=${_amountController.text.trim()}");
-                        context.read(sharedProvider.userBuyProvider).amount = value.trim();
+                        _amountController.text.isNotEmpty
+                            ? context.read(sharedProvider.userBuyProvider).
+                        validateBuyDhoro("${_amountController.text.trim()}", selectedOption)
+                        : context.read(sharedProvider.userBuyProvider).validateBuyDhoro("0", selectedOption);
+                        context.read(sharedProvider.userBuyProvider).buyAmount = value.trim();
                         context.read(sharedProvider.userBuyProvider).validateBuyAmount();
                         context
                             .read(sharedProvider.userBuyProvider)
@@ -189,15 +203,20 @@ class _BuyAmountPageState extends State<BuyAmountPage> {
                           currentFocus.unfocus();
                           context.read(sharedProvider.userBuyProvider).moveBuyToNextPage();
                           setState(() {
-                            context.read(sharedProvider.userBuyProvider).currencyType = selectedOption;
-                            context.read(sharedProvider.userBuyProvider).amount = "${_amountController.text.trim()}";
+                            context.read(sharedProvider.userBuyProvider).buyCurrencyType = selectedOption;
+                            context.read(sharedProvider.userBuyProvider).buyAmount = "${_amountController.text.trim()}";
+                            context.read(sharedProvider.userBuyProvider).ngnConvert = "${convert?.ngn ?? 0.0}";
                           });
                         },
                         title: "PROCEED",
                         disabledColor: Pallet.colorBlue.withOpacity(0.2),
                         titleColor: Pallet.colorWhite,
-                        enabledColor: isValidAmount ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
-                        enabled: isValidAmount ? true : false),
+                        enabledColor: validateBuyResponse?.data != null &&
+                            validateBuyResponse?.data == true &&
+                            isValidAmount ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
+                        enabled: validateBuyResponse?.data != null &&
+                            validateBuyResponse?.data == true &&
+                            isValidAmount ? true : false),
                     SizedBox(
                       height: 16,
                     ),

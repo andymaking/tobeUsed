@@ -18,6 +18,7 @@ import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/user_wallet_balance_model.dart';
+import 'package:dhoro_mobile/data/remote/model/validate/validate.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_percentage/wallet_percentage.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status.dart';
 import 'package:dhoro_mobile/data/remote/model/wallet_status/wallet_status.dart';
@@ -535,6 +536,57 @@ class UserRemoteImpl extends UserRemote {
       final responseData = AvatarResponse.fromJson(response.data);
       print("getAvatar from Remote layer:: ${responseData.data} response:$response");
       return responseData;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<ValidateBuyResponse?> validateBuyDhoro(String amount, String currencyType) async {
+    try {
+      var _data = {
+        'amount': amount,
+        'currency_type': currencyType
+      };
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/request/purchase/validate", data: _data
+      );
+      final responseData = ValidateBuyResponse.fromJson(response.data);
+      print("validateBuyDhoro from Remote layer:: $responseData");
+      return responseData;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType) async {
+    try {
+      var _data = {
+        'amount': amount,
+        'currency_type': currencyType
+      };
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/request/destroy/validate", data: _data
+      );
+      final responseData = ValidateWithdrawResponse.fromJson(response.data);
+      print("validateBuyDhoro from Remote layer:: $responseData");
+      return responseData;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @override
+  Future<AirdropStatusData?> getAirdropStatus(TokenMetaData tokenMetaData) async {
+    try {
+      dioClient.options.headers['Authorization'] = tokenMetaData.token;
+      var response = await dioClient.get(
+        "${NetworkConfig.BASE_URL}user/airdrop/status",
+      );
+      final responseData = AirdropStatusResponse.fromJson(response.data);
+      print("getAirdropStatus from Remote layer:: ${responseData.data} response:$response");
+      return responseData.data;
     } catch (error) {
       handleError(error);
     }
