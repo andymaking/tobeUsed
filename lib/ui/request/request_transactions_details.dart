@@ -157,7 +157,8 @@ class RequestTransactionsDetailsPage extends HookWidget {
                                                      .getAppTextViewBold(
                                                    data.amount!
                                                            .toStringAsFixed(2) +" "+
-                                                       data.currencyType
+                                                     "DHR"
+                                                       // data.currencyType
                                                            .toString(),
                                                    color: Pallet.colorBlue,
                                                    size: AppFontsStyle
