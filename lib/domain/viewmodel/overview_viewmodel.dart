@@ -315,7 +315,7 @@ class OverviewViewModel extends BaseViewModel {
       getWalletStatus();
       getTransferHistory();
       getWalletPercentage();
-      Navigator.pop(context);
+      //Navigator.pop(context);
       print("Showing sendDhoro response::: $response");
       showClaimSuccessBottomSheet(context, "${messageResponse?.message}");
       return response;
@@ -421,6 +421,7 @@ showClaimSuccessBottomSheet(BuildContext context, String message) {
                       child: AppFontsStyle.getAppTextViewBold(message,
                           color: Pallet.colorBlue,
                           weight: FontWeight.w500,
+                          textAlign: TextAlign.center,
                           size: AppFontsStyle.textFontSize18),
                     ),
                   ),
@@ -486,6 +487,7 @@ showClaimFailedBottomSheet(
                           child: AppFontsStyle.getAppTextViewBold(message,
                               color: Pallet.colorBlue,
                               weight: FontWeight.w500,
+                              textAlign: TextAlign.center,
                               size: AppFontsStyle.textFontSize18),
                         ),
                       ),

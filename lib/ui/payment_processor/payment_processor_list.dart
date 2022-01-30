@@ -178,13 +178,16 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                                 ),
                               )
                               : Center(
-                                child: Container(
-                                  child: AppFontsStyle.getAppTextViewBold(
-                                      "You do not have any Payment Processor,\n Add one now",
-                                      size: AppFontsStyle.textFontSize12,
-                                      weight: FontWeight.w600,
-                                      textAlign: TextAlign.center,
-                                      color: Pallet.colorGrey
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                                  child: Container(
+                                    child: AppFontsStyle.getAppTextViewBold(
+                                        "You do not have any Payment Processor,\n Add one now",
+                                        size: AppFontsStyle.textFontSize12,
+                                        weight: FontWeight.w600,
+                                        textAlign: TextAlign.center,
+                                        color: Pallet.colorGrey
+                                    ),
                                   ),
                                 ),
                               ),
@@ -194,7 +197,7 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
                                   onPressed: (){
                                     Navigator.of(context).pushNamed(AppRoutes.paymentProcessor);
                                   },
-                                  title: "Add Payment Processor",
+                                  title: "Add  Payment  Processor",
                                   disabledColor: Pallet.colorBlue.withOpacity(0.2),
                                   titleColor: Pallet.colorWhite,
                                   icon: SvgPicture.asset(
@@ -218,29 +221,6 @@ class _PaymentProcessorListPageState extends State<PaymentProcessorListPage> {
       ),
     );
   }
-
-  // void observeDeleteProcessor(BuildContext context) async {
-  //   final viewModel = context.read(processorProvider);
-  //   await viewModel.deletePaymentProcessor(pk);
-  //   if (viewModel.viewState == ViewState.Success) {
-  //     await showTopModalSheet<String>(
-  //         context: context,
-  //         child: ShowDialog(
-  //           title:
-  //           'Percentage ${viewModel.walletPercentage}',
-  //           isError: false,
-  //           onPressed: () {},
-  //         ));
-  //   } else {
-  //     await showTopModalSheet<String>(
-  //         context: context,
-  //         child: ShowDialog(
-  //           title: 'Failed to get wallet percentage. ${viewModel.errorMessage}',
-  //           isError: true,
-  //           onPressed: () {},
-  //         ));
-  //   }
-  // }
 }
 
 
@@ -273,9 +253,6 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // for (var index = 0;
-            // index < uploadTwoImages.length;
-            // index++)
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,7 +275,6 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                     weight: FontWeight.w500,
                     size: AppFontsStyle.textFontSize12,
                   ),
-                  //SizedBox(height: 8.0,),
                 ],
               ),
             ),
