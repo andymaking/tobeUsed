@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "461966088728",
+    "project_id": "dhoro-7eca7",
+    "storage_bucket": "dhoro-7eca7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461966088728:android:dd2440aa65840cf70cc16d",
+        "android_client_info": {
+          "package_name": "com.dhoro.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "461966088728-v8urecjlvm90c4hv3mr7lt1sraqg2s58.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dhoro.mobile",
+            "certificate_hash": "73659477375c90204b62a69c08cda97aa96e874a"
+          }
+        },
+        {
+          "client_id": "461966088728-1ncro8dsfah141fgk6dhkq4jbe08kp9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfkr6Lf0wjH4OnGkwHPQjs2R8aVeIxwes"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "461966088728-1ncro8dsfah141fgk6dhkq4jbe08kp9t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

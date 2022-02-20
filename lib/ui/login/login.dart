@@ -1,4 +1,3 @@
-
 import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
@@ -21,7 +20,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final signInProvider =
-ChangeNotifierProvider.autoDispose<LoginViewModel>((ref) {
+    ChangeNotifierProvider.autoDispose<LoginViewModel>((ref) {
   ref.onDispose(() {});
   final viewModel = locator.get<LoginViewModel>();
   //viewModel.getUser();
@@ -92,29 +91,34 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(height: 20.0,),
-                      AppToolBar(
-                        trailingIconClicked: (){
-
-                        },
+                      SizedBox(
+                        height: 20.0,
                       ),
-                      SizedBox(height: 70.0,),
+                      AppToolBar(
+                        trailingIconClicked: () {},
+                      ),
+                      SizedBox(
+                        height: 70.0,
+                      ),
                       AppFontsStyle.getAppTextViewBold(
                         AppString.welcomeBack,
                         weight: FontWeight.w700,
                         size: AppFontsStyle.textFontSize32,
                       ),
-                      SizedBox(height: 24.0,),
+                      SizedBox(
+                        height: 24.0,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: AppFontsStyle.getAppTextView(
                             AppString.accessYourDhoro,
                             size: AppFontsStyle.textFontSize14,
                             textAlign: TextAlign.center,
-                            color: Pallet.colorGrey
-                        ),
+                            color: Pallet.colorGrey),
                       ),
-                      SizedBox(height: 64.0,),
+                      SizedBox(
+                        height: 64.0,
+                      ),
                       AppFormField(
                         label: AppString.emailAddress,
                         controller: _emailController,
@@ -150,15 +154,41 @@ class _LoginPageState extends State<LoginPage> {
                         suffixIcon: IconButton(
                           iconSize: 18,
                           color: Pallet.colorWhite,
-                          onPressed: () => context.read(signInProvider).togglePassword(),
+                          onPressed: () =>
+                              context.read(signInProvider).togglePassword(),
                           icon: isHidden
                               ? const Icon(
-                            Icons.visibility_off,
-                            color: Colors.black,
-                          )
-                              : const Icon(Icons.visibility, color: Colors.black),
+                                  Icons.visibility_off,
+                                  color: Colors.black,
+                                )
+                              : const Icon(Icons.visibility,
+                                  color: Colors.black),
                         ),
                         isHidden: isHidden,
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(AppRoutes.forgotPassword);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, bottom: 8.0, left: 8.0),
+                              child: AppFontsStyle.getAppTextViewBold(
+                                "Forgot Password?",
+                                size: AppFontsStyle.textFontSize14,
+                                textAlign: TextAlign.center,
+                                color: Pallet.colorBlue,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 24,
@@ -166,26 +196,27 @@ class _LoginPageState extends State<LoginPage> {
                       signInViewState == ViewState.Loading
                           ? Center(child: AppProgressBar())
                           : AppButton(
-                          onPressed: (){
-                            isValidSignIn
-                                ? observeSignInState(
-                              context,
-                            )
-                                : print(
-                                'Seems like theres a problem');
-                          },
-                          title: AppString.login,
-                          disabledColor: Pallet.colorBlue.withOpacity(0.2),
-                          titleColor: Pallet.colorWhite,
-                          enabledColor: isValidSignIn ? Pallet.colorBlue : Pallet.colorBlue.withOpacity(0.2),
-                          enabled: isValidSignIn ? true : false),
+                              onPressed: () {
+                                isValidSignIn
+                                    ? observeSignInState(
+                                        context,
+                                      )
+                                    : print('Seems like theres a problem');
+                              },
+                              title: AppString.login,
+                              disabledColor: Pallet.colorBlue.withOpacity(0.2),
+                              titleColor: Pallet.colorWhite,
+                              enabledColor: isValidSignIn
+                                  ? Pallet.colorBlue
+                                  : Pallet.colorBlue.withOpacity(0.2),
+                              enabled: isValidSignIn ? true : false),
                       SizedBox(
                         height: 16,
                       ),
                       Container(
                           width: double.infinity,
                           child: GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               Navigator.of(context).pushNamed(AppRoutes.signUp);
                             },
                             child: Center(
@@ -207,15 +238,14 @@ class _LoginPageState extends State<LoginPage> {
                                           height: 1.2,
                                           color: Pallet.colorBlue,
                                           fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w700,),
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
-                                    ]
-                                ),
+                                    ]),
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                          )
-                      ),
+                          )),
                     ],
                   ),
                 ),
@@ -230,18 +260,19 @@ class _LoginPageState extends State<LoginPage> {
   void observeSignInState(BuildContext context) async {
     final signInViewModel = context.read(signInProvider);
     print('email ${signInViewModel.email}');
-    var signIn = await signInViewModel.login(signInViewModel.email,
-        signInViewModel.password);
+    var signIn = await signInViewModel.login(
+        signInViewModel.email, signInViewModel.password);
     if (signInViewModel.viewState == ViewState.Success) {
       print('signin details $signIn');
       updateLoginStatus();
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
     } else {
       await showTopModalSheet<String>(
           context: context,
           child: ShowDialog(
             title:
-            'Login failed. ${signInViewModel.errorMessage}. Kindly confirm your login details and try again.',
+                'Login failed. ${signInViewModel.errorMessage}. Kindly confirm your login details and try again.',
             isError: true,
             onPressed: () {},
           ));

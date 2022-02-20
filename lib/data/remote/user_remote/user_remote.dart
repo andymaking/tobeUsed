@@ -36,7 +36,6 @@ abstract class UserRemote {
   Future<List<TransferHistoryData>?> getTransferHistoryQuery(TokenMetaData tokenMetaData, String query);
   Future<GetUserData?> getUser(TokenMetaData tokenMetaData);
   Future<String?> changePassword(TokenMetaData tokenMetaData,String oldPassword, String newPassword);
-  Future<String?> forgotPassword(String email,);
   Future<WalletStatusMessage?> getWalletStatus(TokenMetaData tokenMetaData);
   Future<LockAndUnlockWalletResponse?> lockOrUnlockWallet(bool status, TokenMetaData tokenMetaData);
   Future<String?> getWalletPercentage(TokenMetaData tokenMetaData);
@@ -61,6 +60,7 @@ abstract class UserRemote {
   Future<ValidateBuyResponse?> validateBuyDhoro(String amount, String currencyType);
   Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType);
   Future<AirdropStatusData?> getAirdropStatus(TokenMetaData tokenMetaData);
+  Future<MessageResponse?> forgotPassport(String email);
 
 }
 

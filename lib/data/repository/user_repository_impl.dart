@@ -36,12 +36,6 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<String?> forgotPassword(String email) {
-    // TODO: implement forgotPassword
-    throw UnimplementedError();
-  }
-
-  @override
   Future<GetUserData?> getUser() async{
     final tokenMeta = await getToken();
     print("Showing token on getUser::: $tokenMeta");
@@ -247,6 +241,11 @@ class UserRepositoryImpl extends UserRepository {
   Future<AirdropStatusData?> getAirdropStatus() async {
     final token = await getToken();
     return userRemote.getAirdropStatus(token);
+  }
+
+  @override
+  Future<MessageResponse?> forgotPassport(String email) async {
+    return await userRemote.forgotPassport(email);
   }
 
 }

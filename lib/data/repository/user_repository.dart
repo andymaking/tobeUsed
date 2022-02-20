@@ -33,7 +33,6 @@ abstract class UserRepository {
       );
   Future<String?> verifyAccount(String otp);
   Future<WalletData?> walletBalance();
-  Future<String?> forgotPassword(String email);
   Future<String?> changePassword(String oldPassword, String newPassword);
   Future<List<TransferHistoryData>?> getTransferHistory(int page, int pageSize);
   Future<List<TransferHistoryData>?> getTransferHistoryQuery(String query);
@@ -61,5 +60,5 @@ abstract class UserRepository {
   Future<ValidateBuyResponse?> validateBuyDhoro(String amount, String currencyType);
   Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType);
   Future<AirdropStatusData?> getAirdropStatus();
-
+  Future<MessageResponse?> forgotPassport(String email);
 }

@@ -1,27 +1,34 @@
 import 'dart:io';
 
+import 'package:android_intent/android_intent.dart';
 import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
 import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/model/user/user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/remote/model/wallet_status.dart';
 import '../../main.dart';
+import '../../widgets/custom_dialog.dart';
+import '../../widgets/toast.dart';
 import 'base/base_view_model.dart';
 
 class LoginViewModel extends BaseViewModel {
   final userRepository = locator<UserRepository>();
   //LoggedInUser? user;
   GetUserData? user;
-
+  MessageResponse? messageResponse;
   ViewState _state = ViewState.Idle;
   ViewState get viewState => _state;
   String? errorMessage;
   String email = "";
   String password = "";
   bool isValidLogin = false;
+  bool isValidForgotPassword = false;
   bool isHidePassword = true;
   bool isLoggedIn = false;
 
@@ -37,6 +44,11 @@ class LoginViewModel extends BaseViewModel {
 
   void validateLogin() {
     isValidLogin = isValidEmail() && isValidPassword();
+    notifyListeners();
+  }
+
+  void validateForgotPassword() {
+    isValidForgotPassword = isValidEmail();
     notifyListeners();
   }
 
@@ -71,6 +83,45 @@ class LoginViewModel extends BaseViewModel {
       print("Showing Login response::: $loginResponse");
       return loginResponse;
     } catch (error) {
+      print("Showing error response::: $error");
+      setViewState(ViewState.Error);
+      setError(error.toString());
+    }
+  }
+
+  /// login user
+  Future<MessageResponse?> forgotPassword(BuildContext context, String email) async {
+    try {
+      setViewState(ViewState.Loading);
+      var forgotResponse = await userRepository.forgotPassport(email);
+      setViewState(ViewState.Success);
+      if (Platform.isAndroid) {
+        AndroidIntent intent = AndroidIntent(
+          action: 'android.intent.action.MAIN',
+          category: 'android.intent.category.APP_EMAIL',
+        );
+        intent.launch().catchError((e) {
+          ;
+        });
+      } else if (Platform.isIOS) {
+        launch("message://").catchError((e){
+          setViewState(ViewState.Error);
+          setError(e.toString());
+        });
+      }
+      showToast("${forgotResponse?.message}");
+      print("Showing forgotPassword response::: $forgotResponse");
+      return forgotResponse;
+    } catch (error) {
+      await showTopModalSheet<String>(
+          context: context,
+          child: ShowDialog(
+            title: error.toString(),
+            isError: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ));
       print("Showing error response::: $error");
       setViewState(ViewState.Error);
       setError(error.toString());

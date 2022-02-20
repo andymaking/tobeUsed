@@ -1,21 +1,14 @@
-import 'dart:io';
 
-import 'package:dhoro_mobile/data/core/table_constants.dart';
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/user/get_user_model.dart';
-import 'package:dhoro_mobile/data/remote/model/user/logged_in_user.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
-import 'package:dhoro_mobile/domain/model/user/user.dart';
-import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
 
 import '../../main.dart';
 import 'base/base_view_model.dart';
 
 class ChangePasswordViewModel extends BaseViewModel {
   final userRepository = locator<UserRepository>();
-  //LoggedInUser? user;
   GetUserData? user;
 
   ViewState _state = ViewState.Idle;

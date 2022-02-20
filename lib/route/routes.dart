@@ -3,6 +3,7 @@ import 'package:dhoro_mobile/ui/buy_dhoro/select_payment_processor.dart';
 import 'package:dhoro_mobile/ui/changePassword/change_password.dart';
 import 'package:dhoro_mobile/ui/createAccount/signup.dart';
 import 'package:dhoro_mobile/ui/dashboard/dashboard.dart';
+import 'package:dhoro_mobile/ui/forgot_password/forgot_password.dart';
 import 'package:dhoro_mobile/ui/login/login.dart';
 import 'package:dhoro_mobile/ui/overview/overview.dart';
 import 'package:dhoro_mobile/ui/overview/send.dart';
@@ -165,6 +166,12 @@ class AppRouter {
       case AppRoutes.send:
         return MaterialPageRoute<dynamic>(
           builder: (_) => SendPage(),
+          settings: settings,
+          fullscreenDialog: true,
+        );
+      case AppRoutes.forgotPassword:
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => ForgotPasswordPage(),
           settings: settings,
           fullscreenDialog: true,
         );

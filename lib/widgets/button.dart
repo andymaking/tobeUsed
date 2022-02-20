@@ -42,7 +42,8 @@ class AppButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AppFontsStyle.getAppTextViewBold(title,
-                    size: AppFontsStyle.textFontSize12, color: titleColor),
+                    size: AppFontsStyle.textFontSize16,
+                    color: titleColor),
                 Container(
                   padding: EdgeInsets.only(left: 6),
                   child: icon != null

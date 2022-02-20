@@ -148,12 +148,6 @@ class UserRemoteImpl extends UserRemote {
   }
 
   @override
-  Future<String?> forgotPassword(String email) {
-    // TODO: implement forgotPassword
-    throw UnimplementedError();
-  }
-
-  @override
   Future<GetUserData?> getUser(TokenMetaData tokenMetaData) async{
     try {
       dioClient.options.headers['Authorization'] = tokenMetaData.token;
@@ -592,6 +586,23 @@ class UserRemoteImpl extends UserRemote {
     }
   }
 
+  @override
+  Future<MessageResponse?> forgotPassport(String email) async {
+    try {
+      var _data = {
+        'email': email,
+        'device': "mobile"
+      };
+      var response = await dioClient.post(
+          "${NetworkConfig.BASE_URL}user/password/forgot", data: _data
+      );
+      final responseData = MessageResponse.fromJson(response.data);
+      print("forgotPassport from Remote layer:: $responseData");
+      return responseData;
+    } catch (error) {
+      handleError(error);
+    }
+  }
 
 
 }
