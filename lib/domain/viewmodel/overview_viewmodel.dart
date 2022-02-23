@@ -21,7 +21,7 @@ import 'package:dhoro_mobile/utils/constant.dart';
 import 'package:dhoro_mobile/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../../main.dart';
 import 'base/base_view_model.dart';
 
@@ -284,6 +284,7 @@ class OverviewViewModel extends BaseViewModel {
       var response = await userRepository.sendDhoro(amount, currency, wid);
       sendDhoroStatus = response;
       setViewState(ViewState.Success);
+      socketIO();
       getAirdropInfo();
       getRate();
       walletBalance();
@@ -300,6 +301,18 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
+  }
+
+  void socketIO(){
+    // Dart client
+    IO.Socket socket = IO.io('https://notify.dhoro.io');
+    socket.onConnect((_) {
+      print('connect');
+      socket.emit('msg', user!.email);
+    });
+    socket.on('notification', (data) => print(data));
+    socket.onDisconnect((_) => print('disconnect'));
+    socket.on('fromServer', (data) => print(data));
   }
 
   /// Claim Airdrop

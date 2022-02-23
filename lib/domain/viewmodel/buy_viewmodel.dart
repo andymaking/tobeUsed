@@ -1,3 +1,4 @@
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:dhoro_mobile/data/core/view_state.dart';
 import 'package:dhoro_mobile/data/remote/model/agents/agent.dart';
 import 'package:dhoro_mobile/data/remote/model/convert/withdraw/convert.dart';
@@ -8,13 +9,8 @@ import 'package:dhoro_mobile/data/remote/model/withdraw/withdraw.dart';
 import 'package:dhoro_mobile/data/repository/user_repository.dart';
 import 'package:dhoro_mobile/domain/viewmodel/base/base_view_model.dart';
 import 'package:dhoro_mobile/main.dart';
-import 'package:dhoro_mobile/route/routes.dart';
-import 'package:dhoro_mobile/ui/buy_dhoro/buy_amount.dart';
-import 'package:dhoro_mobile/ui/buy_dhoro/buy_checkout.dart';
-import 'package:dhoro_mobile/ui/buy_dhoro/buy_payment.dart';
-import 'package:dhoro_mobile/widgets/custom_dialog.dart';
-import 'package:dhoro_mobile/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 
 class BuyViewModel extends BaseViewModel {
@@ -146,12 +142,37 @@ class BuyViewModel extends BaseViewModel {
       requestList = response ?? [];
       print("getRequest $requestList");
       setViewState(ViewState.Success);
+      socketIO();
       print("Success getRequest $requestList");
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
     notifyListeners();
+  }
+
+  void socketIO(){
+    // Dart client
+    // Socket socket = io('https://notify.dhoro.io',
+    //     OptionBuilder()
+    //         .setTransports(['websocket']) // for Flutter or Dart VM
+    //         .disableAutoConnect()  // disable auto-connection
+    //         .setExtraHeaders({'foo': 'bar'}) // optional
+    //         .build()
+    // );
+    // socket.connect();
+    // socket.connect();
+
+
+    IO.Socket socket = IO.io('https://notify.dhoro.io', <String, dynamic> {
+      "transports" : ["websocket"],
+      "autoConnect" : false,
+    });
+    socket.connect();
+    socket.emit('notification', user!.email);
+    socket.onConnect((_) {print('connected');});
+    socket.on('notification', (data) => print(data));
+    socket.onDisconnect((_) => print('disconnect'));
   }
 
   /// Convert currency

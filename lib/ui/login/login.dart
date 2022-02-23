@@ -18,6 +18,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 final signInProvider =
     ChangeNotifierProvider.autoDispose<LoginViewModel>((ref) {
@@ -70,6 +71,28 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final isValidLogin = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    socketIO();
+  }
+
+  void socketIO(){
+    print('Loading socketIO');
+    IO.Socket socket = IO.io('https://notify.dhoro.io', <String, dynamic> {
+      "transports": ["websocket"],
+      "autoConnect": false,
+    });
+    socket.connect();
+    //socket.send(['notification', "${user?.email}"]);
+    socket.emit('notification', "email");
+    socket.onConnect((data) {print('Connected');});
+    socket.on('notification', (data) => print(data));
+    socket.onDisconnect((_) => print('disconnect'));
+    print(socket.connected);
+  }
 
   @override
   Widget build(BuildContext context) {
