@@ -284,7 +284,6 @@ class OverviewViewModel extends BaseViewModel {
       var response = await userRepository.sendDhoro(amount, currency, wid);
       sendDhoroStatus = response;
       setViewState(ViewState.Success);
-      socketIO();
       getAirdropInfo();
       getRate();
       walletBalance();
@@ -301,18 +300,6 @@ class OverviewViewModel extends BaseViewModel {
       setViewState(ViewState.Error);
       setError(error.toString());
     }
-  }
-
-  void socketIO(){
-    // Dart client
-    IO.Socket socket = IO.io('https://notify.dhoro.io');
-    socket.onConnect((_) {
-      print('connect');
-      socket.emit('msg', user!.email);
-    });
-    socket.on('notification', (data) => print(data));
-    socket.onDisconnect((_) => print('disconnect'));
-    socket.on('fromServer', (data) => print(data));
   }
 
   /// Claim Airdrop

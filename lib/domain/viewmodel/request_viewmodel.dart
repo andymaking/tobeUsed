@@ -249,7 +249,7 @@ class RequestViewModel extends BaseViewModel {
       var response = await userRepository.getRequests(1);
       print("getRequest $requestList");
       setViewState(ViewState.Success);
-      socketIO();
+      //socketIO();
       requestList = response ?? [];
       currentPaginationPage = await sharedPreference.getRequestCurrentPage();
       lastPage = await sharedPreference.getRequestLastPage();
@@ -450,9 +450,8 @@ class RequestViewModel extends BaseViewModel {
       var response = await userRepository.buyDhoro("$value", "$agent", "$proofOfPayment", "$currency");
       purchase = response;
       print("Showing buyDhoro response::: $response");
-
-      setViewState(ViewState.Success);
       socketIO();
+      setViewState(ViewState.Success);
       getRequest();
       Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.request, (route) => false);
       showToast("Successfully bought Dhoro");
@@ -480,7 +479,6 @@ class RequestViewModel extends BaseViewModel {
       await userRepository.validateBuyDhoro(amount, currencyType);
       validateBuyResponse = response;
       setViewState(ViewState.Success);
-      socketIO();
     } catch (error) {
       setViewState(ViewState.Error);
       setError(error.toString());
@@ -489,19 +487,17 @@ class RequestViewModel extends BaseViewModel {
   }
 
   void socketIO(){
-    print('Loading socketIO');
-    IO.Socket socket = IO.io('https://notify.dhoro.io', <String, dynamic> {
-      "transports": ["websocket"],
-      "autoConnect": false,
-    });
-    socket.connect();
-    //socket.send(['notification', "${user?.email}"]);
-
-    socket.emit('room', "${user?.email}");
-    socket.onConnect((data) {print('Connected');});
+    var data = {
+      "room": anAgents?.email,
+      "request": true
+    };
+    IO.Socket socket = IO.io('https://notify.dhoro.io');
+    socket.onConnect((_) {print('connect');});
+    socket.emit('room', data);
     socket.on('notification', (data) => print(data));
     socket.onDisconnect((_) => print('disconnect'));
-    print(socket.connected);
+    socket.on('fromServer', (data) => print(data));
+    print("Is Connected: ${socket.connected}");
   }
 
   Future<ValidateWithdrawResponse?> validateWithdrawDhoro(String amount, String currencyType) async {
