@@ -11,6 +11,17 @@ import 'package:dhoro_mobile/ui/withdraw_dhoro/withdraw_dhoro_pages_container.da
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../domain/viewmodel/request_viewmodel.dart';
+import '../../main.dart';
+
+final userRequestProvider =
+ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
+  ref.onDispose(() {});
+  final viewmodel = locator.get<RequestViewModel>();
+  viewmodel.getAgents();
+  return viewmodel;
+});
+
 final _agentStateProvider = Provider.autoDispose<ViewState>((ref) {
   return ref.watch(sharedProvider.userRequestProvider).viewState;
 });
@@ -41,8 +52,12 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
     changeStatusAndNavBarColor(
         Pallet.colorWhite, Pallet.colorWhite, false, false);
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-    List<AgentsData>? agents = useProvider(sharedProvider.userRequestProvider).agents;
-    context.read(sharedProvider.userRequestProvider).agentId = "${agents.first.pk}";
+    List<AgentsData>? agents = useProvider(userRequestProvider).agents;
+    Future.delayed(
+        Duration(seconds: 1),
+            () {
+          context.read(userRequestProvider).buyAgentId = "${agents.first.pk ?? ""}";
+        });
     //ValidateWithdrawResponse? validateWithdrawResponse = useProvider(sharedProvider.userRequestProvider).validateWithdrawResponse;
 
     ViewState viewState = useProvider(agentStateProvider);
@@ -62,161 +77,177 @@ class _WithdrawAccountDetailsPageState extends State<WithdrawAccountDetailsPage>
 
     return Scaffold(
       key: _scaffoldKey,
-      body: SafeArea(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 200.0,
-                          ),
-                          agents.isNotEmpty == true
-                              ? viewState == ViewState.Loading
-                              ? Center(child: AppProgressBar())
-                              : Container(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(agents.length, (index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 16.0),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selected = index;
-                                          context.read(sharedProvider.userRequestProvider).agentId = agents[index].pk!;
-                                          //context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[index].pk}");
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              width: 1.0,
-                                              color: Pallet.colorBlue),
-                                          borderRadius: BorderRadius.all(Radius.circular(2)),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Checkbox(
-                                                checkColor: Colors.white,
-                                                fillColor: MaterialStateProperty
-                                                    .resolveWith(getColor),
-                                                value: selected == index,
-                                                onChanged: (bool? value) {
-                                                  setState(() {
-                                                    context.read(sharedProvider.userRequestProvider).agentId = agents[index].pk!;
-                                                    print("Show clicked INDEX... ${agents[index].pk}");
-                                                  });
-                                                }),
-                                            AppFontsStyle.getAppTextViewBold(
-                                                "${agents[index].accountName!.toTitleCase()!}",
-                                                weight: FontWeight.w500,
-                                                size:
-                                                AppFontsStyle.textFontSize12),
-                                            Spacer(),
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: 16.0),
-                                              child: Container(
-                                                child: AppFontsStyle.getAppTextViewBold(
-                                                    "${agents[index].bankName!.toTitleCase()!}",
-                                                    weight: FontWeight.w500,
-                                                    color: Pallet.colorGrey,
-                                                    size:
-                                                    AppFontsStyle.textFontSize12),
+      body: RefreshIndicator(
+        color: Pallet.colorBlue,
+        onRefresh: () {
+          return Future.delayed(
+              Duration(seconds: 1),
+                  () {
+                setState(() {
+                  context.read(userRequestProvider).getAgents();
+                });
+              });
+        },
+        child: SafeArea(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 200.0,
+                            ),
+                            agents.isNotEmpty == true
+                                ? viewState == ViewState.Loading
+                                ? Center(child: AppProgressBar())
+                                : Container(
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: List.generate(agents.length, (index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 16.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selected = index;
+                                            context.read(sharedProvider.userRequestProvider).agentId = agents[index].pk!;
+                                            //context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[index].pk}");
+                                          });
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1.0,
+                                                color: Pallet.colorBlue),
+                                            borderRadius: BorderRadius.all(Radius.circular(2)),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Checkbox(
+                                                  checkColor: Colors.white,
+                                                  fillColor: MaterialStateProperty
+                                                      .resolveWith(getColor),
+                                                  value: selected == index,
+                                                  onChanged: (bool? value) {
+                                                    setState(() {
+                                                      context.read(sharedProvider.userRequestProvider).agentId = agents[index].pk!;
+                                                      print("Show clicked INDEX... ${agents[index].pk}");
+                                                    });
+                                                  }),
+                                              AppFontsStyle.getAppTextViewBold(
+                                                  "${agents[index].accountName!.toTitleCase()!}",
+                                                  weight: FontWeight.w500,
+                                                  size:
+                                                  AppFontsStyle.textFontSize12),
+                                              Spacer(),
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: 16.0),
+                                                child: Container(
+                                                  child: AppFontsStyle.getAppTextViewBold(
+                                                      "${agents[index].bankName!.toTitleCase()!}",
+                                                      weight: FontWeight.w500,
+                                                      color: Pallet.colorGrey,
+                                                      size:
+                                                      AppFontsStyle.textFontSize12),
+                                                ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: 12.0,
-                                            ),
-                                          ],
+                                              SizedBox(
+                                                height: 12.0,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                })
-                            ),
-                          )
-                              :buildEmptyView(),
+                                    );
+                                  })
+                              ),
+                            )
+                                : Center(child: Padding(
+                              padding: const EdgeInsets.only(top: 40.0),
+                              child: AppProgressBar(),
+                            )),
+                            //buildEmptyView(),
 
-                          SizedBox(
-                            height: 16,
-                          ),
-                        ],
+                            SizedBox(
+                              height: 16,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0, left: 24, right: 24),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
-
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 120,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 1.0, color: Pallet.colorRed),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(2))),
-                          child: Center(
-                            child: AppFontsStyle.getAppTextViewBold(
-                              "Cancel",
-                              color: Pallet.colorRed,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          context
-                              .read(sharedProvider.userRequestProvider).moveToNextPage();
-                          setState(() {
-                            print("Showing selected index:: $selected");
-                            context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[selected].pk}");
-                          });
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 120,
-                          decoration: BoxDecoration(
-                            color: Pallet.colorBlue,
-                            borderRadius: BorderRadius.circular(2),
-                            border: Border.all(
-                              color: Colors.transparent,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Center(
-                            child: AppFontsStyle.getAppTextViewBold(
-                              "PROCEED",
-                              color: Pallet.colorWhite,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
-              )
-            ]
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0, left: 24, right: 24),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            context.read(sharedProvider.userRequestProvider).moveToPreviousPage();
+
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 120,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1.0, color: Pallet.colorRed),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(2))),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold(
+                                "Cancel",
+                                color: Pallet.colorRed,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            context
+                                .read(sharedProvider.userRequestProvider).moveToNextPage();
+                            setState(() {
+                              print("Showing selected index:: $selected");
+                              context.read(sharedProvider.userRequestProvider).getSingleAgents("${agents[selected].pk}");
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: Pallet.colorBlue,
+                              borderRadius: BorderRadius.circular(2),
+                              border: Border.all(
+                                color: Colors.transparent,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Center(
+                              child: AppFontsStyle.getAppTextViewBold(
+                                "PROCEED",
+                                color: Pallet.colorWhite,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ]
+            ),
           ),
         ),
       ),

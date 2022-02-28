@@ -183,7 +183,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           Spacer(),
-                          AppFontsStyle.getAppTextViewBold("${userData?.wid}",
+                          AppFontsStyle.getAppTextViewBold("${userData?.wid  ?? ""}",
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           SizedBox(height: 12.0,),
@@ -201,7 +201,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                           Spacer(),
                           AppFontsStyle.getAppTextViewBold(""
                               "${context.read(sharedProvider.userRequestProvider)
-                              .anAgents?.accountName?.toTitleCase()}",
+                              .anAgents?.accountName?.toTitleCase()  ?? ""}",
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           SizedBox(height: 12.0,),
@@ -219,7 +219,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                           Spacer(),
                           AppFontsStyle.getAppTextViewBold(""
                               "${context.read(sharedProvider.userRequestProvider)
-                              .anAgents?.bankName?.toTitleCase()}",
+                              .anAgents?.bankName?.toTitleCase()  ?? ""}",
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           SizedBox(height: 12.0,),
@@ -237,7 +237,7 @@ class _WithdrawSummaryPageState extends State<WithdrawSummaryPage> {
                           Spacer(),
                           AppFontsStyle.getAppTextViewBold(""
                               "${context.read(sharedProvider.userRequestProvider)
-                              .anAgents?.phoneNumber}",
+                              .anAgents?.phoneNumber ?? ""}",
                               weight: FontWeight.w500,
                               size: AppFontsStyle.textFontSize12),
                           SizedBox(height: 12.0,),

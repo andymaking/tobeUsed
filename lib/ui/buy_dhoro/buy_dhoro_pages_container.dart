@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../main.dart';
+import '../../utils/color.dart';
 
 final userBuyProvider =
 ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
@@ -16,7 +17,7 @@ ChangeNotifierProvider.autoDispose<RequestViewModel>((ref) {
   //Load all setup questions here
   viewmodel.getRequest();
   viewmodel.getPaymentProcessor();
-  viewmodel.getAgents();
+  //viewmodel.getAgents();
   viewmodel.validateBuyDhoro("1000000000000", "USD");
   return viewmodel;
 });

@@ -168,7 +168,7 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                         child: Center(
                           child: Text.rich(
                             TextSpan(
-                                text: "${agent?.accountName?.toTitleCase()!}",
+                                text: "${agent?.accountName?.toTitleCase()!  ?? ""}",
                                 style: GoogleFonts.manrope(
                                   fontSize: AppFontsStyle.textFontSize14,
                                   height: 1.5,
@@ -178,7 +178,7 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                                 ),
                                 children: <TextSpan>[
                                   TextSpan(
-                                    text: "      ${agent?.accountNumber?.toTitleCase()!}",
+                                    text: "      ${agent?.accountNumber?.toTitleCase()!  ?? ""}",
                                     style: GoogleFonts.manrope(
                                       fontSize: AppFontsStyle.textFontSize14,
                                       height: 1.2,
@@ -187,7 +187,7 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                                       fontWeight: FontWeight.w400,),
                                   ),
                                   TextSpan(
-                                    text: "       ${agent?.bankName?.toTitleCase()!}",
+                                    text: "       ${agent?.bankName?.toTitleCase()!  ?? ""}",
                                     style: GoogleFonts.manrope(
                                       fontSize: AppFontsStyle.textFontSize14,
                                       height: 1.2,
@@ -215,7 +215,7 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      AppFontsStyle.getAppTextViewBold("${agent?.phoneNumber?.toTitleCase()!} (Whatsapp and Telegram)",
+                      AppFontsStyle.getAppTextViewBold("${agent?.phoneNumber?.toTitleCase()!  ?? ""} (Whatsapp and Telegram)",
                           weight: FontWeight.w400,
                           size: AppFontsStyle.textFontSize14),
 
@@ -251,7 +251,6 @@ class _BuyPaymentPageState extends State<BuyPaymentPage> {
                           Spacer(),
                           Container(
                             height: 50,
-                            width: 180,
                             decoration: BoxDecoration(
                               color: Pallet.colorBlue,
                               borderRadius: BorderRadius.circular(2),
